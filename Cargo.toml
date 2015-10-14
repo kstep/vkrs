@@ -1,0 +1,10 @@
+[package]
+name = "vkrs"
+version = "0.1.0"
+authors = ["Konstantin Stepanov <me@kstep.me>"]
+
+[dependencies]
+hyper = "*"
+serde = "*"
+serde_macros = "*"
+serde_json = "*"
