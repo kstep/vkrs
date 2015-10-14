@@ -8,7 +8,7 @@ extern crate hyper;
 pub static API_URL: &'static str = "https://api.vk.com/method";
 
 pub mod auth;
-pub use auth::*;
+pub mod audio;
 
 #[test]
 fn it_works() {

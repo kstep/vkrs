@@ -1,5 +1,4 @@
 use serde::ser::{self, Serialize};
-use serde::de::Deserialize;
 use std::borrow::{Cow, Borrow};
 use std::ops::Deref;
 use std::fmt;
