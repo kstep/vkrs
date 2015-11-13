@@ -1,8 +1,14 @@
+use hyper::client::IntoUrl;
+use url::ParseError as UrlError;
 use serde::ser::{self, Serialize};
+use serde::de::{Deserialize, Deserializer};
 use std::borrow::{Cow, Borrow};
 use std::ops::Deref;
+use std::convert::AsRef;
+use std::error::Error;
 use std::fmt;
-use hyper::Url;
+
+use url::Url;
 
 pub static OAUTH_AUTHORIZE_URL: &'static str = "https://oauth.vk.com/authorize";
 pub static OAUTH_ACCESS_TOKEN_URL: &'static str = "https://oauth.vk.com/access_token";
@@ -40,8 +46,8 @@ pub enum DisplayMode {
     Mobile,
 }
 
-impl DisplayMode {
-    fn to_str(&self) -> &'static str {
+impl AsRef<str> for DisplayMode {
+    fn as_ref(&self) -> &str {
         use self::DisplayMode::*;
         match *self {
             Page => "page",
@@ -53,7 +59,7 @@ impl DisplayMode {
 
 impl Serialize for DisplayMode {
     fn serialize<S: ser::Serializer>(&self, s: &mut S) -> Result<(), S::Error> {
-        s.visit_str(self.to_str())
+        s.visit_str(self.as_ref())
     }
 }
 
@@ -63,8 +69,8 @@ pub enum ResponseMode {
     Token,
 }
 
-impl ResponseMode {
-    fn to_str(&self) -> &'static str {
+impl AsRef<str> for ResponseMode {
+    fn as_ref(&self) -> &str {
         use self::ResponseMode::*;
         match *self {
             Code => "code",
@@ -75,7 +81,7 @@ impl ResponseMode {
 
 impl Serialize for ResponseMode {
     fn serialize<S: ser::Serializer>(&self, s: &mut S) -> Result<(), S::Error> {
-        s.visit_str(self.to_str())
+        s.visit_str(self.as_ref())
     }
 }
 
@@ -104,8 +110,8 @@ pub enum Permission {
     NoHttps,
 }
 
-impl Permission {
-    fn to_str(&self) -> &'static str {
+impl AsRef<str> for Permission {
+    fn as_ref(&self) -> &str {
         use self::Permission::*;
         match *self {
             Notify => "notify",
@@ -135,12 +141,13 @@ impl Permission {
 
 impl Serialize for Permission {
     fn serialize<S: ser::Serializer>(&self, s: &mut S) -> Result<(), S::Error> {
-        s.visit_str(self.to_str())
+        s.visit_str(self.as_ref())
     }
 }
 
 /// ```rust
 /// # use vkrs::auth::{OAuthReq, Permission};
+/// # use hyper::client::IntoUrl;
 /// let mut auth_req = OAuthReq::new(env!("VK_APP_ID"));
 /// auth_req.scope(Permission::Audio);
 /// assert_eq!(auth_req.to_url().serialize(),
@@ -190,8 +197,16 @@ impl<'a> OAuthReq<'a> {
         self
     }
 
-    pub fn to_url(&self) -> Url {
-        let mut url = Url::parse(OAUTH_AUTHORIZE_URL).unwrap();
+    pub fn to_access_token_req<T: Into<Cow<'a, str>>, U: Into<Cow<'a, str>>>(&self, client_secret: T, code: U) -> AccessTokenReq<'a> {
+        let mut access_token_req = AccessTokenReq::new(self.client_id.clone(), client_secret, code);
+        access_token_req.redirect_uri = self.redirect_uri.clone();
+        access_token_req
+    }
+}
+
+impl<'a> IntoUrl for &'a OAuthReq<'a> {
+    fn into_url(self) -> Result<Url, UrlError> {
+        let mut url = try!(OAUTH_AUTHORIZE_URL.into_url());
         let redir_url = if let Some(ref url) = self.redirect_uri {
             url.borrow()
         } else {
@@ -199,20 +214,15 @@ impl<'a> OAuthReq<'a> {
         };
 
         url.set_query_from_pairs([
-                                 ("client_id", self.client_id.borrow()),
-                                 ("redirect_uri", redir_url),
-                                 ("display", self.display.to_str()),
-                                 ("scope", &*self.scope.iter().map(Permission::to_str).collect::<Vec<_>>().join(",")),
-                                 ("response_type", self.response_type.to_str()),
-                                 ("v", &*self.v.to_string()),
-        ].iter().map(|&p| p));
-        url
-    }
+            ("client_id", self.client_id.borrow()),
+            ("redirect_uri", redir_url),
+            ("display", self.display.as_ref()),
+            ("scope", &*self.scope.iter().map(Permission::as_ref).collect::<Vec<_>>().join(",")),
+            ("response_type", self.response_type.as_ref()),
+            ("v", &*self.v.to_string()),
+        ].iter().cloned());
 
-    pub fn to_access_token_req<T: Into<Cow<'a, str>>, U: Into<Cow<'a, str>>>(&self, client_secret: T, code: U) -> AccessTokenReq<'a> {
-        let mut access_token_req = AccessTokenReq::new(self.client_id.clone(), client_secret, code);
-        access_token_req.redirect_uri = self.redirect_uri.clone();
-        access_token_req
+        Ok(url)
     }
 }
 
@@ -235,9 +245,11 @@ impl<'a> AccessTokenReq<'a> {
             code: code.into(),
         }
     }
+}
 
-    pub fn to_url(&self) -> Url {
-        let mut url = Url::parse(OAUTH_ACCESS_TOKEN_URL).unwrap();
+impl<'a> IntoUrl for &'a AccessTokenReq<'a> {
+    fn into_url(self) -> Result<Url, UrlError> {
+        let mut url = try!(OAUTH_ACCESS_TOKEN_URL.into_url());
         let redir_url = if let Some(ref url) = self.redirect_uri {
             url.borrow()
         } else {
@@ -245,12 +257,13 @@ impl<'a> AccessTokenReq<'a> {
         };
 
         url.set_query_from_pairs([
-                                 ("client_id", self.client_id.borrow()),
-                                 ("client_secret", self.client_secret.borrow()),
-                                 ("redirect_uri", redir_url),
-                                 ("code", self.code.borrow()),
-        ].iter().map(|&p| p));
-        url
+            ("client_id", self.client_id.borrow()),
+            ("client_secret", self.client_secret.borrow()),
+            ("redirect_uri", redir_url),
+            ("code", self.code.borrow()),
+        ].iter().cloned());
+
+        Ok(url)
     }
 }
 
@@ -267,9 +280,48 @@ pub struct ErrorResp {
     error_description: String,
 }
 
+impl Error for ErrorResp {
+    fn description(&self) -> &str {
+        &*self.error_description
+    }
+}
+
+impl fmt::Display for ErrorResp {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.write_str(&*self.error)
+    }
+}
+
 impl Deref for AccessTokenResp {
     type Target = str;
     fn deref(&self) -> &str {
         &*self.access_token
+    }
+}
+
+impl<'a> Into<Cow<'a, str>> for &'a AccessTokenResp {
+    fn into(self) -> Cow<'a, str> {
+        Cow::Borrowed(&*self)
+    }
+}
+
+pub trait WithToken<'a> {
+    fn with_token<T: Into<Cow<'a, str>>>(&'a mut self, token: T) -> &'a mut Self;
+}
+
+#[derive(Debug)]
+pub struct AccessTokenResult(pub Result<AccessTokenResp, ErrorResp>);
+
+impl Deserialize for AccessTokenResult {
+    fn deserialize<D: Deserializer>(d: &mut D) -> Result<AccessTokenResult, D::Error> {
+        AccessTokenResp::deserialize(d).map(|v| AccessTokenResult(Ok(v)))
+            .or_else(|_| ErrorResp::deserialize(d).map(|e| AccessTokenResult(Err(e))))
+    }
+}
+
+impl Deref for AccessTokenResult {
+    type Target = Result<AccessTokenResp, ErrorResp>;
+    fn deref(&self) -> &Result<AccessTokenResp, ErrorResp> {
+        &self.0
     }
 }

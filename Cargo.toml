@@ -4,6 +4,7 @@ version = "0.1.0"
 authors = ["Konstantin Stepanov <me@kstep.me>"]
 
 [dependencies]
+url = "*"
 hyper = "*"
 serde = "*"
 serde_macros = "*"

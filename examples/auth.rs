@@ -6,22 +6,22 @@ extern crate hyper;
 use std::io::{BufRead, Read, Write};
 use std::io::{stdin, stderr};
 use std::fs::File;
-use hyper::client::Client;
-use vkrs::auth::{OAuthReq, Permission, AccessTokenResp};
-use vkrs::audio::{AudioSearchReq, AudioGetResp, VkResponse};
+use hyper::client::{Client, IntoUrl};
+use vkrs::auth::{OAuthReq, Permission, AccessTokenResult, WithToken};
+use vkrs::audio::{AudioSearchReq, AudioGetResp, VkResult};
 
-fn main() {
+fn get_access_token() -> AccessTokenResult {
     let body = File::open("token.json").and_then(|mut f| {
         let mut buf = String::new();
         f.read_to_string(&mut buf).map(|_| serde_json::from_str(&*buf).and_then(serde_json::value::from_value))
     });
 
-    let token: AccessTokenResp = if let Ok(Ok(body)) = body {
+    if let Ok(Ok(body)) = body {
         body
     } else {
         let mut auth_req = OAuthReq::new(env!("VK_APP_ID"));
         auth_req.scope(Permission::Audio);
-        println!("Go to {} and enter code below...", auth_req.to_url().serialize());
+        println!("Go to {} and enter code below...", auth_req.into_url().unwrap().serialize());
 
         let inp = stdin();
         let code = {
@@ -32,16 +32,27 @@ fn main() {
 
         let access_token_req = auth_req.to_access_token_req(env!("VK_APP_SECRET"), code.trim());
         let mut buf = String::new();
-        Client::new().get(access_token_req.to_url()).send().unwrap().read_to_string(&mut buf).unwrap();
+        Client::new().get(access_token_req.into_url().unwrap()).send().unwrap().read_to_string(&mut buf).unwrap();
         serde_json::from_str(&buf).and_then(serde_json::value::from_value).unwrap()
-    };
+    }
+}
+
+fn main() {
+    let token = get_access_token().0.unwrap();
     writeln!(stderr(), "Token: {:?}", token).unwrap();
 
     let mut buf = String::new();
-    Client::new().get(AudioSearchReq::new("Poets of the fall").performer_only(true).count(200).to_url(&*token)).send().unwrap().read_to_string(&mut buf).unwrap();
-    let songs: VkResponse<AudioGetResp> = serde_json::from_str(&buf).and_then(serde_json::value::from_value).unwrap();
+    let url = AudioSearchReq::new("Poets of the fall").performer_only(true).count(200).with_token(&token).into_url().unwrap();
+    println!("{:?}", url);
+    Client::new().get(url).send().unwrap().read_to_string(&mut buf).unwrap();
+    println!("{}", buf);
+    let result = serde_json::from_str(&buf).and_then(serde_json::value::from_value);
+    println!("{:?}", result);
+    let songs: VkResult<AudioGetResp> = result.unwrap();
 
-    for song in songs.response.items {
-        println!("{}\t\"{} - {}.mp3\"", song.url, song.artist, song.title);
+    if let VkResult(Ok(songs)) = songs {
+        for song in songs.items {
+            println!("{}\t\"{} - {}.mp3\"", song.url, song.artist, song.title);
+        }
     }
 }
