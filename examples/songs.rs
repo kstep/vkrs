@@ -3,8 +3,8 @@ extern crate serde_json;
 extern crate serde;
 extern crate hyper;
 
-use std::io::{BufRead, Read, Write};
-use std::io::{stdin, stderr};
+use std::io::{BufRead, Read};
+use std::io::stdin;
 use std::fs::File;
 use hyper::client::{Client, IntoUrl};
 use vkrs::api::{WithToken, VkResult};
@@ -40,19 +40,20 @@ fn get_access_token() -> AccessTokenResult {
 
 fn main() {
     let token = get_access_token().0.unwrap();
-    writeln!(stderr(), "Token: {:?}", token).unwrap();
+
+    let url = AudioSearchReq::new("Poets of the fall").performer_only(true).count(200).with_token(&token).into_url().unwrap();
 
     let mut buf = String::new();
-    let url = AudioSearchReq::new("Poets of the fall").performer_only(true).count(200).with_token(&token).into_url().unwrap();
-    println!("{:?}", url);
     Client::new().get(url).send().unwrap().read_to_string(&mut buf).unwrap();
+
     let result = serde_json::from_str(&buf).and_then(serde_json::value::from_value);
-    println!("{:?}", result);
+
     let songs: VkResult<AudioGetResp> = result.unwrap();
 
-    if let VkResult(Ok(songs)) = songs {
-        for song in songs.items {
+    match songs.0 {
+        Ok(songs) => for song in songs.items {
             println!("{}\t\"{} - {}.mp3\"", song.url, song.artist, song.title);
-        }
+        },
+        Err(err) => println!("Error: {}", err)
     }
 }
