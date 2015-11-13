@@ -1,5 +1,6 @@
 #![feature(custom_derive, plugin)]
 #![plugin(serde_macros)]
+#![deny(unused_imports)]
 
 extern crate serde;
 extern crate serde_json;
@@ -8,6 +9,7 @@ extern crate url;
 
 pub static API_URL: &'static str = "https://api.vk.com/method";
 
+pub mod api;
 pub mod auth;
 pub mod audio;
 

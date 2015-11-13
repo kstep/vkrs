@@ -1,17 +1,11 @@
 use std::borrow::{Cow, Borrow};
 use std::convert::AsRef;
 use std::string::ToString;
-use std::marker::PhantomData;
 use std::error::Error;
-use std::ops::Deref;
 use hyper::Url;
 use hyper::client::IntoUrl;
 use url::ParseError as UrlError;
-use serde::de::{self, Deserialize, Deserializer};
-use std::fmt::{self, Debug};
-use super::auth::WithToken;
-
-const VK_METHOD_URL: &'static str = "https://api.vk.com/method/";
+use super::api::{WithToken, VK_METHOD_URL};
 
 #[derive(Debug)]
 pub struct AudioGetReq<'a> {
@@ -147,91 +141,6 @@ impl AsRef<str> for AudioSort {
             Length => "1",
             Popularity => "2",
         }
-    }
-}
-
-#[derive(Debug)]
-pub struct VkResult<T: Debug>(pub Result<T, VkError>);
-
-impl<T: Debug> Deref for VkResult<T> {
-    type Target = Result<T, VkError>;
-    fn deref(&self) -> &Result<T, VkError> {
-        &self.0
-    }
-}
-
-enum VkResultField {
-    Response,
-    Error
-}
-
-impl Deserialize for VkResultField {
-    fn deserialize<D: Deserializer>(d: &mut D) -> Result<VkResultField, D::Error> {
-        struct VkResultFieldVisitor;
-
-        impl de::Visitor for VkResultFieldVisitor {
-            type Value = VkResultField;
-            fn visit_str<E: de::Error>(&mut self, value: &str) -> Result<VkResultField, E> {
-                match value {
-                    "response" => Ok(VkResultField::Response),
-                    "error" => Ok(VkResultField::Error),
-                    _ => Err(de::Error::syntax("expected response or error"))
-                }
-            }
-        }
-
-        d.visit(VkResultFieldVisitor)
-    }
-}
-
-impl<T: Deserialize + Debug> Deserialize for VkResult<T> {
-    fn deserialize<D: Deserializer>(d: &mut D) -> Result<VkResult<T>, D::Error> {
-        struct VkResultVisitor<T: Deserialize + Debug>(PhantomData<T>);
-
-        impl<T: Deserialize + Debug> de::Visitor for VkResultVisitor<T> {
-            type Value = VkResult<T>;
-            fn visit_map<V: de::MapVisitor>(&mut self, mut v: V) -> Result<VkResult<T>, V::Error> {
-                match v.visit_key() {
-                    Ok(Some(VkResultField::Response)) => v.visit_value::<T>().map(|v| VkResult(Ok(v))),
-                    Ok(Some(VkResultField::Error)) => v.visit_value::<VkError>().map(|e| VkResult(Err(e))),
-                    Ok(None) => v.missing_field("response or error"),
-                    Err(err) => Err(err)
-                }
-            }
-        }
-
-        d.visit_map(VkResultVisitor(PhantomData::<T>))
-    }
-}
-
-#[derive(Debug, Deserialize)]
-pub struct KeyVal {
-    pub key: String,
-    pub value: String
-}
-
-impl Into<(String, String)> for KeyVal {
-    fn into(self) -> (String, String) {
-        (self.key, self.value)
-    }
-}
-
-#[derive(Debug, Deserialize)]
-pub struct VkError {
-    pub error_code: u32,
-    pub error_msg: String,
-    pub request_params: Vec<KeyVal>
-}
-
-impl Error for VkError {
-    fn description(&self) -> &str {
-        &*self.error_msg
-    }
-}
-
-impl fmt::Display for VkError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}: {}", self.error_code, self.error_msg)
     }
 }
 

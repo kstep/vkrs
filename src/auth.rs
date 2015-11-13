@@ -305,10 +305,6 @@ impl<'a> Into<Cow<'a, str>> for &'a AccessTokenResp {
     }
 }
 
-pub trait WithToken<'a> {
-    fn with_token<T: Into<Cow<'a, str>>>(&'a mut self, token: T) -> &'a mut Self;
-}
-
 #[derive(Debug)]
 pub struct AccessTokenResult(pub Result<AccessTokenResp, ErrorResp>);
 

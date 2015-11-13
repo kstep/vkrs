@@ -7,8 +7,9 @@ use std::io::{BufRead, Read, Write};
 use std::io::{stdin, stderr};
 use std::fs::File;
 use hyper::client::{Client, IntoUrl};
-use vkrs::auth::{OAuthReq, Permission, AccessTokenResult, WithToken};
-use vkrs::audio::{AudioSearchReq, AudioGetResp, VkResult};
+use vkrs::api::{WithToken, VkResult};
+use vkrs::auth::{OAuthReq, Permission, AccessTokenResult};
+use vkrs::audio::{AudioSearchReq, AudioGetResp};
 
 fn get_access_token() -> AccessTokenResult {
     let body = File::open("token.json").and_then(|mut f| {
@@ -45,7 +46,6 @@ fn main() {
     let url = AudioSearchReq::new("Poets of the fall").performer_only(true).count(200).with_token(&token).into_url().unwrap();
     println!("{:?}", url);
     Client::new().get(url).send().unwrap().read_to_string(&mut buf).unwrap();
-    println!("{}", buf);
     let result = serde_json::from_str(&buf).and_then(serde_json::value::from_value);
     println!("{:?}", result);
     let songs: VkResult<AudioGetResp> = result.unwrap();
