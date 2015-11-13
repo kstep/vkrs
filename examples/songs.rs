@@ -5,6 +5,7 @@ extern crate hyper;
 
 use std::io::{BufRead, Read, Write};
 use std::io::stdin;
+use std::env;
 use std::fs::File;
 use hyper::client::{Client, IntoUrl};
 use vkrs::api::{WithToken, VkResult, VkError, VkErrorCode};
@@ -45,7 +46,7 @@ fn get_access_token() -> AccessTokenResult {
     }
 }
 
-fn find_songs_by_performer(token: &AccessTokenResp, performer: &'static str) {
+fn find_songs_by_performer(token: &AccessTokenResp, performer: &str) {
     let url = AudioSearchReq::new(performer).performer_only(true).count(200).with_token(token).into_url().unwrap();
 
     let mut buf = String::new();
@@ -67,5 +68,6 @@ fn find_songs_by_performer(token: &AccessTokenResp, performer: &'static str) {
 
 fn main() {
     let token = get_access_token().0.unwrap();
-    find_songs_by_performer(&token, "Poets of the fall");
+    let performer = env::args().nth(1).expect("Performer name required");
+    find_songs_by_performer(&token, &*performer);
 }
