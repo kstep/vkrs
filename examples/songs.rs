@@ -2,11 +2,12 @@ extern crate vkrs;
 extern crate serde_json;
 extern crate serde;
 extern crate hyper;
+extern crate clap;
 
 use std::io::{BufRead, Read, Write};
 use std::io::stdin;
-use std::env;
 use std::fs::File;
+use clap::{Arg, App};
 use hyper::client::{Client, IntoUrl};
 use vkrs::api::{WithToken, VkResult, VkError, VkErrorCode};
 use vkrs::auth::{OAuthReq, Permission, AccessTokenResult, AccessTokenResp};
@@ -46,8 +47,8 @@ fn get_access_token() -> AccessTokenResult {
     }
 }
 
-fn find_songs_by_performer(token: &AccessTokenResp, performer: &str) {
-    let url = AudioSearchReq::new(performer).performer_only(true).count(200).with_token(token).into_url().unwrap();
+fn find_songs(token: &AccessTokenResp, query: &str, performer_only: bool) {
+    let url = AudioSearchReq::new(query).performer_only(performer_only).count(200).with_token(token).into_url().unwrap();
 
     let mut buf = String::new();
     Client::new().get(url).send().unwrap().read_to_string(&mut buf).unwrap();
@@ -61,13 +62,27 @@ fn find_songs_by_performer(token: &AccessTokenResp, performer: &str) {
             println!("{}\t\"{} - {}.mp3\"", song.url, song.artist, song.title);
         },
         Err(VkError { error_code: VkErrorCode::Unauthorized, .. }) =>
-            find_songs_by_performer(&fetch_access_token().0.unwrap(), performer),
+            find_songs(&fetch_access_token().0.unwrap(), query, performer_only),
         Err(err) => println!("Error: {}", err)
     }
 }
 
 fn main() {
+    let args = App::new("songs")
+        .author("Konstantin Stepanov <me@kstep.me>")
+        .about("Search for songs in VK")
+        .arg(Arg::with_name("query")
+             .required(true)
+             .help("Query string"))
+        .arg(Arg::with_name("performer")
+             .short("p")
+             .help("Lookup performers only"))
+        .get_matches();
+
     let token = get_access_token().0.unwrap();
-    let performer = env::args().nth(1).expect("Performer name required");
-    find_songs_by_performer(&token, &*performer);
+
+    let query = args.value_of("query").unwrap();
+    let performer_only = args.is_present("performer");
+
+    find_songs(&token, query, performer_only);
 }

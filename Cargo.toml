@@ -9,3 +9,5 @@ hyper = "*"
 serde = "*"
 serde_macros = "*"
 serde_json = "*"
+
+clap = "*"
