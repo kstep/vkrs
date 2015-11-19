@@ -10,9 +10,8 @@ use std::fs::File;
 use std::env;
 use clap::{Arg, App};
 use hyper::client::{Client, IntoUrl};
-use vkrs::api::{WithToken, VkResult, VkError, VkErrorCode, Collection};
-use vkrs::auth::{OAuth, Permission, AccessTokenResult, AccessToken};
-use vkrs::audio::{self, Audio};
+use vkrs::{WithToken, VkResult, VkError, VkErrorCode, Collection, AudioSearch, Audio,
+    Permission, OAuth, AccessToken, AccessTokenResult};
 
 static TOKEN_FILE: &'static str = "token.json";
 
@@ -49,7 +48,7 @@ fn get_access_token() -> AccessTokenResult {
 }
 
 fn find_songs(token: &AccessToken, query: &str, performer_only: bool) {
-    let url = audio::Search::new(query).performer_only(performer_only).count(200).with_token(token).into_url().unwrap();
+    let url = AudioSearch::new(query).performer_only(performer_only).count(200).with_token(token).into_url().unwrap();
 
     let mut buf = String::new();
     Client::new().get(url).send().unwrap().read_to_string(&mut buf).unwrap();
