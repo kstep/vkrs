@@ -5,10 +5,12 @@ use serde::de::{Deserialize, Deserializer};
 use std::borrow::{Cow, Borrow};
 use std::ops::Deref;
 use std::convert::AsRef;
-use std::error::Error;
+use std::error::Error as StdError;
 use std::fmt;
 
 use url::Url;
+
+use super::api::{Response, Request};
 
 pub static OAUTH_AUTHORIZE_URL: &'static str = "https://oauth.vk.com/authorize";
 pub static OAUTH_ACCESS_TOKEN_URL: &'static str = "https://oauth.vk.com/access_token";
@@ -146,15 +148,15 @@ impl Serialize for Permission {
 }
 
 /// ```rust
-/// # use vkrs::auth::{OAuthReq, Permission};
+/// # use vkrs::auth::{OAuth, Permission};
 /// # use hyper::client::IntoUrl;
-/// let mut auth_req = OAuthReq::new(env!("VK_APP_ID"));
+/// let mut auth_req = OAuth::new(env!("VK_APP_ID"));
 /// auth_req.scope(Permission::Audio);
 /// assert_eq!(auth_req.to_url().serialize(),
 ///     "https://oauth.vk.com/authorize?client_id=5093489&redirect_uri=https%3A%2F%2Foauth.vk.com%2Fblank.html&display=page&scope=audio&response_type=code&v=5.37");
 /// ```
 #[derive(Debug, Serialize)]
-pub struct OAuthReq<'a> {
+pub struct OAuth<'a> {
     client_id: Cow<'a, str>,
     redirect_uri: Option<Cow<'a, str>>,
     display: DisplayMode,
@@ -164,9 +166,13 @@ pub struct OAuthReq<'a> {
     state: Option<Cow<'a, str>>,
 }
 
-impl<'a> OAuthReq<'a> {
-    pub fn new<'b: 'a, T: Into<Cow<'b, str>>>(client_id: T) -> OAuthReq<'a> {
-        OAuthReq {
+impl<'a> Request<'a> for OAuth<'a> {
+    const METHOD_NAME: &'static str = "authorize";
+}
+
+impl<'a> OAuth<'a> {
+    pub fn new<'b: 'a, T: Into<Cow<'b, str>>>(client_id: T) -> OAuth<'a> {
+        OAuth {
             client_id: client_id.into(),
             redirect_uri: None,
             display: DisplayMode::Page,
@@ -197,14 +203,14 @@ impl<'a> OAuthReq<'a> {
         self
     }
 
-    pub fn to_access_token_req<T: Into<Cow<'a, str>>, U: Into<Cow<'a, str>>>(&self, client_secret: T, code: U) -> AccessTokenReq<'a> {
-        let mut access_token_req = AccessTokenReq::new(self.client_id.clone(), client_secret, code);
+    pub fn to_access_token_request<T: Into<Cow<'a, str>>, U: Into<Cow<'a, str>>>(&self, client_secret: T, code: U) -> GetAccessToken<'a> {
+        let mut access_token_req = GetAccessToken::new(self.client_id.clone(), client_secret, code);
         access_token_req.redirect_uri = self.redirect_uri.clone();
         access_token_req
     }
 }
 
-impl<'a> IntoUrl for &'a OAuthReq<'a> {
+impl<'a> IntoUrl for &'a OAuth<'a> {
     fn into_url(self) -> Result<Url, UrlError> {
         let mut url = try!(OAUTH_AUTHORIZE_URL.into_url());
         let redir_url = if let Some(ref url) = self.redirect_uri {
@@ -227,18 +233,22 @@ impl<'a> IntoUrl for &'a OAuthReq<'a> {
 }
 
 #[derive(Debug, Serialize)]
-pub struct AccessTokenReq<'a> {
+pub struct GetAccessToken<'a> {
     client_id: Cow<'a, str>,
     client_secret: Cow<'a, str>,
     redirect_uri: Option<Cow<'a, str>>,
     code: Cow<'a, str>,
 }
 
-impl<'a> AccessTokenReq<'a> {
-    pub fn new<T, U, V>(client_id: T, client_secret: U, code: V) -> AccessTokenReq<'a>
+impl<'a> Request<'a> for GetAccessToken<'a> {
+    const METHOD_NAME: &'static str = "access_token";
+}
+
+impl<'a> GetAccessToken<'a> {
+    pub fn new<T, U, V>(client_id: T, client_secret: U, code: V) -> GetAccessToken<'a>
         where T: Into<Cow<'a, str>>, U: Into<Cow<'a, str>>, V: Into<Cow<'a, str>>
     {
-        AccessTokenReq {
+        GetAccessToken {
             client_id: client_id.into(),
             client_secret: client_secret.into(),
             redirect_uri: None,
@@ -247,7 +257,7 @@ impl<'a> AccessTokenReq<'a> {
     }
 }
 
-impl<'a> IntoUrl for &'a AccessTokenReq<'a> {
+impl<'a> IntoUrl for &'a GetAccessToken<'a> {
     fn into_url(self) -> Result<Url, UrlError> {
         let mut url = try!(OAUTH_ACCESS_TOKEN_URL.into_url());
         let redir_url = if let Some(ref url) = self.redirect_uri {
@@ -268,56 +278,58 @@ impl<'a> IntoUrl for &'a AccessTokenReq<'a> {
 }
 
 #[derive(Debug, Deserialize)]
-pub struct AccessTokenResp {
+pub struct AccessToken {
     access_token: String,
     expires_in: u32,
     user_id: u64,
 }
 
+impl Response for AccessToken {}
+
 #[derive(Debug, Deserialize)]
-pub struct ErrorResp {
+pub struct Error {
     error: String,
     error_description: String,
 }
 
-impl Error for ErrorResp {
+impl StdError for Error {
     fn description(&self) -> &str {
         &*self.error_description
     }
 }
 
-impl fmt::Display for ErrorResp {
+impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.write_str(&*self.error)
     }
 }
 
-impl Deref for AccessTokenResp {
+impl Deref for AccessToken {
     type Target = str;
     fn deref(&self) -> &str {
         &*self.access_token
     }
 }
 
-impl<'a> Into<Cow<'a, str>> for &'a AccessTokenResp {
+impl<'a> Into<Cow<'a, str>> for &'a AccessToken {
     fn into(self) -> Cow<'a, str> {
         Cow::Borrowed(&*self)
     }
 }
 
 #[derive(Debug)]
-pub struct AccessTokenResult(pub Result<AccessTokenResp, ErrorResp>);
+pub struct AccessTokenResult(pub Result<AccessToken, Error>);
 
 impl Deserialize for AccessTokenResult {
     fn deserialize<D: Deserializer>(d: &mut D) -> Result<AccessTokenResult, D::Error> {
-        AccessTokenResp::deserialize(d).map(|v| AccessTokenResult(Ok(v)))
-            .or_else(|_| ErrorResp::deserialize(d).map(|e| AccessTokenResult(Err(e))))
+        AccessToken::deserialize(d).map(|v| AccessTokenResult(Ok(v)))
+            .or_else(|_| Error::deserialize(d).map(|e| AccessTokenResult(Err(e))))
     }
 }
 
 impl Deref for AccessTokenResult {
-    type Target = Result<AccessTokenResp, ErrorResp>;
-    fn deref(&self) -> &Result<AccessTokenResp, ErrorResp> {
+    type Target = Result<AccessToken, Error>;
+    fn deref(&self) -> &Result<AccessToken, Error> {
         &self.0
     }
 }
