@@ -7,6 +7,7 @@ extern crate clap;
 use std::io::{BufRead, Read, Write};
 use std::io::stdin;
 use std::fs::File;
+use std::env;
 use clap::{Arg, App};
 use hyper::client::{Client, IntoUrl};
 use vkrs::api::{WithToken, VkResult, VkError, VkErrorCode};
@@ -16,7 +17,7 @@ use vkrs::audio::{AudioSearchReq, AudioGetResp};
 static TOKEN_FILE: &'static str = "token.json";
 
 fn fetch_access_token() -> AccessTokenResult {
-    let mut auth_req = OAuthReq::new(env!("VK_APP_ID"));
+    let mut auth_req = OAuthReq::new(env::var("VK_APP_ID").unwrap());
     auth_req.scope(Permission::Audio);
     println!("Go to {} and enter code below...", auth_req.into_url().unwrap().serialize());
 
@@ -27,7 +28,7 @@ fn fetch_access_token() -> AccessTokenResult {
         buf
     };
 
-    let access_token_req = auth_req.to_access_token_req(env!("VK_APP_SECRET"), code.trim());
+    let access_token_req = auth_req.to_access_token_req(env::var("VK_APP_SECRET").unwrap(), code.trim());
     let mut buf = String::new();
     Client::new().get(access_token_req.into_url().unwrap()).send().unwrap().read_to_string(&mut buf).unwrap();
     let _ = File::create(TOKEN_FILE).and_then(|mut f| f.write_all(buf.as_bytes()));
