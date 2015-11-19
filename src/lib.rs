@@ -1,4 +1,5 @@
 #![feature(custom_derive, plugin)]
+#![feature(associated_consts)]
 #![plugin(serde_macros)]
 #![deny(unused_imports)]
 

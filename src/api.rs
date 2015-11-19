@@ -4,11 +4,16 @@ use std::ops::Deref;
 use std::marker::PhantomData;
 use std::error::Error;
 use serde::de;
+use hyper::client::IntoUrl;
 
 pub const VK_METHOD_URL: &'static str = "https://api.vk.com/method/";
 
 pub trait WithToken<'a> {
     fn with_token<T: Into<Cow<'a, str>>>(&'a mut self, token: T) -> &'a mut Self;
+}
+
+pub trait Request<'a> where &'a Self: IntoUrl, Self: 'a {
+    const METHOD_NAME: &'static str;
 }
 
 #[derive(Debug)]

@@ -5,7 +5,7 @@ use std::error::Error;
 use hyper::Url;
 use hyper::client::IntoUrl;
 use url::ParseError as UrlError;
-use super::api::{WithToken, VK_METHOD_URL};
+use super::api::{WithToken, Request, VK_METHOD_URL};
 
 #[derive(Debug)]
 pub struct AudioGetReq<'a> {
@@ -25,9 +25,13 @@ impl<'a> WithToken<'a> for AudioGetReq<'a> {
     }
 }
 
+impl<'a> Request<'a> for AudioGetReq<'a> {
+    const METHOD_NAME: &'static str = "audio.get";
+}
+
 impl<'a> IntoUrl for &'a AudioGetReq<'a> {
     fn into_url(self) -> Result<Url, UrlError> {
-        let mut url = try!(Url::parse(&*(VK_METHOD_URL.to_owned() + "audio.get")));
+        let mut url = try!(Url::parse(&*(VK_METHOD_URL.to_owned() + AudioGetReq::METHOD_NAME)));
         let audio_ids: &[u64] = self.audio_ids.borrow();
         url.set_query_from_pairs([
                                  ("owner_id", &*self.owner_id.to_string()),
@@ -106,9 +110,13 @@ impl<'a> AudioSearchReq<'a> {
     }
 }
 
+impl<'a> Request<'a> for AudioSearchReq<'a> {
+    const METHOD_NAME: &'static str = "audio.search";
+}
+
 impl<'a> IntoUrl for &'a AudioSearchReq<'a> {
     fn into_url(self) -> Result<Url, UrlError> {
-        let mut url = Url::parse(&*(VK_METHOD_URL.to_owned() + "audio.search")).unwrap();
+        let mut url = Url::parse(&*(VK_METHOD_URL.to_owned() + AudioSearchReq::METHOD_NAME)).unwrap();
         url.set_query_from_pairs([
                                  ("q", self.q.borrow()),
                                  ("auto_complete", if self.auto_complete {"1"} else {"0"}),
