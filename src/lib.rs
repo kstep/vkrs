@@ -18,6 +18,3 @@ pub use auth::{Permission, OAuth, AccessToken, AccessTokenResult};
 pub use audio::{Audio, Search as AudioSearch, Get as AudioGet};
 pub use photos::{Photo, Search as PhotosSearch};
 
-#[test]
-fn it_works() {
-}
