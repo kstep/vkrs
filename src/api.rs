@@ -16,10 +16,12 @@ pub trait Request<'a> where &'a Self: IntoUrl, Self: 'a {
     const METHOD_NAME: &'static str;
 }
 
-#[derive(Debug)]
-pub struct VkResult<T: fmt::Debug>(pub Result<T, VkError>);
+pub trait Response: de::Deserialize + fmt::Debug {}
 
-impl<T: fmt::Debug> Deref for VkResult<T> {
+#[derive(Debug)]
+pub struct VkResult<T: Response>(pub Result<T, VkError>);
+
+impl<T: Response> Deref for VkResult<T> {
     type Target = Result<T, VkError>;
     fn deref(&self) -> &Result<T, VkError> {
         &self.0
@@ -50,11 +52,11 @@ impl de::Deserialize for VkResultField {
     }
 }
 
-impl<T: de::Deserialize + fmt::Debug> de::Deserialize for VkResult<T> {
+impl<T: Response> de::Deserialize for VkResult<T> {
     fn deserialize<D: de::Deserializer>(d: &mut D) -> Result<VkResult<T>, D::Error> {
         struct VkResultVisitor<T: de::Deserialize + fmt::Debug>(PhantomData<T>);
 
-        impl<T: de::Deserialize + fmt::Debug> de::Visitor for VkResultVisitor<T> {
+        impl<T: Response> de::Visitor for VkResultVisitor<T> {
             type Value = VkResult<T>;
             fn visit_map<V: de::MapVisitor>(&mut self, mut v: V) -> Result<VkResult<T>, V::Error> {
                 match v.visit_key() {

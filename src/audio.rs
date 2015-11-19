@@ -5,7 +5,7 @@ use std::error::Error;
 use hyper::Url;
 use hyper::client::IntoUrl;
 use url::ParseError as UrlError;
-use super::api::{WithToken, Request, VK_METHOD_URL};
+use super::api::{WithToken, Request, Response, VK_METHOD_URL};
 
 #[derive(Debug)]
 pub struct AudioGetReq<'a> {
@@ -157,6 +157,8 @@ pub struct AudioGetResp {
     pub count: u32,
     pub items: Vec<Audio>
 }
+
+impl Response for AudioGetResp {}
 
 #[derive(Debug, Deserialize)]
 pub struct User {
