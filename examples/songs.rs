@@ -70,6 +70,7 @@ fn find_songs(token: &AccessTokenResp, query: &str, performer_only: bool) {
 fn main() {
     let args = App::new("songs")
         .author("Konstantin Stepanov <me@kstep.me>")
+        .version("0.1.0")
         .about("Search for songs in VK")
         .arg(Arg::with_name("query")
              .required(true)
