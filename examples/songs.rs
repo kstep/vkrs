@@ -1,7 +1,6 @@
 extern crate vkrs;
 extern crate serde_json;
 extern crate serde;
-extern crate hyper;
 extern crate clap;
 
 use std::io::{BufRead, Read, Write};

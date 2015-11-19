@@ -18,7 +18,11 @@ pub trait Request<'a> where &'a Self: IntoUrl, Self: 'a {
 }
 
 /// Trait for things that can come from VK API directly
-pub trait Response: de::Deserialize + fmt::Debug {}
+pub trait Response: de::Deserialize + fmt::Debug {
+    fn from_str(s: &str) -> ::serde_json::error::Result<Self> {
+        serde_json::from_str(&buf).and_then(serde_json::value::from_value)
+    }
+}
 
 #[derive(Debug, Deserialize)]
 pub struct Collection<T: Response> {
