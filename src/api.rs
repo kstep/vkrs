@@ -12,10 +12,12 @@ pub trait WithToken<'a> {
     fn with_token<T: Into<Cow<'a, str>>>(&'a mut self, token: T) -> &'a mut Self;
 }
 
+/// Trait for things that can be posted to VK API directly
 pub trait Request<'a> where &'a Self: IntoUrl, Self: 'a {
     const METHOD_NAME: &'static str;
 }
 
+/// Trait for things that can come from VK API directly
 pub trait Response: de::Deserialize + fmt::Debug {}
 
 #[derive(Debug, Deserialize)]

@@ -53,7 +53,7 @@ pub struct Search<'a> {
      auto_complete: bool,
      lyrics: bool,
      performer_only: bool,
-     sort: AudioSort,
+     sort: Sort,
      search_own: bool,
      offset: usize,
      count: usize, // 0...300, def 30
@@ -74,7 +74,7 @@ impl<'a> Search<'a> {
             auto_complete: false,
             lyrics: false,
             performer_only: false,
-            sort: AudioSort::Popularity,
+            sort: Sort::Popularity,
             search_own: false,
             offset: 0,
             count: 30,
@@ -104,7 +104,7 @@ impl<'a> Search<'a> {
         self
     }
 
-    pub fn sort(&mut self, sort: AudioSort) -> &mut Search<'a> {
+    pub fn sort(&mut self, sort: Sort) -> &mut Search<'a> {
         self.sort = sort;
         self
     }
@@ -135,15 +135,15 @@ impl<'a> IntoUrl for &'a Search<'a> {
 
 #[derive(Debug)]
 #[repr(u8)]
-pub enum AudioSort {
+pub enum Sort {
     DateAdded = 0,
     Length = 1,
     Popularity = 2,
 }
 
-impl AsRef<str> for AudioSort {
+impl AsRef<str> for Sort {
     fn as_ref(&self) -> &str {
-        use self::AudioSort::*;
+        use self::Sort::*;
         match *self {
             DateAdded => "0",
             Length => "1",

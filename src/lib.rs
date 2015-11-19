@@ -13,6 +13,7 @@ pub static API_URL: &'static str = "https://api.vk.com/method";
 pub mod api;
 pub mod auth;
 pub mod audio;
+pub mod photos;
 
 #[test]
 fn it_works() {
