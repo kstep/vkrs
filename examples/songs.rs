@@ -10,8 +10,7 @@ use std::fs::File;
 use std::env;
 use clap::{Arg, App};
 use hyper::client::{Client, IntoUrl};
-use vkrs::{WithToken, VkResult, VkError, VkErrorCode, Collection, AudioSearch, Audio,
-    Permission, OAuth, AccessToken, AccessTokenResult};
+use vkrs::*;
 
 static TOKEN_FILE: &'static str = "token.json";
 
