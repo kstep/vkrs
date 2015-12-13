@@ -10,12 +10,45 @@ use super::api::{WithToken, Request, Response, VK_METHOD_URL};
 #[derive(Debug)]
 pub struct Get<'a> {
      owner_id: i64,
-     album_id: u64,
-     audio_ids: Cow<'a, [u64]>,
+     album_id: Option<u64>,
+     audio_ids: Option<Cow<'a, [u64]>>,
      need_user: bool,
      offset: usize,
      count: usize,
      token: Option<Cow<'a, str>>,
+}
+
+impl<'a> Get<'a> {
+    pub fn new(owner_id: i64) -> Get<'a> {
+        Get {
+            owner_id: owner_id,
+            album_id: None,
+            audio_ids: None,
+            need_user: false,
+            offset: 0,
+            count: 100,
+            token: None
+        }
+    }
+
+    pub fn audios<T: Into<Cow<'a, [u64]>>>(&mut self, audio_ids: T) -> &mut Get<'a> {
+        self.audio_ids = Some(audio_ids.into());
+        self
+    }
+
+    pub fn album(&mut self, album_id: u64) -> &mut Get<'a> {
+        self.album_id = Some(album_id);
+        self
+    }
+
+    pub fn count(&mut self, count: usize) -> &mut Get<'a> {
+        self.count = count;
+        self
+    }
+    pub fn offset(&mut self, offset: usize) -> &mut Get<'a> {
+        self.offset = offset;
+        self
+    }
 }
 
 impl<'a> WithToken<'a> for Get<'a> {
@@ -35,8 +68,8 @@ impl<'a> IntoUrl for &'a Get<'a> {
         let audio_ids: &[u64] = self.audio_ids.borrow();
         url.set_query_from_pairs([
                                  ("owner_id", &*self.owner_id.to_string()),
-                                 ("album_id", &*self.album_id.to_string()),
-                                 ("audio_ids", &*audio_ids.iter().map(|id| id.to_string()).collect::<Vec<_>>().join(",")),
+                                 //("album_id", &*self.album_id.to_string()),
+                                 //("audio_ids", &*audio_ids.iter().map(|id| id.to_string()).collect::<Vec<_>>().join(",")),
                                  ("need_user", "0"),
                                  ("offset", &*self.offset.to_string()),
                                  ("count", &*self.count.to_string()),
