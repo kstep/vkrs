@@ -26,7 +26,7 @@ fn fetch_access_token() -> AccessTokenResult {
 
     let access_token_req = auth_req.to_access_token_request(env::var("VK_APP_SECRET").unwrap(), code.trim());
     let mut buf = String::new();
-    Client::new().get(access_token_req.into_url().unwrap()).send().unwrap().read_to_string(&mut buf).unwrap();
+    Client::new().get(&access_token_req).send().unwrap().read_to_string(&mut buf).unwrap();
     let _ = File::create(TOKEN_FILE).and_then(|mut f| f.write_all(buf.as_bytes()));
     serde_json::from_str(&buf).and_then(serde_json::value::from_value).unwrap()
 }
@@ -45,7 +45,12 @@ fn get_access_token() -> AccessTokenResult {
 }
 
 fn find_songs(token: &AccessToken, query: &str, performer_only: bool) {
-    let url = AudioSearch::new(query).performer_only(performer_only).count(200).with_token(token).into_url().unwrap();
+    let url = AudioSearch::new(query)
+        .performer_only(performer_only)
+        .count(200)
+        .with_token(token)
+        .into_url()
+        .unwrap();
 
     let mut buf = String::new();
     Client::new().get(url).send().unwrap().read_to_string(&mut buf).unwrap();

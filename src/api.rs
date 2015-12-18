@@ -4,6 +4,7 @@ use std::ops::Deref;
 use std::marker::PhantomData;
 use std::error::Error;
 use serde::de;
+use serde_json;
 use hyper::client::IntoUrl;
 
 pub const VK_METHOD_URL: &'static str = "https://api.vk.com/method/";
@@ -19,8 +20,8 @@ pub trait Request<'a> where &'a Self: IntoUrl, Self: 'a {
 
 /// Trait for things that can come from VK API directly
 pub trait Response: de::Deserialize + fmt::Debug {
-    fn from_str(s: &str) -> ::serde_json::error::Result<Self> {
-        serde_json::from_str(&buf).and_then(serde_json::value::from_value)
+    fn from_str(s: &str) -> serde_json::error::Result<Self> {
+        serde_json::from_str(s).and_then(serde_json::value::from_value)
     }
 }
 

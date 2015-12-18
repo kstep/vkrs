@@ -65,11 +65,11 @@ impl<'a> Request<'a> for Get<'a> {
 impl<'a> IntoUrl for &'a Get<'a> {
     fn into_url(self) -> Result<Url, UrlError> {
         let mut url = try!(Url::parse(&*(VK_METHOD_URL.to_owned() + Get::METHOD_NAME)));
-        let audio_ids: &[u64] = self.audio_ids.borrow();
+        let audio_ids: &[u64] = self.audio_ids.as_ref().map(Borrow::borrow).unwrap_or(&[]);
         url.set_query_from_pairs([
                                  ("owner_id", &*self.owner_id.to_string()),
                                  //("album_id", &*self.album_id.to_string()),
-                                 //("audio_ids", &*audio_ids.iter().map(|id| id.to_string()).collect::<Vec<_>>().join(",")),
+                                 ("audio_ids", &*audio_ids.iter().map(ToString::to_string).collect::<Vec<_>>().join(",")),
                                  ("need_user", "0"),
                                  ("offset", &*self.offset.to_string()),
                                  ("count", &*self.count.to_string()),
