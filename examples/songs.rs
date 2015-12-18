@@ -55,8 +55,12 @@ fn find_songs(token: &AccessToken, query: &str, performer_only: bool) {
     let songs: VkResult<Collection<Audio>> = result.unwrap();
 
     match songs.0 {
-        Ok(songs) => for song in songs.items {
-            println!("{}\t\"{} - {}.mp3\"", song.url, song.artist, song.title);
+        Ok(songs) => {
+            println!("#EXTM3U");
+            for song in songs.items {
+              println!("#EXTINF:{},{} - {}", song.duration, song.artist, song.title);
+              println!("{}", song.url);
+            }
         },
         Err(VkError { error_code: VkErrorCode::Unauthorized, .. }) =>
             find_songs(&fetch_access_token().0.unwrap(), query, performer_only),
