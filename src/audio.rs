@@ -2,16 +2,26 @@ use std::borrow::{Cow, Borrow};
 use std::convert::AsRef;
 use std::string::ToString;
 use std::error::Error;
+use std::ops::Deref;
 use hyper::Url;
 use hyper::client::IntoUrl;
-use url::ParseError as UrlError;
+use url::{self, form_urlencoded, ParseError as UrlError};
 use super::api::{WithToken, Request, Response, VK_METHOD_URL};
+
+
+macro_rules! qs {
+    ($($name:ident => $value:expr),+ $(,)*) => {
+        form_urlencoded::serialize([
+            $((stringify!($name), $value)),*
+        ].into_iter().filter(|&&(_, v)| !v.is_empty()))
+    }
+}
 
 #[derive(Debug)]
 pub struct Get<'a> {
      owner_id: i64,
      album_id: Option<u64>,
-     audio_ids: Option<Cow<'a, [u64]>>,
+     audio_ids: Option<Vec<u64>>,
      need_user: bool,
      offset: usize,
      count: usize,
@@ -31,8 +41,8 @@ impl<'a> Get<'a> {
         }
     }
 
-    pub fn audios<T: Into<Cow<'a, [u64]>>>(&mut self, audio_ids: T) -> &mut Get<'a> {
-        self.audio_ids = Some(audio_ids.into());
+    pub fn audios<I: Iterator<Item=u64>>(&mut self, audio_ids: I) -> &mut Get<'a> {
+        self.audio_ids = Some(audio_ids.collect::<Vec<_>>());
         self
     }
 
@@ -64,18 +74,29 @@ impl<'a> Request<'a> for Get<'a> {
 
 impl<'a> IntoUrl for &'a Get<'a> {
     fn into_url(self) -> Result<Url, UrlError> {
-        let mut url = try!(Url::parse(&*(VK_METHOD_URL.to_owned() + Get::METHOD_NAME)));
-        let audio_ids: &[u64] = self.audio_ids.as_ref().map(Borrow::borrow).unwrap_or(&[]);
-        url.set_query_from_pairs([
-                                 ("owner_id", &*self.owner_id.to_string()),
-                                 //("album_id", &*self.album_id.to_string()),
-                                 ("audio_ids", &*audio_ids.iter().map(ToString::to_string).collect::<Vec<_>>().join(",")),
-                                 ("need_user", "0"),
-                                 ("offset", &*self.offset.to_string()),
-                                 ("count", &*self.count.to_string()),
-                                 ("v", "5.37"),
-                                 ("access_token", self.token.as_ref().unwrap().borrow()),
-                                 ].iter().cloned());
+        let url = Url {
+            scheme: "https".to_owned(),
+            scheme_data: url::SchemeData::Relative(url::RelativeSchemeData {
+                username: "".to_owned(),
+                password: None,
+                host: url::Host::Domain("api.vk.com".to_owned()),
+                port: None,
+                default_port: Some(80),
+                path: vec!["method".to_owned(), Get::METHOD_NAME.to_owned()]
+                }),
+            query: Some(qs![
+                        owner_id => &*self.owner_id.to_string(),
+                        album_id => self.album_id.as_ref().map(ToString::to_string).as_ref().map(Borrow::borrow).unwrap_or(""),
+                        audio_ids => &*self.audio_ids.as_ref().map(Deref::deref).unwrap_or(&[])
+                            .iter().map(ToString::to_string).collect::<Vec<_>>().join(","),
+                        need_user => "0",
+                        offset => &*self.offset.to_string(),
+                        v => "5.37",
+                        access_token => self.token.as_ref().map(Borrow::borrow).unwrap_or(""),
+            ]),
+            fragment: None,
+        };
+
         Ok(url)
     }
 }
