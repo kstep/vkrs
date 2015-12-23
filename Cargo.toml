@@ -8,10 +8,10 @@ repository = "https://github.com/kstep/vkrs"
 keywords = ["vk", "api"]
 
 [dependencies]
-url = "*"
-hyper = "*"
-serde = "*"
-serde_macros = "*"
-serde_json = "*"
+url = "^0.5.2"
+hyper = "^0.7.1"
+serde = "^0.6.6"
+serde_macros = "^0.6.5"
+serde_json = "^0.6.0"
 
-clap = "*"
+clap = "^1.5.4"
