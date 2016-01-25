@@ -1,21 +1,32 @@
-#![feature(custom_derive, plugin)]
-#![feature(associated_consts)]
-#![plugin(serde_macros)]
+#![cfg_attr(feature = "nightly", feature(custom_derive, plugin))]
+#![cfg_attr(feature = "nightly", plugin(serde_macros))]
 #![deny(unused_imports)]
 
 extern crate serde;
 extern crate serde_json;
 extern crate hyper;
 extern crate url;
+extern crate inth_oauth2 as oauth2;
+extern crate rustc_serialize;
+extern crate chrono;
+
+macro_rules! qs {
+    ($($name:ident => $value:expr),+ $(,)*) => {
+        ::url::form_urlencoded::serialize([
+            $((stringify!($name), $value)),*
+        ].into_iter().filter(|&&(_, v)| !v.is_empty()))
+    }
+}
 
 pub mod api;
 pub mod auth;
 pub mod audio;
 pub mod photos;
 
-pub use api::{WithToken, VkResult, VkError, VkErrorCode, Collection};
-pub use auth::{Permission, OAuth, AccessToken, AccessTokenResult};
-pub use audio::{Audio, Search as AudioSearch, Get as AudioGet};
+pub use api::{Result as VkResult, Error as ClientError, VkError, VkErrorCode};
+pub use api::{Client, Collection};
+pub use auth::{Permission, OAuthError, AccessToken};
+pub use audio::{Audio, Lyrics, Search as AudioSearch, Get as AudioGet, GetById as AudioGetById, GetLyrics as AudioGetLyrics};
 pub use photos::{Photo, Search as PhotosSearch};
 
-pub use hyper::client::{Client, IntoUrl};
+pub use hyper::client::IntoUrl;

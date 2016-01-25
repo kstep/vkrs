@@ -1,0 +1,30 @@
+
+#[derive(Debug, PartialEq, Eq, Deserialize)]
+pub struct User {
+    pub id: i64, // String
+    pub photo: String,
+    pub name: String,
+    pub name_gen: String,
+}
+
+#[derive(Debug, PartialEq, Eq, Deserialize)]
+pub struct Audio {
+    pub id: u64,
+    pub owner_id: i64,
+    pub artist: String,
+    pub title: String,
+    pub date: u64,
+    pub url: String, // Url !!!
+    pub lyrics_id: Option<u64>,
+    pub album_id: Option<u64>,
+    pub genre_id: Option<u32>,
+    pub duration: u32,
+    pub no_search: Option<u8>, // FIXME: bool
+}
+
+#[derive(Debug, PartialEq, Eq, Deserialize)]
+pub struct Lyrics {
+    lyrics_id: u64,
+    text: String,
+}
+

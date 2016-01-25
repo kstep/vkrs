@@ -1,0 +1,19 @@
+#[derive(Debug, PartialEq, Eq, Deserialize)]
+pub struct Collection<T: Response> {
+    pub count: u32,
+    pub items: Vec<T>
+}
+
+
+#[derive(Debug, PartialEq, Eq, Deserialize)]
+pub struct VkError {
+    pub error_code: VkErrorCode,
+    pub error_msg: String,
+    pub request_params: Vec<KeyVal>
+}
+
+#[derive(Debug, PartialEq, Eq, Deserialize)]
+pub struct KeyVal {
+    pub key: String,
+    pub value: String
+}

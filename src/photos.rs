@@ -2,9 +2,9 @@ use std::borrow::{Cow, Borrow};
 
 use hyper::Url;
 use hyper::client::IntoUrl;
-use url::ParseError as UrlError;
+use url::{ParseError as UrlError};
 
-use super::api::{WithToken, Request, Response, VK_METHOD_URL};
+use super::api::{Request, Response, Collection};
 
 
 pub struct Search<'a> {
@@ -17,18 +17,11 @@ pub struct Search<'a> {
     offset: usize,
     count: usize,
     radius: u16,
-    token: Option<Cow<'a, str>>
 }
 
 impl<'a> Request<'a> for Search<'a> {
-    const METHOD_NAME: &'static str = "photos.search";
-}
-
-impl<'a> WithToken<'a> for Search<'a> {
-    fn with_token<T: Into<Cow<'a, str>>>(&'a mut self, token: T) -> &'a mut Search<'a> {
-        self.token = Some(token.into());
-        self
-    }
+    type Response = Collection<Photo>;
+    fn method_name() -> &'static str { "photos.search" }
 }
 
 impl<'a> Search<'a> {
@@ -43,7 +36,6 @@ impl<'a> Search<'a> {
             offset: 0,
             count: 100,
             radius: 5000,
-            token: None
         }
     }
 
@@ -83,38 +75,28 @@ impl<'a> Search<'a> {
 
 impl<'a> IntoUrl for &'a Search<'a> {
     fn into_url(self) -> Result<Url, UrlError> {
-        let mut url = Url::parse(&*(VK_METHOD_URL.to_owned() + Search::METHOD_NAME)).unwrap();
-        url.set_query_from_pairs([
-                                 ("q", self.q.borrow()),
-                                 ("start_time", &*self.start_time.to_string()),
-                                 ("end_time", &*self.end_time.to_string()),
-                                 ("lat", &*self.lat.to_string()),
-                                 ("long", &*self.long.to_string()),
-                                 ("radius", &*self.radius.to_string()),
-                                 ("sort", self.sort.as_ref()),
-                                 ("offset", &*self.offset.to_string()),
-                                 ("count", &*self.count.to_string()),
-                                 ("v", "5.37"),
-                                 //("access_token", self.token.as_ref().unwrap().borrow())
-                                 ].iter().cloned());
+        let mut url = Search::base_url();
+        url.query = Some(qs![
+            q => self.q.borrow(),
+            start_time => &*self.start_time.to_string(),
+            end_time => &*self.end_time.to_string(),
+            lat => &*self.lat.to_string(),
+            long => &*self.long.to_string(),
+            radius => &*self.radius.to_string(),
+            sort => self.sort.as_ref(),
+            offset => &*self.offset.to_string(),
+            count => &*self.count.to_string(),
+            v => "5.37",
+        ]);
         Ok(url)
     }
 }
 
-#[derive(Debug, Deserialize)]
-pub struct Photo {
-    pub id: u64,
-    pub album_id: i64,
-    pub owner_id: i64,
-    pub user_id: i64,
-    pub photo_75: String,
-    pub photo_130: String,
-    pub photo_604: String,
-    pub width: u16,
-    pub height: u16,
-    pub text: String,
-    pub date: u64,
-}
+#[cfg(feature = "nightly")]
+include!("photos.rs.in");
+
+#[cfg(not(feature = "nightly"))]
+include!(concat!(env!("OUT_DIR"), "/photos.rs"));
 
 impl Response for Photo {}
 

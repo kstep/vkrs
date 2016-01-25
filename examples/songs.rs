@@ -1,9 +1,8 @@
 extern crate vkrs;
-extern crate serde_json;
-extern crate serde;
 extern crate clap;
+extern crate serde_json as json;
 
-use std::io::{BufRead, Read, Write};
+use std::io::BufRead;
 use std::io::stdin;
 use std::fs::File;
 use std::env;
@@ -12,10 +11,13 @@ use vkrs::*;
 
 static TOKEN_FILE: &'static str = "token.json";
 
-fn fetch_access_token() -> AccessTokenResult {
-    let mut auth_req = OAuth::new(env::var("VK_APP_ID").unwrap());
-    auth_req.scope(Permission::Audio);
-    println!("Go to {} and enter code below...", auth_req.into_url().unwrap().serialize());
+fn fetch_access_token() -> Result<AccessToken, OAuthError> {
+    let oauth = Client::auth(
+        env::var("VK_APP_ID").unwrap(),
+        env::var("VK_APP_SECRET").unwrap());
+
+    let auth_uri = oauth.auth_uri(Some(Permission::Audio.as_ref()), None).unwrap();
+    println!("Go to {} and enter code below...", auth_uri);
 
     let inp = stdin();
     let code = {
@@ -24,42 +26,32 @@ fn fetch_access_token() -> AccessTokenResult {
         buf
     };
 
-    let access_token_req = auth_req.to_access_token_request(env::var("VK_APP_SECRET").unwrap(), code.trim());
-    let mut buf = String::new();
-    Client::new().get(&access_token_req).send().unwrap().read_to_string(&mut buf).unwrap();
-    let _ = File::create(TOKEN_FILE).and_then(|mut f| f.write_all(buf.as_bytes()));
-    serde_json::from_str(&buf).and_then(serde_json::value::from_value).unwrap()
+    let token = try!(oauth.request_token(code.trim()));
+    let _ = File::create(TOKEN_FILE).ok().map(|mut f| json::to_writer(&mut f, &token).ok());
+    Ok(token)
 }
 
-fn get_access_token() -> AccessTokenResult {
-    let body = File::open(TOKEN_FILE).and_then(|mut f| {
-        let mut buf = String::new();
-        f.read_to_string(&mut buf).map(|_| serde_json::from_str(&*buf).and_then(serde_json::value::from_value))
-    });
+fn get_access_token() -> Result<AccessToken, OAuthError> {
+    let token: Option<AccessToken> = File::open(TOKEN_FILE).ok().and_then(|mut f| json::from_reader(&mut f).ok());
 
-    if let Ok(Ok(body)) = body {
-        body
+    if let Some(token) = token {
+        if token.expired() {
+            fetch_access_token()
+        } else {
+            Ok(token)
+        }
     } else {
         fetch_access_token()
     }
 }
 
 fn find_songs(token: &AccessToken, query: &str, performer_only: bool) {
-    let url = AudioSearch::new(query)
-        .performer_only(performer_only)
-        .count(200)
-        .with_token(token)
-        .into_url()
-        .unwrap();
+    let mut url = AudioSearch::new(query);
+    url.performer_only(performer_only).count(200);
 
-    let mut buf = String::new();
-    Client::new().get(url).send().unwrap().read_to_string(&mut buf).unwrap();
+    let songs: VkResult<Collection<Audio>> = Client::new().token(token).get(&url);
 
-    let result = serde_json::from_str(&buf).and_then(serde_json::value::from_value);
-
-    let songs: VkResult<Collection<Audio>> = result.unwrap();
-
-    match songs.0 {
+    match songs {
         Ok(songs) => {
             println!("#EXTM3U");
             for song in songs.items {
@@ -67,8 +59,8 @@ fn find_songs(token: &AccessToken, query: &str, performer_only: bool) {
               println!("{}", song.url);
             }
         },
-        Err(VkError { error_code: VkErrorCode::Unauthorized, .. }) =>
-            find_songs(&fetch_access_token().0.unwrap(), query, performer_only),
+        Err(ClientError::Api(VkError { error_code: VkErrorCode::Unauthorized, .. })) =>
+            find_songs(&fetch_access_token().unwrap(), query, performer_only),
         Err(err) => println!("Error: {}", err)
     }
 }
@@ -84,12 +76,20 @@ fn main() {
         .arg(Arg::with_name("performer")
              .short("p")
              .help("Lookup performers only"))
+        .arg(Arg::with_name("user")
+             .short("u")
+             .takes_value(true)
+             .help("User id"))
         .get_matches();
 
-    let token = get_access_token().0.unwrap();
+    let token = get_access_token().unwrap();
 
     let query = args.value_of("query").unwrap();
-    let performer_only = args.is_present("performer");
+    //let lookup_type = if args.is_present("user") { LookUpType::User }
+        //else if args.is_present("performer") { LookUpType::Performer }
+        //else { LookUpType::Title };
 
-    find_songs(&token, query, performer_only);
+    find_songs(&token, query,
+               args.is_present("Performer"));
+               //args.value_of("user").and_then(|v| v.parse::<i64>().ok()));
 }

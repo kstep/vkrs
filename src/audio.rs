@@ -5,31 +5,21 @@ use std::error::Error;
 use std::ops::Deref;
 use hyper::Url;
 use hyper::client::IntoUrl;
-use url::{self, form_urlencoded, ParseError as UrlError};
-use super::api::{WithToken, Request, Response, VK_METHOD_URL};
-
-
-macro_rules! qs {
-    ($($name:ident => $value:expr),+ $(,)*) => {
-        form_urlencoded::serialize([
-            $((stringify!($name), $value)),*
-        ].into_iter().filter(|&&(_, v)| !v.is_empty()))
-    }
-}
+use url::{ParseError as UrlError};
+use super::api::{Request, Response, Collection};
 
 #[derive(Debug)]
-pub struct Get<'a> {
+pub struct Get {
      owner_id: i64,
      album_id: Option<u64>,
      audio_ids: Option<Vec<u64>>,
      need_user: bool,
      offset: usize,
      count: usize,
-     token: Option<Cow<'a, str>>,
 }
 
-impl<'a> Get<'a> {
-    pub fn new(owner_id: i64) -> Get<'a> {
+impl Get {
+    pub fn new(owner_id: i64) -> Get {
         Get {
             owner_id: owner_id,
             album_id: None,
@@ -37,65 +27,46 @@ impl<'a> Get<'a> {
             need_user: false,
             offset: 0,
             count: 100,
-            token: None
         }
     }
 
-    pub fn audios<I: Iterator<Item=u64>>(&mut self, audio_ids: I) -> &mut Get<'a> {
+    pub fn audios<I: Iterator<Item=u64>>(&mut self, audio_ids: I) -> &mut Get {
         self.audio_ids = Some(audio_ids.collect::<Vec<_>>());
         self
     }
 
-    pub fn album(&mut self, album_id: u64) -> &mut Get<'a> {
+    pub fn album(&mut self, album_id: u64) -> &mut Get {
         self.album_id = Some(album_id);
         self
     }
 
-    pub fn count(&mut self, count: usize) -> &mut Get<'a> {
+    pub fn count(&mut self, count: usize) -> &mut Get {
         self.count = count;
         self
     }
-    pub fn offset(&mut self, offset: usize) -> &mut Get<'a> {
+    pub fn offset(&mut self, offset: usize) -> &mut Get {
         self.offset = offset;
         self
     }
 }
 
-impl<'a> WithToken<'a> for Get<'a> {
-    fn with_token<T: Into<Cow<'a, str>>>(&'a mut self, token: T) -> &'a mut Get<'a> {
-        self.token = Some(token.into());
-        self
-    }
+impl<'a> Request<'a> for Get {
+    type Response = Collection<Audio>;
+    fn method_name() -> &'static str { "audio.get" }
 }
 
-impl<'a> Request<'a> for Get<'a> {
-    const METHOD_NAME: &'static str = "audio.get";
-}
-
-impl<'a> IntoUrl for &'a Get<'a> {
+impl<'a> IntoUrl for &'a Get {
     fn into_url(self) -> Result<Url, UrlError> {
-        let url = Url {
-            scheme: "https".to_owned(),
-            scheme_data: url::SchemeData::Relative(url::RelativeSchemeData {
-                username: "".to_owned(),
-                password: None,
-                host: url::Host::Domain("api.vk.com".to_owned()),
-                port: None,
-                default_port: Some(80),
-                path: vec!["method".to_owned(), Get::METHOD_NAME.to_owned()]
-                }),
-            query: Some(qs![
-                        owner_id => &*self.owner_id.to_string(),
-                        album_id => self.album_id.as_ref().map(ToString::to_string).as_ref().map(Borrow::borrow).unwrap_or(""),
-                        audio_ids => &*self.audio_ids.as_ref().map(Deref::deref).unwrap_or(&[])
-                            .iter().map(ToString::to_string).collect::<Vec<_>>().join(","),
-                        need_user => "0",
-                        offset => &*self.offset.to_string(),
-                        v => "5.37",
-                        access_token => self.token.as_ref().map(Borrow::borrow).unwrap_or(""),
-            ]),
-            fragment: None,
-        };
+        let mut url = Get::base_url();
+        url.query = Some(qs![
+            owner_id => &*self.owner_id.to_string(),
+            album_id => self.album_id.as_ref().map(ToString::to_string).as_ref().map(Borrow::borrow).unwrap_or(""),
+            audio_ids => &*self.audio_ids.as_ref().map(Deref::deref).unwrap_or(&[]).iter()
+                .map(ToString::to_string).collect::<Vec<_>>().join(","),
+            need_user => "0",
+            offset => &*self.offset.to_string(),
+            v => "5.37",
+        ]);
 
         Ok(url)
     }
@@ -111,14 +82,6 @@ pub struct Search<'a> {
      search_own: bool,
      offset: usize,
      count: usize, // 0...300, def 30
-     token: Option<Cow<'a, str>>,
-}
-
-impl<'a> WithToken<'a> for Search<'a> {
-    fn with_token<T: Into<Cow<'a, str>>>(&mut self, token: T) -> &mut Search<'a> {
-        self.token = Some(token.into());
-        self
-    }
 }
 
 impl<'a> Search<'a> {
@@ -132,7 +95,6 @@ impl<'a> Search<'a> {
             search_own: false,
             offset: 0,
             count: 30,
-            token: None,
         }
     }
 
@@ -165,24 +127,25 @@ impl<'a> Search<'a> {
 }
 
 impl<'a> Request<'a> for Search<'a> {
-    const METHOD_NAME: &'static str = "audio.search";
+    type Response = Collection<Audio>;
+    fn method_name() -> &'static str { "audio.search" }
 }
 
 impl<'a> IntoUrl for &'a Search<'a> {
     fn into_url(self) -> Result<Url, UrlError> {
-        let mut url = Url::parse(&*(VK_METHOD_URL.to_owned() + Search::METHOD_NAME)).unwrap();
-        url.set_query_from_pairs([
-                                 ("q", self.q.borrow()),
-                                 ("auto_complete", if self.auto_complete {"1"} else {"0"}),
-                                 ("lyrics", if self.lyrics {"1"} else {"0"}),
-                                 ("performer_only", if self.performer_only {"1"} else {"0"}),
-                                 ("sort", self.sort.as_ref()),
-                                 ("search_own", if self.search_own {"1"} else {"0"}),
-                                 ("offset", &*self.offset.to_string()),
-                                 ("count", &*self.count.to_string()),
-                                 ("v", "5.37"),
-                                 ("access_token", self.token.as_ref().unwrap().borrow())
-                                 ].iter().cloned());
+        let mut url = Search::base_url();
+        url.query = Some(qs![
+            q => self.q.borrow(),
+            auto_complete => if self.auto_complete {"1"} else {"0"},
+            lyrics => if self.lyrics {"1"} else {"0"},
+            performer_only => if self.performer_only {"1"} else {"0"},
+            sort => self.sort.as_ref(),
+            search_own => if self.search_own {"1"} else {"0"},
+            offset => &*self.offset.to_string(),
+            count => &*self.count.to_string(),
+            v => "5.37",
+        ]);
+
         Ok(url)
     }
 }
@@ -206,41 +169,62 @@ impl AsRef<str> for Sort {
     }
 }
 
-#[derive(Debug, Deserialize)]
-pub struct User {
-    pub id: i64, // String
-    pub photo: String,
-    pub name: String,
-    pub name_gen: String,
-}
+#[cfg(feature = "nightly")]
+include!("audio.rs.in");
 
-#[derive(Debug, Deserialize)]
-pub struct Audio {
-    pub id: u64,
-    pub owner_id: i64,
-    pub artist: String,
-    pub title: String,
-    pub date: u64,
-    pub url: String, // Url !!!
-    pub lyrics_id: Option<u64>,
-    pub album_id: Option<u64>,
-    pub genre_id: Option<u32>,
-    pub duration: u32,
-}
+#[cfg(not(feature = "nightly"))]
+include!(concat!(env!("OUT_DIR"), "/audio.rs"));
 
 impl Response for Audio {}
 
-// audio.get Возвращает список аудиозаписей пользователя или сообщества.
-//     owner_id: i64,
-//     album_id: u64,
-//     audio_ids: &'a [u64],
-//     need_user: bool,
-//     offset: usize,
-//     count: usize,
-//
-// audio.getById Возвращает информацию об аудиозаписях.
-//     audios: &'a [(i64, u64)]
-//
+pub struct GetById<'a> {
+    pub audios: &'a [(i64, u64)]
+}
+
+impl<'a> Request<'a> for GetById<'a> {
+    type Response = Collection<Audio>;
+    fn method_name() -> &'static str { "audio.getById" }
+}
+
+impl<'a> IntoUrl for &'a GetById<'a> {
+    fn into_url(self) -> Result<Url, UrlError> {
+        let mut url = GetById::base_url();
+        url.query = Some(qs![
+            audios => &*self.audios.iter().map(|&(o, id)| format!("{}_{}", o, id)).collect::<Vec<_>>().join(",")
+        ]);
+        Ok(url)
+    }
+}
+
+pub struct GetLyrics {
+    lyrics_id: u64
+}
+
+impl GetLyrics {
+    pub fn new(id: u64) -> GetLyrics {
+        GetLyrics {
+            lyrics_id: id
+        }
+    }
+}
+
+impl Response for Lyrics {}
+
+impl<'a> Request<'a> for GetLyrics {
+    type Response = Lyrics;
+    fn method_name() -> &'static str { "audio.getLyrics" }
+}
+
+impl<'a> IntoUrl for &'a GetLyrics {
+    fn into_url(self) -> Result<Url, UrlError> {
+        let mut url = GetLyrics::base_url();
+        url.query = Some(qs![
+            lyrics_id => &*self.lyrics_id.to_string()
+        ]);
+        Ok(url)
+    }
+}
+
 // audio.getLyrics Возвращает текст аудиозаписи.
 //     lyrics_id: u64
 //

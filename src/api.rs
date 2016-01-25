@@ -1,44 +1,153 @@
 use std::fmt;
-use std::borrow::Cow;
 use std::ops::Deref;
 use std::marker::PhantomData;
-use std::error::Error;
+use std::error::Error as StdError;
+use std::result::Result as StdResult;
 use serde::de;
-use serde_json;
-use hyper::client::IntoUrl;
+use serde_json::{self, Error as JsonError};
+use hyper::client::{Client as HttpClient, IntoUrl};
+use hyper::Error as HttpError;
+use url::{self, ParseError as UrlError, Url};
+use oauth2::token::Token;
 
-pub const VK_METHOD_URL: &'static str = "https://api.vk.com/method/";
+use super::auth::{AccessToken, OAuth};
 
-pub trait WithToken<'a> {
-    fn with_token<T: Into<Cow<'a, str>>>(&'a mut self, token: T) -> &'a mut Self;
+pub const VK_DOMAIN: &'static str = "api.vk.com";
+pub const VK_PATH: &'static str = "method";
+
+#[cfg(feature = "nightly")]
+include!("api.rs.in");
+
+#[cfg(not(feature = "nightly"))]
+include!(concat!(env!("OUT_DIR"), "/api.rs"));
+
+pub struct Client<'a> {
+    client: HttpClient,
+    token: Option<&'a AccessToken>,
+}
+
+#[derive(Debug)]
+pub enum Error {
+    Api(VkError),
+    Http(HttpError),
+    Json(JsonError),
+}
+
+impl ::std::fmt::Display for Error {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        match *self {
+            Error::Api(ref err) => err.fmt(f),
+            Error::Http(ref err) => err.fmt(f),
+            Error::Json(ref err) => err.fmt(f),
+        }
+    }
+}
+
+impl From<VkError> for Error {
+    fn from(err: VkError) -> Error {
+        Error::Api(err)
+    }
+}
+
+impl From<HttpError> for Error {
+    fn from(err: HttpError) -> Error {
+        Error::Http(err)
+    }
+}
+
+impl From<JsonError> for Error {
+    fn from(err: JsonError) -> Error {
+        Error::Json(err)
+    }
+}
+
+impl From<UrlError> for Error {
+    fn from(err: UrlError) -> Error {
+        Error::Http(HttpError::Uri(err))
+    }
+}
+
+pub type Result<T> = StdResult<T, Error>;
+
+impl<'a> Client<'a> {
+    pub fn auth<K, S>(key: K, secret: S) -> OAuth where K: Into<String>, S: Into<String> {
+        OAuth::new(
+            Default::default(),
+            key.into(),
+            secret.into(),
+            Some(::auth::OAUTH_DEFAULT_REDIRECT_URI.to_owned()))
+    }
+
+    pub fn new() -> Client<'a> {
+        Client {
+            client: HttpClient::new(),
+            token: None,
+        }
+    }
+
+    pub fn token(&mut self, token: &'a AccessToken) -> &mut Self {
+        self.token = Some(token);
+        self
+    }
+
+    pub fn get<'b, T: Request<'b>>(&mut self, req: &'b T) -> Result<T::Response> where &'b T: IntoUrl {
+        let mut url = try!(req.into_url());
+        if let Some(ref token) = self.token {
+            if let Some(ref mut query) = url.query {
+                query.push_str("&access_token=");
+                query.push_str(token.access_token());
+            }
+        }
+
+        self.client.get(url)
+            .send()
+            .map_err(Error::Http)
+            .and_then(|resp| {
+                //let mut buf = String::new();
+                //resp.read_to_string(&mut buf).unwrap();
+                ////println!("{}", buf);
+                //let r = serde_json::from_str::<VkResult<T::Response>>(buf.trim());
+                //println!("{:?}", buf);
+                //Ok(r.unwrap())
+                serde_json::from_reader::<_, VkResult<T::Response>>(resp)
+                    .map_err(Error::Json)
+            })
+            .and_then(|vkres| vkres.0.map_err(Error::Api))
+    }
 }
 
 /// Trait for things that can be posted to VK API directly
 pub trait Request<'a> where &'a Self: IntoUrl, Self: 'a {
-    const METHOD_NAME: &'static str;
-}
-
-/// Trait for things that can come from VK API directly
-pub trait Response: de::Deserialize + fmt::Debug {
-    fn from_str(s: &str) -> serde_json::error::Result<Self> {
-        serde_json::from_str(s).and_then(serde_json::value::from_value)
+    type Response: Response;
+    fn method_name() -> &'static str;
+    fn base_url() -> Url {
+        Url {
+            scheme: "https".to_owned(),
+            scheme_data: url::SchemeData::Relative(url::RelativeSchemeData {
+                username: String::new(),
+                password: None,
+                host: url::Host::Domain(VK_DOMAIN.to_owned()),
+                port: None,
+                default_port: Some(443),
+                path: vec![VK_PATH.to_owned(), <Self as Request>::method_name().to_owned()]
+                }),
+            query: None,
+            fragment: None,
+        }
     }
 }
 
-#[derive(Debug, Deserialize)]
-pub struct Collection<T: Response> {
-    pub count: u32,
-    pub items: Vec<T>
-}
+/// Trait for things that can come from VK API directly
+pub trait Response: de::Deserialize + fmt::Debug {}
 
 impl<T: Response> Response for Collection<T> {}
 
 #[derive(Debug)]
-pub struct VkResult<T: Response>(pub Result<T, VkError>);
+pub struct VkResult<T: Response>(pub StdResult<T, VkError>);
 
 impl<T: Response> Deref for VkResult<T> {
-    type Target = Result<T, VkError>;
-    fn deref(&self) -> &Result<T, VkError> {
+    type Target = StdResult<T, VkError>;
+    fn deref(&self) -> &StdResult<T, VkError> {
         &self.0
     }
 }
@@ -49,12 +158,12 @@ enum VkResultField {
 }
 
 impl de::Deserialize for VkResultField {
-    fn deserialize<D: de::Deserializer>(d: &mut D) -> Result<VkResultField, D::Error> {
+    fn deserialize<D: de::Deserializer>(d: &mut D) -> StdResult<VkResultField, D::Error> {
         struct VkResultFieldVisitor;
 
         impl de::Visitor for VkResultFieldVisitor {
             type Value = VkResultField;
-            fn visit_str<E: de::Error>(&mut self, value: &str) -> Result<VkResultField, E> {
+            fn visit_str<E: de::Error>(&mut self, value: &str) -> StdResult<VkResultField, E> {
                 match value {
                     "response" => Ok(VkResultField::Response),
                     "error" => Ok(VkResultField::Error),
@@ -68,29 +177,24 @@ impl de::Deserialize for VkResultField {
 }
 
 impl<T: Response> de::Deserialize for VkResult<T> {
-    fn deserialize<D: de::Deserializer>(d: &mut D) -> Result<VkResult<T>, D::Error> {
+    fn deserialize<D: de::Deserializer>(d: &mut D) -> StdResult<VkResult<T>, D::Error> {
         struct VkResultVisitor<T: de::Deserialize + fmt::Debug>(PhantomData<T>);
 
         impl<T: Response> de::Visitor for VkResultVisitor<T> {
             type Value = VkResult<T>;
-            fn visit_map<V: de::MapVisitor>(&mut self, mut v: V) -> Result<VkResult<T>, V::Error> {
-                match v.visit_key() {
-                    Ok(Some(VkResultField::Response)) => v.visit_value::<T>().map(|v| VkResult(Ok(v))),
-                    Ok(Some(VkResultField::Error)) => v.visit_value::<VkError>().map(|e| VkResult(Err(e))),
-                    Ok(None) => v.missing_field("response or error"),
-                    Err(err) => Err(err)
-                }
+            fn visit_map<V: de::MapVisitor>(&mut self, mut v: V) -> StdResult<VkResult<T>, V::Error> {
+                v.visit_key()
+                 .and_then(|k| k.map(|k| match k {
+                    VkResultField::Response => v.visit_value::<T>().map(Ok),
+                    VkResultField::Error => v.visit_value::<VkError>().map(Err),
+                 }).unwrap_or_else(|| v.missing_field("response or error")))
+                 .and_then(|res| v.end().map(|_| res))
+                 .map(VkResult)
             }
         }
 
         d.visit_map(VkResultVisitor(PhantomData::<T>))
     }
-}
-
-#[derive(Debug, Deserialize)]
-pub struct KeyVal {
-    pub key: String,
-    pub value: String
 }
 
 impl Into<(String, String)> for KeyVal {
@@ -99,14 +203,7 @@ impl Into<(String, String)> for KeyVal {
     }
 }
 
-#[derive(Debug, Deserialize)]
-pub struct VkError {
-    pub error_code: VkErrorCode,
-    pub error_msg: String,
-    pub request_params: Vec<KeyVal>
-}
-
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum VkErrorCode {
     General, // 1
     Database, // 2
@@ -174,12 +271,12 @@ impl fmt::Display for VkErrorCode {
 }
 
 impl de::Deserialize for VkErrorCode {
-    fn deserialize<D: de::Deserializer>(d: &mut D) -> Result<VkErrorCode, D::Error> {
+    fn deserialize<D: de::Deserializer>(d: &mut D) -> StdResult<VkErrorCode, D::Error> {
         u32::deserialize(d).map(From::from)
     }
 }
 
-impl Error for VkError {
+impl StdError for VkError {
     fn description(&self) -> &str {
         &*self.error_msg
     }
