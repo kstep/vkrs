@@ -53,7 +53,9 @@ fn print_m3u(songs: &Collection<Audio>) {
     }
 }
 
-    let songs: VkResult<Collection<Audio>> = Client::new().token(token).get(&url);
+fn find_songs(token: &AccessToken, query: &str, performer_only: bool) {
+    let songs: VkResult<Collection<Audio>> = Client::new().token(token).get(AudioSearch::new().performer_only(performer_only).count(200));
+    //let songs: VkResult<Collection<Audio>> = Client::new().token(token).get(AudioGetRecommendations::new().count(200));
 
     match songs {
         Ok(songs) => print_m3u(&songs),
