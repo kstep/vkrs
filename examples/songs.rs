@@ -45,20 +45,18 @@ fn get_access_token() -> Result<AccessToken, OAuthError> {
     }
 }
 
-fn find_songs(token: &AccessToken, query: &str, performer_only: bool) {
-    let mut url = AudioSearch::new(query);
-    url.performer_only(performer_only).count(200);
+fn print_m3u(songs: &Collection<Audio>) {
+    println!("#EXTM3U");
+    for song in &songs.items {
+        println!("#EXTINF:{},{} - {}", song.duration, song.artist, song.title);
+        println!("{}", song.url);
+    }
+}
 
     let songs: VkResult<Collection<Audio>> = Client::new().token(token).get(&url);
 
     match songs {
-        Ok(songs) => {
-            println!("#EXTM3U");
-            for song in songs.items {
-              println!("#EXTINF:{},{} - {}", song.duration, song.artist, song.title);
-              println!("{}", song.url);
-            }
-        },
+        Ok(songs) => print_m3u(&songs),
         Err(ClientError::Api(VkError { error_code: VkErrorCode::Unauthorized, .. })) =>
             find_songs(&fetch_access_token().unwrap(), query, performer_only),
         Err(err) => println!("Error: {}", err)
