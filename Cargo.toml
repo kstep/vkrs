@@ -6,7 +6,7 @@ keywords = ["vk", "api"]
 license = "MIT"
 name = "vkrs"
 repository = "https://github.com/kstep/vkrs"
-version = "0.2.0"
+version = "0.2.1"
 
 [build-dependencies]
 
@@ -18,11 +18,13 @@ version = "0.6.11"
 optional = true
 version = "0.26.0"
 
+[dev-dependencies]
+clap = "^1.5.4"
+
 [dependencies]
 chrono = "0.2.18"
-clap = "^1.5.4"
 hyper = "^0.7.1"
-inth-oauth2 = "0.5.1"
+inth-oauth2 = "0.6.0"
 rustc-serialize = "0.3.16"
 serde = "^0.6.6"
 serde_json = "^0.6.0"
