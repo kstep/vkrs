@@ -215,6 +215,7 @@ pub enum VkErrorCode {
     GoodsNotFound, // 20
     GoodsUnvailable, // 21
     UserNotFound, // 22
+    AccessDenied, // 204
     App(u32), // 100-999
     Unknown(u32), // other
 }
@@ -232,6 +233,7 @@ impl From<u32> for VkErrorCode {
             20 => GoodsNotFound,
             21 => GoodsUnvailable,
             22 => UserNotFound,
+            204 => AccessDenied,
             v @ 100...999 => App(v),
             v @ _ => Unknown(v)
         }
@@ -250,6 +252,7 @@ impl Into<u32> for VkErrorCode {
             GoodsNotFound => 20,
             GoodsUnvailable => 21,
             UserNotFound => 22,
+            AccessDenied => 204,
             App(v) => v,
             Unknown(v) => v,
         }
@@ -262,13 +265,14 @@ impl fmt::Display for VkErrorCode {
         match *self {
             General => f.write_str("general error"),
             Database => f.write_str("database error"),
-            Unauthorized => f.write_str("access denied"),
+            Unauthorized => f.write_str("unauthorized"),
             Signature => f.write_str("invalid signature"),
             Request => f.write_str("invalid request"),
             Blocked => f.write_str("content blocked"),
             GoodsNotFound => f.write_str("goods not found"),
             GoodsUnvailable => f.write_str("goods unavailable"),
             UserNotFound => f.write_str("user not found"),
+            AccessDenied => f.write_str("access denied"),
             App(v) => write!(f, "application error #{}", v),
             Unknown(v) => write!(f, "unknown error #{}", v),
         }
@@ -305,3 +309,23 @@ pub enum Privacy {
     User(u64),
     OnlyUser(u64),
 }
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[repr(u8)]
+pub enum Sort {
+    DateAdded = 0,
+    Length = 1,
+    Popularity = 2,
+}
+
+impl AsRef<str> for Sort {
+    fn as_ref(&self) -> &str {
+        use self::Sort::*;
+        match *self {
+            DateAdded => "0",
+            Length => "1",
+            Popularity => "2",
+        }
+    }
+}
+

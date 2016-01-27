@@ -2,12 +2,11 @@ use std::borrow::{Cow, Borrow};
 use std::convert::AsRef;
 use std::string::ToString;
 use std::error::Error;
-use std::ops::Deref;
 use hyper::Url;
 use hyper::client::IntoUrl;
 use url::{ParseError as UrlError};
 use serde::de;
-use super::api::{Request, Response, Collection};
+use super::api::{Request, Response, Collection, Sort};
 use std::fmt;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -127,59 +126,58 @@ impl Into<u32> for Genre {
 }
 
 #[derive(Debug, PartialEq, Eq, Clone)]
-pub struct Get {
+pub struct Get<'a> {
      owner_id: i64,
      album_id: Option<u64>,
-     audio_ids: Option<Vec<u64>>,
+     audio_ids: Cow<'a, [u64]>,
      need_user: bool,
      offset: usize,
      count: usize,
 }
 
-impl Get {
-    pub fn new(owner_id: i64) -> Get {
+impl<'a> Get<'a> {
+    pub fn new(owner_id: i64) -> Get<'a> {
         Get {
             owner_id: owner_id,
             album_id: None,
-            audio_ids: None,
+            audio_ids: Cow::Borrowed(&[][..]),
             need_user: false,
             offset: 0,
             count: 100,
         }
     }
 
-    pub fn audios<I: Iterator<Item=u64>>(&mut self, audio_ids: I) -> &mut Get {
-        self.audio_ids = Some(audio_ids.collect::<Vec<_>>());
+    pub fn audios<T: Into<Cow<'a, [u64]>>>(&mut self, audio_ids: T) -> &mut Get<'a> {
+        self.audio_ids = audio_ids.into();
         self
     }
 
-    pub fn album(&mut self, album_id: u64) -> &mut Get {
+    pub fn album(&mut self, album_id: u64) -> &mut Get<'a> {
         self.album_id = Some(album_id);
         self
     }
 
-    pub fn count(&mut self, count: usize) -> &mut Get {
+    pub fn count(&mut self, count: usize) -> &mut Get<'a> {
         self.count = count;
         self
     }
-    pub fn offset(&mut self, offset: usize) -> &mut Get {
+    pub fn offset(&mut self, offset: usize) -> &mut Get<'a> {
         self.offset = offset;
         self
     }
 }
 
-impl<'a> Request<'a> for Get {
+impl<'a> Request<'a> for Get<'a> {
     type Response = Collection<Audio>;
     fn method_name() -> &'static str { "audio.get" }
 }
 
-impl<'a> IntoUrl for &'a Get {
+impl<'a> IntoUrl for &'a Get<'a> {
     fn into_url(self) -> Result<Url, UrlError> {
         Ok(Get::base_url(qs![
             owner_id => &*self.owner_id.to_string(),
             album_id => self.album_id.as_ref().map(ToString::to_string).as_ref().map(Borrow::borrow).unwrap_or(""),
-            audio_ids => &*self.audio_ids.as_ref().map(Deref::deref).unwrap_or(&[]).iter()
-                .map(ToString::to_string).collect::<Vec<_>>().join(","),
+            audio_ids => &*self.audio_ids.iter().map(ToString::to_string).collect::<Vec<_>>().join(","),
             need_user => "0",
             offset => &*self.offset.to_string(),
             v => "5.37",
@@ -259,25 +257,6 @@ impl<'a> IntoUrl for &'a Search<'a> {
             count => &*self.count.to_string(),
             v => "5.37",
         ]))
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-#[repr(u8)]
-pub enum Sort {
-    DateAdded = 0,
-    Length = 1,
-    Popularity = 2,
-}
-
-impl AsRef<str> for Sort {
-    fn as_ref(&self) -> &str {
-        use self::Sort::*;
-        match *self {
-            DateAdded => "0",
-            Length => "1",
-            Popularity => "2",
-        }
     }
 }
 

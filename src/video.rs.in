@@ -1,0 +1,30 @@
+
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+pub struct Video {
+    pub id: u64,
+    pub owner_id: i64,
+    pub album_id: Option<u64>,
+    pub title: String,
+    pub duration: u64,
+    pub description: String,
+    pub date: u64,
+    pub views: u32,
+    pub comments: u32,
+    pub photo_130: String, // URL
+    pub photo_320: String, // URL
+    pub photo_640: Option<String>, // URL
+    pub photo_800: Option<String>, // URL
+    pub adding_date: Option<u64>,
+    pub player: String, // URL
+    pub can_add: u8, // bool
+    pub can_edit: Option<u8>, // bool
+    pub files: Option<VideoFiles>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+pub struct VideoFiles {
+    pub mp4_240: String,
+    pub mp4_360: String,
+    pub mp4_480: String,
+    pub mp4_720: String,
+}
