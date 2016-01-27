@@ -8,37 +8,68 @@ use hyper::client::IntoUrl;
 use url::{ParseError as UrlError};
 use serde::de;
 use super::api::{Request, Response, Collection};
+use std::fmt;
 
-#[repr(u8)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Genre {
-    Rock = 1,
-    Pop = 2,
-    RapHipHop = 3,
-    EasyListen = 4,
-    DanceHouse = 5,
-    Instrumental = 6,
-    Metal = 7,
-    Alternative = 21,
-    Dubstep = 8,
-    JazzBlues = 9,
-    DrumBass = 10,
-    Trance = 11,
-    Chanson = 12,
-    Ethnic = 13,
-    AcousticVocal = 14,
-    Reggae = 15,
-    Classical = 16,
-    IndiePop = 17,
-    Speech = 19,
-    ElectropopDisco = 22,
-    Other = 18,
+    Rock, // 1
+    Pop, // 2
+    RapHipHop, // 3
+    EasyListen, // 4
+    DanceHouse, // 5
+    Instrumental, // 6
+    Metal, // 7
+    Alternative, // 21
+    Dubstep, // 8
+    JazzBlues, // 9
+    DrumBass, // 10
+    Trance, // 11
+    Chanson, // 12
+    Ethnic, // 13
+    AcousticVocal, // 14
+    Reggae, // 15
+    Classical, // 16
+    IndiePop, // 17
+    Speech, // 19
+    ElectropopDisco, // 22
+    Other, // 18
+    Unknown(u32),
+}
+
+impl fmt::Display for Genre {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        use self::Genre::*;
+        match *self {
+            Rock => f.write_str("rock"),
+            Pop => f.write_str("pop"),
+            RapHipHop => f.write_str("rap & hiphop"),
+            EasyListen => f.write_str("easy listening"),
+            DanceHouse => f.write_str("dance & house"),
+            Instrumental => f.write_str("dance & house"),
+            Metal => f.write_str("metal"),
+            Alternative => f.write_str("alternative"),
+            Dubstep => f.write_str("dubstep"),
+            JazzBlues => f.write_str("jazz & blues"),
+            DrumBass => f.write_str("drum & bass"),
+            Trance => f.write_str("trance"),
+            Chanson => f.write_str("chanson"),
+            Ethnic => f.write_str("ethnic"),
+            AcousticVocal => f.write_str("acoustic & vocal"),
+            Reggae => f.write_str("reggae"),
+            Classical => f.write_str("classical"),
+            IndiePop => f.write_str("indie pop"),
+            Speech => f.write_str("speech"),
+            ElectropopDisco => f.write_str("electro pop & disco"),
+            Other => f.write_str("other"),
+            Unknown(id) => write!(f, "unknown (#{})", id),
+        }
+    }
 }
 
 impl de::Deserialize for Genre {
     fn deserialize<D: de::Deserializer>(d: &mut D) -> Result<Genre, D::Error> {
         use self::Genre::*;
-        de::Deserialize::deserialize(d).and_then(|v: u8| match v {
+        de::Deserialize::deserialize(d).and_then(|v: u32| match v {
             1 => Ok(Rock),
             2 => Ok(Pop),
             3 => Ok(RapHipHop),
@@ -60,36 +91,37 @@ impl de::Deserialize for Genre {
             19 => Ok(Speech),
             22 => Ok(ElectropopDisco),
             18 => Ok(Other),
-            _ => Err(de::Error::syntax("valid genre id expected")),
+            v => Ok(Unknown(v)),
         })
     }
 }
 
-impl AsRef<str> for Genre {
-    fn as_ref(&self) -> &'static str {
+impl Into<u32> for Genre {
+    fn into(self) -> u32 {
         use self::Genre::*;
-        match *self {
-            Rock => "1",
-            Pop => "2",
-            RapHipHop => "3",
-            EasyListen => "4",
-            DanceHouse => "5",
-            Instrumental => "6",
-            Metal => "7",
-            Alternative => "21",
-            Dubstep => "8",
-            JazzBlues => "9",
-            DrumBass => "10",
-            Trance => "11",
-            Chanson => "12",
-            Ethnic => "13",
-            AcousticVocal => "14",
-            Reggae => "15",
-            Classical => "16",
-            IndiePop => "17",
-            Speech => "19",
-            ElectropopDisco => "22",
-            Other => "18",
+        match self {
+            Rock => 1,
+            Pop => 2,
+            RapHipHop => 3,
+            EasyListen => 4,
+            DanceHouse => 5,
+            Instrumental => 6,
+            Metal => 7,
+            Alternative => 21,
+            Dubstep => 8,
+            JazzBlues => 9,
+            DrumBass => 10,
+            Trance => 11,
+            Chanson => 12,
+            Ethnic => 13,
+            AcousticVocal => 14,
+            Reggae => 15,
+            Classical => 16,
+            IndiePop => 17,
+            Speech => 19,
+            ElectropopDisco => 22,
+            Other => 18,
+            Unknown(v) => v,
         }
     }
 }
@@ -415,7 +447,7 @@ impl<'a> IntoUrl for &'a GetPopular {
     fn into_url(self) -> Result<Url, UrlError> {
         Ok(GetPopular::base_url(qs![
             only_eng => if self.only_eng {"1"} else {"0"},
-            genre_id => self.genre_id.as_ref().map(AsRef::as_ref).unwrap_or(""),
+            genre_id => self.genre_id.map(Into::<u32>::into).as_ref().map(ToString::to_string).as_ref().map(Borrow::borrow).unwrap_or(""),
             offset => &*self.offset.to_string(),
             count => &*self.count.to_string(),
             v => "5.44",
