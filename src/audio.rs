@@ -57,8 +57,7 @@ impl<'a> Request<'a> for Get {
 
 impl<'a> IntoUrl for &'a Get {
     fn into_url(self) -> Result<Url, UrlError> {
-        let mut url = Get::base_url();
-        url.query = Some(qs![
+        Ok(Get::base_url(qs![
             owner_id => &*self.owner_id.to_string(),
             album_id => self.album_id.as_ref().map(ToString::to_string).as_ref().map(Borrow::borrow).unwrap_or(""),
             audio_ids => &*self.audio_ids.as_ref().map(Deref::deref).unwrap_or(&[]).iter()
@@ -66,9 +65,7 @@ impl<'a> IntoUrl for &'a Get {
             need_user => "0",
             offset => &*self.offset.to_string(),
             v => "5.37",
-        ]);
-
-        Ok(url)
+        ]))
     }
 }
 
@@ -133,8 +130,7 @@ impl<'a> Request<'a> for Search<'a> {
 
 impl<'a> IntoUrl for &'a Search<'a> {
     fn into_url(self) -> Result<Url, UrlError> {
-        let mut url = Search::base_url();
-        url.query = Some(qs![
+        Ok(Search::base_url(qs![
             q => self.q.borrow(),
             auto_complete => if self.auto_complete {"1"} else {"0"},
             lyrics => if self.lyrics {"1"} else {"0"},
@@ -144,9 +140,7 @@ impl<'a> IntoUrl for &'a Search<'a> {
             offset => &*self.offset.to_string(),
             count => &*self.count.to_string(),
             v => "5.37",
-        ]);
-
-        Ok(url)
+        ]))
     }
 }
 
@@ -188,11 +182,10 @@ impl<'a> Request<'a> for GetById<'a> {
 
 impl<'a> IntoUrl for &'a GetById<'a> {
     fn into_url(self) -> Result<Url, UrlError> {
-        let mut url = GetById::base_url();
-        url.query = Some(qs![
-            audios => &*self.audios.iter().map(|&(o, id)| format!("{}_{}", o, id)).collect::<Vec<_>>().join(",")
-        ]);
-        Ok(url)
+        Ok(GetById::base_url(qs![
+            audios => &*self.audios.iter().map(|&(o, id)| format!("{}_{}", o, id)).collect::<Vec<_>>().join(","),
+            v => "5.44",
+        ]))
     }
 }
 
@@ -217,11 +210,10 @@ impl<'a> Request<'a> for GetLyrics {
 
 impl<'a> IntoUrl for &'a GetLyrics {
     fn into_url(self) -> Result<Url, UrlError> {
-        let mut url = GetLyrics::base_url();
-        url.query = Some(qs![
-            lyrics_id => &*self.lyrics_id.to_string()
-        ]);
-        Ok(url)
+        Ok(GetLyrics::base_url(qs![
+            lyrics_id => &*self.lyrics_id.to_string(),
+            v => "5.44",
+        ]))
     }
 }
 

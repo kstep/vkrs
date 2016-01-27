@@ -75,8 +75,7 @@ impl<'a> Search<'a> {
 
 impl<'a> IntoUrl for &'a Search<'a> {
     fn into_url(self) -> Result<Url, UrlError> {
-        let mut url = Search::base_url();
-        url.query = Some(qs![
+        Ok(Search::base_url(qs![
             q => self.q.borrow(),
             start_time => &*self.start_time.to_string(),
             end_time => &*self.end_time.to_string(),
@@ -87,8 +86,7 @@ impl<'a> IntoUrl for &'a Search<'a> {
             offset => &*self.offset.to_string(),
             count => &*self.count.to_string(),
             v => "5.37",
-        ]);
-        Ok(url)
+        ]))
     }
 }
 

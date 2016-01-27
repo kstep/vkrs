@@ -120,7 +120,7 @@ impl<'a> Client<'a> {
 pub trait Request<'a> where &'a Self: IntoUrl, Self: 'a {
     type Response: Response;
     fn method_name() -> &'static str;
-    fn base_url() -> Url {
+    fn base_url(query: String) -> Url {
         Url {
             scheme: "https".to_owned(),
             scheme_data: url::SchemeData::Relative(url::RelativeSchemeData {
@@ -131,7 +131,7 @@ pub trait Request<'a> where &'a Self: IntoUrl, Self: 'a {
                 default_port: Some(443),
                 path: vec![VK_PATH.to_owned(), <Self as Request>::method_name().to_owned()]
                 }),
-            query: None,
+            query: Some(query),
             fragment: None,
         }
     }
