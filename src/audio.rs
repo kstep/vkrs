@@ -6,7 +6,93 @@ use std::ops::Deref;
 use hyper::Url;
 use hyper::client::IntoUrl;
 use url::{ParseError as UrlError};
+use serde::de;
 use super::api::{Request, Response, Collection};
+
+#[repr(u8)]
+#[derice(Clone, Copy, Debug, PartialEq, Eq)]
+enum Genre {
+    Rock = 1,
+    Pop = 2,
+    RapHipHop = 3,
+    EasyListen = 4,
+    DanceHouse = 5,
+    Instrumental = 6,
+    Metal = 7,
+    Alternative = 21,
+    Dubstep = 8,
+    JazzBlues = 9,
+    DrumBass = 10,
+    Trance = 11,
+    Chanson = 12,
+    Ethnic = 13,
+    AcousticVocal = 14,
+    Reggae = 15,
+    Classical = 16,
+    IndiePop = 17,
+    Speech = 19,
+    ElectropopDisco = 22,
+    Other = 18,
+}
+
+impl de::Deserialize for Genre {
+    fn deserialize<D: de::Deserializer>(d: &mut D) -> StdResult<Genre, D::Error> {
+        use self::Genre::*;
+        de::Deserialize::deserialize(d).and_then(|v: u8| match v {
+            1 => Ok(Rock),
+            2 => Ok(Pop),
+            3 => Ok(RapHipHop),
+            4 => Ok(EasyListen),
+            5 => Ok(DanceHouse),
+            6 => Ok(Instrumental),
+            7 => Ok(Metal),
+            21 => Ok(Alternative),
+            8 => Ok(Dubstep),
+            9 => Ok(JazzBlues),
+            10 => Ok(DrumBass),
+            11 => Ok(Trance),
+            12 => Ok(Chanson),
+            13 => Ok(Ethnic),
+            14 => Ok(AcousticVocal),
+            15 => Ok(Reggae),
+            16 => Ok(Classical),
+            17 => Ok(IndiePop),
+            19 => Ok(Speech),
+            22 => Ok(ElectropopDisco),
+            18 => Ok(Other),
+            _ => de::Error::syntax("valid genre id expected"),
+        })
+    }
+}
+
+impl AsRef<str> for Genre {
+    fn as_ref(&self) -> &str {
+        use self::Genre::*;
+        match *self {
+            Rock => "1",
+            Pop => "2",
+            RapHipHop => "3",
+            EasyListen => "4",
+            DanceHouse => "5",
+            Instrumental => "6",
+            Metal => "7",
+            Alternative => "21",
+            Dubstep => "8",
+            JazzBlues => "9",
+            DrumBass => "10",
+            Trance => "11",
+            Chanson => "12",
+            Ethnic => "13",
+            AcousticVocal => "14",
+            Reggae => "15",
+            Classical => "16",
+            IndiePop => "17",
+            Speech => "19",
+            ElectropopDisco => "22",
+            Other => "18",
+        }
+    }
+}
 
 #[derive(Debug)]
 pub struct Get {
@@ -217,40 +303,120 @@ impl<'a> IntoUrl for &'a GetLyrics {
     }
 }
 
-// audio.getLyrics Возвращает текст аудиозаписи.
-//     lyrics_id: u64
-//
-// audio.search Возвращает список аудиозаписей в соответствии с заданным критерием поиска.
-//     q: Cow<'a, str>,
-//     auto_complete: bool,
-//     lyrics: bool,
-//     performer_only: bool,
-//     sort: enum AudioSort { DateAdded = 0, Length = 1, Popularity = 2 }
-//     search_own: bool,
-//     offset: usize,
-//     count: usize, // 0...300, def 30
-//
-//     Resp:
-//     count: u64,
-//     items: Vec<Audio {
-//         id: u64,
-//         owner_id: i64,
-//         artist: String,
-//         title: String,
-//         duration: u32,
-//         date: u64,
-//         url: String, // !!!
-//         lyrics_id: u64,
-//         genre_id: u32,
-//     }>
-//
-//     User {
-//         id: i64, // String
-//         photo: String,
-//         name: String,
-//         name_gen: String,
-//     }
-//
+pub struct GetCount {
+    owner_id: i64,
+}
+
+impl GetCount {
+    pub fn new(owner_id: i64) -> GetCount {
+        GetCount {
+            owner_id: owner_id,
+        }
+    }
+}
+
+impl<'a> Request<'a> for GetCount {
+    type Response = u64;
+    fn method_name() -> &'static str { "audio.getCount" }
+}
+
+impl<'a> IntoUrl for &'a GetCount {
+    fn into_url(self) -> Result<Url, UrlError> {
+        Ok(GetCount::base_url(qs![
+            owner_id => &*self.owner_id.to_string(),
+            v => "5.44",
+        ]))
+    }
+}
+
+impl Response for Album {}
+
+pub struct GetAlbums {
+    owner_id: i64,
+    offset: usize,
+    count: usize,
+}
+
+impl GetAlbums {
+    pub fn new(owner_id: i64) -> GetAlbums {
+        GetAlbums {
+            owner_id: owner_id,
+            offset: 0,
+            count: 100,
+        }
+    }
+}
+
+impl<'a> Request<'a> for GetAlbums {
+    type Response = Collection<Album>;
+    fn method_name() -> &'static str { "audio.getAlbums" }
+}
+
+impl<'a> IntoUrl for &'a GetAlbums {
+    fn into_url(self) -> Result<Url, UrlError> {
+        Ok(GetAlbums::base_url(qs![
+            owner_id => &*self.owner_id.to_string(),
+            offset => &*self.offset.to_string(),
+            count => &*self.count.to_string(),
+            v => "5.44",
+        ]))
+    }
+}
+
+pub struct GetPopular {
+    only_eng: bool,
+    genre_id: Option<Genre>,
+    offset: usize,
+    count: usize,
+}
+
+impl GetPopular {
+    pub fn new() -> GetPopular {
+        GetPopular {
+            only_eng: false,
+            genre_id: None,
+            offset: 0,
+            count: 100,
+        }
+    }
+
+    pub fn only_english(&mut self, value: bool) -> &mut GetPopular {
+        self.only_eng = value;
+        self
+    }
+
+    pub fn genre(&mut self, value: Genre) -> &mut GetPopular {
+        self.genre_id = Some(value);
+        self
+    }
+
+    pub fn count(&mut self, count: usize) -> &mut GetPopular {
+        self.count = count;
+        self
+    }
+    pub fn offset(&mut self, offset: usize) -> &mut GetPopular {
+        self.offset = offset;
+        self
+    }
+}
+
+impl<'a> Request<'a> for GetPopular {
+    type Response = Vec<Audio>;
+    fn method_name() -> &'static str { "audio.getPopular" }
+}
+
+impl<'a> IntoUrl for &'a GetPopular {
+    fn into_url(self) -> Result<Url, UrlError> {
+        Ok(GetPopular::base_url(qs![
+            only_eng => if self.only_eng {"1"} else {"0"},
+            genre_id => &*self.genre_id.map(|v| v.as_ref()).unwrap_or(""),
+            offset => &*self.offset.to_string(),
+            count => &*self.count.to_string(),
+            v => "5.44",
+        ]))
+    }
+}
+
 // audio.getUploadServer Возвращает адрес сервера для загрузки аудиозаписей.
 // audio.save Сохраняет аудиозаписи после успешной загрузки.
 // audio.add Копирует аудиозапись на страницу пользователя или группы.
@@ -258,14 +424,11 @@ impl<'a> IntoUrl for &'a GetLyrics {
 // audio.edit Редактирует данные аудиозаписи на странице пользователя или сообщества.
 // audio.reorder Изменяет порядок аудиозаписи, перенося ее между аудиозаписями, идентификаторы которых переданы параметрами after и before.
 // audio.restore Восстанавливает аудиозапись после удаления.
-// audio.getAlbums Возвращает список альбомов аудиозаписей пользователя или группы.
 // audio.addAlbum Создает пустой альбом аудиозаписей.
 // audio.editAlbum Редактирует название альбома аудиозаписей.
 // audio.deleteAlbum Удаляет альбом аудиозаписей.
 // audio.moveToAlbum Перемещает аудиозаписи в альбом.
 // audio.setBroadcast Транслирует аудиозапись в статус пользователю или сообществу.
-// audio.getBroadcast ListВозвращает список друзей и сообществ пользователя, которые транслируют музыку в статус.
+// audio.getBroadcastList Возвращает список друзей и сообществ пользователя, которые транслируют музыку в статус.
 // audio.getRecommendations Возвращает список рекомендуемых аудиозаписей на основе списка воспроизведения заданного пользователя или на основе одной выбранной аудиозаписи.
-// audio.getPopular Возвращает список аудиозаписей из раздела "Популярное".
-// audio.getCount Возвращает количество аудиозаписей пользователя или сообщества.
 

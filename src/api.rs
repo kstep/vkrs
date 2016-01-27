@@ -141,6 +141,7 @@ pub trait Request<'a> where &'a Self: IntoUrl, Self: 'a {
 pub trait Response: de::Deserialize + fmt::Debug {}
 
 impl<T: Response> Response for Collection<T> {}
+impl<T: Response> Response for Vec<T> {}
 
 #[derive(Debug)]
 pub struct VkResult<T: Response>(pub StdResult<T, VkError>);
