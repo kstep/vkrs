@@ -289,3 +289,15 @@ impl fmt::Display for VkError {
     }
 }
 
+pub enum Privacy {
+    All,
+    Friends,
+    FriendsOfFriends,
+    FriendsOfFriendsOnly,
+    Nobody,
+    OnlyMe,
+    List(u64),
+    OnlyList(u64),
+    User(u64),
+    OnlyUser(u64),
+}
