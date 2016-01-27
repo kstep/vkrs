@@ -10,8 +10,8 @@ use serde::de;
 use super::api::{Request, Response, Collection};
 
 #[repr(u8)]
-#[derice(Clone, Copy, Debug, PartialEq, Eq)]
-enum Genre {
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Genre {
     Rock = 1,
     Pop = 2,
     RapHipHop = 3,
@@ -36,7 +36,7 @@ enum Genre {
 }
 
 impl de::Deserialize for Genre {
-    fn deserialize<D: de::Deserializer>(d: &mut D) -> StdResult<Genre, D::Error> {
+    fn deserialize<D: de::Deserializer>(d: &mut D) -> Result<Genre, D::Error> {
         use self::Genre::*;
         de::Deserialize::deserialize(d).and_then(|v: u8| match v {
             1 => Ok(Rock),
@@ -60,13 +60,13 @@ impl de::Deserialize for Genre {
             19 => Ok(Speech),
             22 => Ok(ElectropopDisco),
             18 => Ok(Other),
-            _ => de::Error::syntax("valid genre id expected"),
+            _ => Err(de::Error::syntax("valid genre id expected")),
         })
     }
 }
 
 impl AsRef<str> for Genre {
-    fn as_ref(&self) -> &str {
+    fn as_ref(&self) -> &'static str {
         use self::Genre::*;
         match *self {
             Rock => "1",
@@ -94,7 +94,7 @@ impl AsRef<str> for Genre {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Get {
      owner_id: i64,
      album_id: Option<u64>,
@@ -155,7 +155,7 @@ impl<'a> IntoUrl for &'a Get {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Search<'a> {
      q: Cow<'a, str>,
      auto_complete: bool,
@@ -230,7 +230,7 @@ impl<'a> IntoUrl for &'a Search<'a> {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(u8)]
 pub enum Sort {
     DateAdded = 0,
@@ -257,6 +257,7 @@ include!(concat!(env!("OUT_DIR"), "/audio.rs"));
 
 impl Response for Audio {}
 
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub struct GetById<'a> {
     pub audios: &'a [(i64, u64)]
 }
@@ -275,6 +276,7 @@ impl<'a> IntoUrl for &'a GetById<'a> {
     }
 }
 
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub struct GetLyrics {
     lyrics_id: u64
 }
@@ -303,6 +305,7 @@ impl<'a> IntoUrl for &'a GetLyrics {
     }
 }
 
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub struct GetCount {
     owner_id: i64,
 }
@@ -330,7 +333,9 @@ impl<'a> IntoUrl for &'a GetCount {
 }
 
 impl Response for Album {}
+impl Response for u64 {}
 
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub struct GetAlbums {
     owner_id: i64,
     offset: usize,
@@ -363,6 +368,7 @@ impl<'a> IntoUrl for &'a GetAlbums {
     }
 }
 
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub struct GetPopular {
     only_eng: bool,
     genre_id: Option<Genre>,
@@ -409,7 +415,71 @@ impl<'a> IntoUrl for &'a GetPopular {
     fn into_url(self) -> Result<Url, UrlError> {
         Ok(GetPopular::base_url(qs![
             only_eng => if self.only_eng {"1"} else {"0"},
-            genre_id => &*self.genre_id.map(|v| v.as_ref()).unwrap_or(""),
+            genre_id => self.genre_id.as_ref().map(AsRef::as_ref).unwrap_or(""),
+            offset => &*self.offset.to_string(),
+            count => &*self.count.to_string(),
+            v => "5.44",
+        ]))
+    }
+}
+
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+pub struct GetRecommendations {
+    target_audio: Option<(i64, u64)>,
+    user_id: Option<i64>,
+    offset: usize,
+    count: usize,
+    shuffle: bool,
+}
+impl GetRecommendations {
+    pub fn new() -> GetRecommendations {
+        GetRecommendations {
+            target_audio: None,
+            user_id: None,
+            offset: 0,
+            count: 100,
+            shuffle: false,
+        }
+    }
+
+    pub fn user_id(&mut self, value: i64) -> &mut GetRecommendations {
+        self.user_id = Some(value);
+        self
+    }
+
+    pub fn target_audio(&mut self, owner_id: i64, audio_id: u64) -> &mut GetRecommendations {
+        self.target_audio = Some((owner_id, audio_id));
+        self
+    }
+
+    pub fn shuffle(&mut self, value: bool) -> &mut GetRecommendations {
+        self.shuffle = value;
+        self
+    }
+
+    pub fn count(&mut self, count: usize) -> &mut GetRecommendations {
+        self.count = count;
+        self
+    }
+    pub fn offset(&mut self, offset: usize) -> &mut GetRecommendations {
+        self.offset = offset;
+        self
+    }
+}
+
+impl<'a> Request<'a> for GetRecommendations {
+    type Response = Collection<Audio>;
+    fn method_name() -> &'static str { "audio.getRecommendations" }
+}
+
+impl<'a> IntoUrl for &'a GetRecommendations {
+    fn into_url(self) -> Result<Url, UrlError> {
+        let target_audio = self.target_audio.map(|(x, y)| format!("{}_{}", x, y));
+
+        Ok(GetRecommendations::base_url(qs![
+            shuffle => if self.shuffle {"1"} else {"0"},
+            target_audio => target_audio.as_ref().map(Borrow::borrow).unwrap_or(""),
+            user_id => self.user_id.as_ref().map(ToString::to_string).as_ref().map(Borrow::borrow).unwrap_or(""),
             offset => &*self.offset.to_string(),
             count => &*self.count.to_string(),
             v => "5.44",

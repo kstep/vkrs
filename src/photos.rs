@@ -6,7 +6,7 @@ use url::{ParseError as UrlError};
 
 use super::api::{Request, Response, Collection};
 
-
+#[derive(Debug, PartialEq, Clone)]
 pub struct Search<'a> {
     q: Cow<'a, str>,
     lat: f32,
@@ -98,7 +98,7 @@ include!(concat!(env!("OUT_DIR"), "/photos.rs"));
 
 impl Response for Photo {}
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, Copy, Clone)]
 #[repr(u8)]
 pub enum Sort {
     DateAdded = 0,
