@@ -26,7 +26,10 @@ pub mod photos;
 pub use api::{Result as VkResult, Error as ClientError, VkError, VkErrorCode};
 pub use api::{Client, Collection};
 pub use auth::{Permission, OAuthError, AccessToken};
-pub use audio::{Audio, Lyrics, Search as AudioSearch, Get as AudioGet, GetById as AudioGetById, GetLyrics as AudioGetLyrics};
+pub use audio::{Audio, Lyrics, Genre, Album};
+pub use audio::{Search as AudioSearch, Get as AudioGet, GetById as AudioGetById, GetLyrics as AudioGetLyrics};
+pub use audio::{GetRecommendations as AudioGetRecommendations, GetCount as AudioGetCount, GetAlbums as AudioGetAlbums};
+pub use audio::{GetPopular as AudioGetPopular};
 pub use photos::{Photo, Search as PhotosSearch};
 
 pub use hyper::client::IntoUrl;
