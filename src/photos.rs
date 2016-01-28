@@ -1,9 +1,4 @@
 use std::borrow::{Cow, Borrow};
-
-use hyper::Url;
-use hyper::client::IntoUrl;
-use url::{ParseError as UrlError};
-
 use super::api::{Request, Collection};
 
 #[derive(Debug, PartialEq, Clone)]
@@ -19,9 +14,23 @@ pub struct Search<'a> {
     radius: u16,
 }
 
-impl<'a> Request<'a> for Search<'a> {
+impl<'a> Request for Search<'a> {
     type Response = Collection<Photo>;
     fn method_name() -> &'static str { "photos.search" }
+    fn to_query_string(&self) -> String {
+        qs![
+            q => self.q.borrow(),
+            start_time => &*self.start_time.to_string(),
+            end_time => &*self.end_time.to_string(),
+            lat => &*self.lat.to_string(),
+            long => &*self.long.to_string(),
+            radius => &*self.radius.to_string(),
+            sort => self.sort.as_ref(),
+            offset => &*self.offset.to_string(),
+            count => &*self.count.to_string(),
+            v => "5.37",
+        ]
+    }
 }
 
 impl<'a> Search<'a> {
@@ -70,23 +79,6 @@ impl<'a> Search<'a> {
     pub fn radius(&mut self, radius: u16) -> &mut Search<'a> {
         self.radius = radius;
         self
-    }
-}
-
-impl<'a> IntoUrl for &'a Search<'a> {
-    fn into_url(self) -> Result<Url, UrlError> {
-        Ok(Search::base_url(qs![
-            q => self.q.borrow(),
-            start_time => &*self.start_time.to_string(),
-            end_time => &*self.end_time.to_string(),
-            lat => &*self.lat.to_string(),
-            long => &*self.long.to_string(),
-            radius => &*self.radius.to_string(),
-            sort => self.sort.as_ref(),
-            offset => &*self.offset.to_string(),
-            count => &*self.count.to_string(),
-            v => "5.37",
-        ]))
     }
 }
 

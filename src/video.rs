@@ -2,9 +2,6 @@ use std::borrow::{Cow, Borrow};
 use std::convert::AsRef;
 use std::string::ToString;
 use std::error::Error;
-use hyper::Url;
-use hyper::client::IntoUrl;
-use url::{ParseError as UrlError};
 use super::api::{Request, Collection, Sort, Likes};
 
 #[cfg(feature = "nightly")]
@@ -54,14 +51,11 @@ impl<'a> Get<'a> {
     }
 }
 
-impl<'a> Request<'a> for Get<'a> {
+impl<'a> Request for Get<'a> {
     type Response = Collection<Video>;
     fn method_name() -> &'static str { "video.get" }
-}
-
-impl<'a> IntoUrl for &'a Get<'a> {
-    fn into_url(self) -> Result<Url, UrlError> {
-        Ok(Get::base_url(qs![
+    fn to_query_string(&self) -> String {
+        qs![
             owner_id => self.owner_id.as_ref().map(ToString::to_string).as_ref().map(Borrow::borrow).unwrap_or(""),
             videos => &*self.videos.iter().map(|&(o, id)| format!("{}_{}", o, id)).collect::<Vec<_>>().join(","),
             album_id => self.album_id.as_ref().map(ToString::to_string).as_ref().map(Borrow::borrow).unwrap_or(""),
@@ -69,7 +63,7 @@ impl<'a> IntoUrl for &'a Get<'a> {
             offset => &*self.offset.to_string(),
             count => &*self.count.to_string(),
             v => "5.44",
-        ]))
+        ]
     }
 }
 
@@ -148,14 +142,11 @@ impl<'a> Search<'a> {
     }
 }
 
-impl<'a> Request<'a> for Search<'a> {
+impl<'a> Request for Search<'a> {
     type Response = Collection<Video>;
     fn method_name() -> &'static str { "video.search" }
-}
-
-impl<'a> IntoUrl for &'a Search<'a> {
-    fn into_url(self) -> Result<Url, UrlError> {
-        Ok(Search::base_url(qs![
+    fn to_query_string(&self) -> String {
+        qs![
             q => self.q.borrow(),
             sort => self.sort.as_ref(),
             search_own => if self.search_own {"1"} else {"0"},
@@ -167,7 +158,7 @@ impl<'a> IntoUrl for &'a Search<'a> {
             offset => &*self.offset.to_string(),
             count => &*self.count.to_string(),
             v => "5.44",
-        ]))
+        ]
     }
 }
 

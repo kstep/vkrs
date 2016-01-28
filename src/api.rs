@@ -5,7 +5,7 @@ use std::error::Error as StdError;
 use std::result::Result as StdResult;
 use serde::de;
 use serde_json::{self, Error as JsonError};
-use hyper::client::{Client as HttpClient, IntoUrl};
+use hyper::client::Client as HttpClient;
 use hyper::Error as HttpError;
 use url::{self, ParseError as UrlError, Url};
 use oauth2::token::Token;
@@ -90,25 +90,23 @@ impl<'a> Client<'a> {
         self
     }
 
-    pub fn get<'b, T: Request<'b>>(&mut self, req: &'b T) -> Result<T::Response> where &'b T: IntoUrl {
-        let mut url = try!(req.into_url());
+    pub fn get<T: Request>(&mut self, req: &T) -> Result<T::Response> {
+        let mut url = req.to_url();
         if let Some(ref token) = self.token {
             if let Some(ref mut query) = url.query {
                 query.push_str("&access_token=");
                 query.push_str(token.access_token());
+            } else {
+                url.query = Some(String::from("access_token=")
+                                 + token.access_token());
             }
         }
 
-        self.client.get(url)
+        self.client
+            .get(url)
             .send()
             .map_err(Error::Http)
             .and_then(|resp| {
-                //let mut buf = String::new();
-                //resp.read_to_string(&mut buf).unwrap();
-                ////println!("{}", buf);
-                //let r = serde_json::from_str::<VkResult<T::Response>>(buf.trim());
-                //println!("{:?}", buf);
-                //Ok(r.unwrap())
                 serde_json::from_reader::<_, VkResult<T::Response>>(resp)
                     .map_err(Error::Json)
             })
@@ -117,10 +115,12 @@ impl<'a> Client<'a> {
 }
 
 /// Trait for things that can be posted to VK API directly
-pub trait Request<'a> where &'a Self: IntoUrl, Self: 'a {
+pub trait Request {
     type Response: de::Deserialize;
     fn method_name() -> &'static str;
-    fn base_url(query: String) -> Url {
+    fn to_query_string(&self) -> String;
+
+    fn to_url(&self) -> Url {
         Url {
             scheme: "https".to_owned(),
             scheme_data: url::SchemeData::Relative(url::RelativeSchemeData {
@@ -129,12 +129,13 @@ pub trait Request<'a> where &'a Self: IntoUrl, Self: 'a {
                 host: url::Host::Domain(VK_DOMAIN.to_owned()),
                 port: None,
                 default_port: Some(443),
-                path: vec![VK_PATH.to_owned(), <Self as Request>::method_name().to_owned()]
+                path: vec![VK_PATH.to_owned(), Self::method_name().to_owned()]
                 }),
-            query: Some(query),
+            query: Some(self.to_query_string()),
             fragment: None,
         }
     }
+
 }
 
 #[derive(Debug)]

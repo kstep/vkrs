@@ -2,9 +2,6 @@ use std::borrow::{Cow, Borrow};
 use std::convert::AsRef;
 use std::string::ToString;
 use std::error::Error;
-use hyper::Url;
-use hyper::client::IntoUrl;
-use url::{ParseError as UrlError};
 use serde::de;
 use super::api::{Request, Collection, Sort};
 use std::fmt;
@@ -167,21 +164,18 @@ impl<'a> Get<'a> {
     }
 }
 
-impl<'a> Request<'a> for Get<'a> {
+impl<'a> Request for Get<'a> {
     type Response = Collection<Audio>;
     fn method_name() -> &'static str { "audio.get" }
-}
-
-impl<'a> IntoUrl for &'a Get<'a> {
-    fn into_url(self) -> Result<Url, UrlError> {
-        Ok(Get::base_url(qs![
+    fn to_query_string(&self) -> String {
+        qs![
             owner_id => &*self.owner_id.to_string(),
             album_id => self.album_id.as_ref().map(ToString::to_string).as_ref().map(Borrow::borrow).unwrap_or(""),
             audio_ids => &*self.audio_ids.iter().map(ToString::to_string).collect::<Vec<_>>().join(","),
             need_user => "0",
             offset => &*self.offset.to_string(),
             v => "5.37",
-        ]))
+        ]
     }
 }
 
@@ -239,14 +233,11 @@ impl<'a> Search<'a> {
     }
 }
 
-impl<'a> Request<'a> for Search<'a> {
+impl<'a> Request for Search<'a> {
     type Response = Collection<Audio>;
     fn method_name() -> &'static str { "audio.search" }
-}
-
-impl<'a> IntoUrl for &'a Search<'a> {
-    fn into_url(self) -> Result<Url, UrlError> {
-        Ok(Search::base_url(qs![
+    fn to_query_string(&self) -> String {
+        qs![
             q => self.q.borrow(),
             auto_complete => if self.auto_complete {"1"} else {"0"},
             lyrics => if self.lyrics {"1"} else {"0"},
@@ -256,7 +247,7 @@ impl<'a> IntoUrl for &'a Search<'a> {
             offset => &*self.offset.to_string(),
             count => &*self.count.to_string(),
             v => "5.37",
-        ]))
+        ]
     }
 }
 
@@ -271,17 +262,14 @@ pub struct GetById<'a> {
     pub audios: &'a [(i64, u64)]
 }
 
-impl<'a> Request<'a> for GetById<'a> {
+impl<'a> Request for GetById<'a> {
     type Response = Collection<Audio>;
     fn method_name() -> &'static str { "audio.getById" }
-}
-
-impl<'a> IntoUrl for &'a GetById<'a> {
-    fn into_url(self) -> Result<Url, UrlError> {
-        Ok(GetById::base_url(qs![
+    fn to_query_string(&self) -> String {
+        qs![
             audios => &*self.audios.iter().map(|&(o, id)| format!("{}_{}", o, id)).collect::<Vec<_>>().join(","),
             v => "5.44",
-        ]))
+        ]
     }
 }
 
@@ -298,17 +286,14 @@ impl GetLyrics {
     }
 }
 
-impl<'a> Request<'a> for GetLyrics {
+impl Request for GetLyrics {
     type Response = Lyrics;
     fn method_name() -> &'static str { "audio.getLyrics" }
-}
-
-impl<'a> IntoUrl for &'a GetLyrics {
-    fn into_url(self) -> Result<Url, UrlError> {
-        Ok(GetLyrics::base_url(qs![
+    fn to_query_string(&self) -> String {
+        qs![
             lyrics_id => &*self.lyrics_id.to_string(),
             v => "5.44",
-        ]))
+        ]
     }
 }
 
@@ -325,17 +310,14 @@ impl GetCount {
     }
 }
 
-impl<'a> Request<'a> for GetCount {
+impl Request for GetCount {
     type Response = u64;
     fn method_name() -> &'static str { "audio.getCount" }
-}
-
-impl<'a> IntoUrl for &'a GetCount {
-    fn into_url(self) -> Result<Url, UrlError> {
-        Ok(GetCount::base_url(qs![
+    fn to_query_string(&self) -> String {
+        qs![
             owner_id => &*self.owner_id.to_string(),
             v => "5.44",
-        ]))
+        ]
     }
 }
 
@@ -356,19 +338,16 @@ impl GetAlbums {
     }
 }
 
-impl<'a> Request<'a> for GetAlbums {
+impl<'a> Request for GetAlbums {
     type Response = Collection<Album>;
     fn method_name() -> &'static str { "audio.getAlbums" }
-}
-
-impl<'a> IntoUrl for &'a GetAlbums {
-    fn into_url(self) -> Result<Url, UrlError> {
-        Ok(GetAlbums::base_url(qs![
+    fn to_query_string(&self) -> String {
+        qs![
             owner_id => &*self.owner_id.to_string(),
             offset => &*self.offset.to_string(),
             count => &*self.count.to_string(),
             v => "5.44",
-        ]))
+        ]
     }
 }
 
@@ -410,20 +389,17 @@ impl GetPopular {
     }
 }
 
-impl<'a> Request<'a> for GetPopular {
+impl Request for GetPopular {
     type Response = Vec<Audio>;
     fn method_name() -> &'static str { "audio.getPopular" }
-}
-
-impl<'a> IntoUrl for &'a GetPopular {
-    fn into_url(self) -> Result<Url, UrlError> {
-        Ok(GetPopular::base_url(qs![
+    fn to_query_string(&self) -> String {
+        qs![
             only_eng => if self.only_eng {"1"} else {"0"},
             genre_id => self.genre_id.map(Into::<u32>::into).as_ref().map(ToString::to_string).as_ref().map(Borrow::borrow).unwrap_or(""),
             offset => &*self.offset.to_string(),
             count => &*self.count.to_string(),
             v => "5.44",
-        ]))
+        ]
     }
 }
 
@@ -471,23 +447,20 @@ impl GetRecommendations {
     }
 }
 
-impl<'a> Request<'a> for GetRecommendations {
+impl Request for GetRecommendations {
     type Response = Collection<Audio>;
     fn method_name() -> &'static str { "audio.getRecommendations" }
-}
-
-impl<'a> IntoUrl for &'a GetRecommendations {
-    fn into_url(self) -> Result<Url, UrlError> {
+    fn to_query_string(&self) -> String {
         let target_audio = self.target_audio.map(|(x, y)| format!("{}_{}", x, y));
 
-        Ok(GetRecommendations::base_url(qs![
+        qs![
             shuffle => if self.shuffle {"1"} else {"0"},
             target_audio => target_audio.as_ref().map(Borrow::borrow).unwrap_or(""),
             user_id => self.user_id.as_ref().map(ToString::to_string).as_ref().map(Borrow::borrow).unwrap_or(""),
             offset => &*self.offset.to_string(),
             count => &*self.count.to_string(),
             v => "5.44",
-        ]))
+        ]
     }
 }
 
