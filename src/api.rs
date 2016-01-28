@@ -75,7 +75,7 @@ impl<'a> Client<'a> {
             Default::default(),
             key.into(),
             secret.into(),
-            Some(::auth::OAUTH_DEFAULT_REDIRECT_URI.to_owned()))
+            Some(String::from(::auth::OAUTH_DEFAULT_REDIRECT_URI)))
     }
 
     pub fn new() -> Client<'a> {
@@ -122,14 +122,14 @@ pub trait Request {
 
     fn to_url(&self) -> Url {
         Url {
-            scheme: "https".to_owned(),
+            scheme: String::from("https"),
             scheme_data: url::SchemeData::Relative(url::RelativeSchemeData {
                 username: String::new(),
                 password: None,
-                host: url::Host::Domain(VK_DOMAIN.to_owned()),
+                host: url::Host::Domain(String::from(VK_DOMAIN)),
                 port: None,
                 default_port: Some(443),
-                path: vec![VK_PATH.to_owned(), Self::method_name().to_owned()]
+                path: vec![String::from(VK_PATH), String::from(Self::method_name())]
                 }),
             query: Some(self.to_query_string()),
             fragment: None,
