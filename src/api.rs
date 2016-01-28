@@ -204,7 +204,7 @@ impl Into<(String, String)> for KeyVal {
     }
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Copy, Clone)]
 pub enum VkErrorCode {
     General, // 1
     Database, // 2

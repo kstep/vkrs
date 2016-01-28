@@ -4,16 +4,70 @@ pub struct Collection<T: Response> {
     pub items: Vec<T>
 }
 
-
 #[derive(Debug, PartialEq, Eq, Deserialize)]
+pub struct RichCollection<T: Response> {
+    pub count: u32,
+    pub items: Vec<T>,
+    pub profiles: Vec<Profile>,
+    pub groups: Vec<Group>,
+}
+
+impl<T: Clone + Response> Clone for Collection<T> {
+    fn clone(&self) -> Collection<T> {
+        Collection {
+            count: self.count,
+            items: self.items.clone(),
+        }
+    }
+}
+
+#[derive(Debug, PartialEq, Eq, Deserialize, Clone)]
 pub struct VkError {
     pub error_code: VkErrorCode,
     pub error_msg: String,
     pub request_params: Vec<KeyVal>
 }
 
-#[derive(Debug, PartialEq, Eq, Deserialize)]
+#[derive(Debug, PartialEq, Eq, Deserialize, Clone)]
 pub struct KeyVal {
     pub key: String,
-    pub value: String
+    pub value: String,
+}
+
+#[derive(Debug, PartialEq, Eq, Deserialize, Copy, Clone)]
+pub struct Likes {
+    pub user_likes: u32,
+    pub count: u32,
+}
+
+#[derive(Debug, PartialEq, Eq, Deserialize, Clone)]
+pub struct User {
+    pub id: i64, // String
+    pub photo: String,
+    pub name: String,
+    pub name_gen: String,
+}
+
+#[derive(Debug, PartialEq, Eq, Deserialize, Clone)]
+pub struct Profile {
+    id: i64,
+    first_name: String,
+    last_name: String,
+}
+
+#[derive(Debug, PartialEq, Eq, Deserialize, Clone)]
+pub struct Group {
+    id: i64,
+    name: String,
+    screen_name: String,
+    is_closed: u8, // bool
+    #[serde(default)]
+    is_admin: u8, // bool
+    #[serde(default)]
+    is_member: u8, // bool
+    #[serde(rename="type")]
+    kind: String,
+    photo_50: String, // URL
+    photo_100: String, // URL
+    photo_200: String, // URL
 }
