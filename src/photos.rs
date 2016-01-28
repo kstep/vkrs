@@ -4,7 +4,7 @@ use hyper::Url;
 use hyper::client::IntoUrl;
 use url::{ParseError as UrlError};
 
-use super::api::{Request, Response, Collection};
+use super::api::{Request, Collection};
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct Search<'a> {
@@ -95,8 +95,6 @@ include!("photos.rs.in");
 
 #[cfg(not(feature = "nightly"))]
 include!(concat!(env!("OUT_DIR"), "/photos.rs"));
-
-impl Response for Photo {}
 
 #[derive(Debug, PartialEq, Eq, Copy, Clone)]
 #[repr(u8)]

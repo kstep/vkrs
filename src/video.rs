@@ -5,15 +5,13 @@ use std::error::Error;
 use hyper::Url;
 use hyper::client::IntoUrl;
 use url::{ParseError as UrlError};
-use super::api::{Request, Response, Collection, Sort};
+use super::api::{Request, Collection, Sort, Likes};
 
 #[cfg(feature = "nightly")]
 include!("video.rs.in");
 
 #[cfg(not(feature = "nightly"))]
 include!(concat!(env!("OUT_DIR"), "/video.rs"));
-
-impl Response for Video {}
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Get<'a> {

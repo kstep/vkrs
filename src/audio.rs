@@ -6,7 +6,7 @@ use hyper::Url;
 use hyper::client::IntoUrl;
 use url::{ParseError as UrlError};
 use serde::de;
-use super::api::{Request, Response, Collection, Sort};
+use super::api::{Request, Collection, Sort};
 use std::fmt;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -266,8 +266,6 @@ include!("audio.rs.in");
 #[cfg(not(feature = "nightly"))]
 include!(concat!(env!("OUT_DIR"), "/audio.rs"));
 
-impl Response for Audio {}
-
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub struct GetById<'a> {
     pub audios: &'a [(i64, u64)]
@@ -299,8 +297,6 @@ impl GetLyrics {
         }
     }
 }
-
-impl Response for Lyrics {}
 
 impl<'a> Request<'a> for GetLyrics {
     type Response = Lyrics;
@@ -342,9 +338,6 @@ impl<'a> IntoUrl for &'a GetCount {
         ]))
     }
 }
-
-impl Response for Album {}
-impl Response for u64 {}
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub struct GetAlbums {

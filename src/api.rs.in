@@ -1,18 +1,18 @@
 #[derive(Debug, PartialEq, Eq, Deserialize)]
-pub struct Collection<T: Response> {
+pub struct Collection<T: de::Deserialize> {
     pub count: u32,
     pub items: Vec<T>
 }
 
 #[derive(Debug, PartialEq, Eq, Deserialize)]
-pub struct RichCollection<T: Response> {
+pub struct RichCollection<T: de::Deserialize> {
     pub count: u32,
     pub items: Vec<T>,
     pub profiles: Vec<Profile>,
     pub groups: Vec<Group>,
 }
 
-impl<T: Clone + Response> Clone for Collection<T> {
+impl<T: de::Deserialize + Clone> Clone for Collection<T> {
     fn clone(&self) -> Collection<T> {
         Collection {
             count: self.count,

@@ -118,7 +118,7 @@ impl<'a> Client<'a> {
 
 /// Trait for things that can be posted to VK API directly
 pub trait Request<'a> where &'a Self: IntoUrl, Self: 'a {
-    type Response: Response;
+    type Response: de::Deserialize;
     fn method_name() -> &'static str;
     fn base_url(query: String) -> Url {
         Url {
@@ -137,16 +137,10 @@ pub trait Request<'a> where &'a Self: IntoUrl, Self: 'a {
     }
 }
 
-/// Trait for things that can come from VK API directly
-pub trait Response: de::Deserialize + fmt::Debug {}
-
-impl<T: Response> Response for Collection<T> {}
-impl<T: Response> Response for Vec<T> {}
-
 #[derive(Debug)]
-pub struct VkResult<T: Response>(pub StdResult<T, VkError>);
+pub struct VkResult<T>(pub StdResult<T, VkError>);
 
-impl<T: Response> Deref for VkResult<T> {
+impl<T> Deref for VkResult<T> {
     type Target = StdResult<T, VkError>;
     fn deref(&self) -> &StdResult<T, VkError> {
         &self.0
@@ -177,11 +171,11 @@ impl de::Deserialize for VkResultField {
     }
 }
 
-impl<T: Response> de::Deserialize for VkResult<T> {
+impl<T: de::Deserialize> de::Deserialize for VkResult<T> {
     fn deserialize<D: de::Deserializer>(d: &mut D) -> StdResult<VkResult<T>, D::Error> {
-        struct VkResultVisitor<T: de::Deserialize + fmt::Debug>(PhantomData<T>);
+        struct VkResultVisitor<T: de::Deserialize>(PhantomData<T>);
 
-        impl<T: Response> de::Visitor for VkResultVisitor<T> {
+        impl<T: de::Deserialize> de::Visitor for VkResultVisitor<T> {
             type Value = VkResult<T>;
             fn visit_map<V: de::MapVisitor>(&mut self, mut v: V) -> StdResult<VkResult<T>, V::Error> {
                 v.visit_key()
