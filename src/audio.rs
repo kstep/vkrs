@@ -125,8 +125,8 @@ impl Into<u32> for Genre {
 request! {
     #[derive(Eq)]
     struct Get for ["audio.get"] (owner_id: i64 {}): Collection<Audio> [v => "5.37", need_user => "0"] {
-        album_id: Option<u64> [None] { |value| value.as_ref().map(ToString::to_string).as_ref().map(Borrow::borrow).unwrap_or("") },
-        audio_ids: Vec<u64> [Vec::new()] { Vec },
+        album_id: Option<u64> [] { |value| value.as_ref().map(ToString::to_string).as_ref().map(Borrow::borrow).unwrap_or("") },
+        audio_ids: Vec<u64> [] { Vec },
         offset: usize [0] {},
         count: usize [100] {},
     }
@@ -135,11 +135,11 @@ request! {
 request! {
     #[derive(Eq)]
     struct Search for ["audio.search"] (q: String {}): Collection<Audio> [v => "5.44"] {
-        auto_complete: bool [false] { bool },
-        lyrics: bool [false] { bool },
-        performer_only: bool [false] { bool },
+        auto_complete: bool [] { bool },
+        lyrics: bool [] { bool },
+        performer_only: bool [] { bool },
         sort: Sort [Sort::Popularity] { AsRef },
-        search_own: bool [false] { bool },
+        search_own: bool [] { bool },
         offset: usize [0] {},
         count: usize [30] {},
     }
@@ -154,7 +154,7 @@ include!(concat!(env!("OUT_DIR"), "/audio.rs"));
 request! {
     #[derive(Eq)]
     struct GetById for ["audio.getById"](): Collection<Audio> [v => "5.44"] {
-        audios: Vec<(i64, u64)> [Vec::new()] {
+        audios: Vec<(i64, u64)> [] {
             |value| &*value.iter().map(|&(o, id)| format!("{}_{}", o, id)).collect::<Vec<_>>().join(",")
         }
     }
@@ -181,7 +181,7 @@ request! {
 request! {
     #[derive(Eq, Copy)]
     struct GetPopular for ["audio.getPopular"](): Vec<Audio> [v => "5.44"] {
-        only_eng: bool [false] {bool},
+        only_eng: bool [] {bool},
         genre_id: Option<Genre> [None] {
             |value| value.map(Into::<u32>::into).as_ref().map(ToString::to_string).as_ref().map(Borrow::borrow).unwrap_or("")
         },
@@ -199,7 +199,7 @@ request! {
         user_id: Option<i64> [None] {Option},
         offset: usize [0] {},
         count: usize [30] {},
-        shuffle: bool [false] {bool},
+        shuffle: bool [] {bool},
     }
 }
 

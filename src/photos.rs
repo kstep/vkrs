@@ -2,10 +2,10 @@ use super::api::{Collection};
 
 request! {
     struct Search for ["photos.search"](q: String {AsRef}): Collection<Photo> [v => "5.37"] {
-        lat: f32 [0.0] {},
-        long: f32 [0.0] {},
-        start_time: u64 [0] {},
-        end_time: u64 [0] {},
+        lat: f32 [] {},
+        long: f32 [] {},
+        start_time: u64 [] {},
+        end_time: u64 [] {},
         sort: Sort [Sort::Popularity] {AsRef},
         offset: usize [0] {},
         count: usize [30] {},

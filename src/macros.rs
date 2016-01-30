@@ -35,6 +35,11 @@ macro_rules! expand_value_expr {
     };
 }
 
+macro_rules! expand_init_expr {
+    () => { Default::default() };
+    ($value:expr) => { $value };
+}
+
 macro_rules! request {
     (
         $(#[$attr:meta])*
@@ -42,7 +47,7 @@ macro_rules! request {
             $($def_param_name:ident: $def_param_type:ty {$($def_value:tt)*}),*
             ): $response_type:ty
         [$($const_param_name:ident => $const_param_value:expr),*] {
-            $($param_name:ident: $param_type:ty [$param_value:expr] {$($value:tt)*}),*
+            $($param_name:ident: $param_type:ty [$($param_value:expr)*] {$($value:tt)*}),*
             $(,)*
         }
     ) => {
@@ -69,7 +74,7 @@ macro_rules! request {
             pub fn new($($def_param_name: $def_param_type),*) -> $struct_name {
                 $struct_name {
                     $($def_param_name: $def_param_name,)*
-                    $($param_name: $param_value,)*
+                    $($param_name: expand_init_expr!($($param_value)*),)*
                 }
             }
 

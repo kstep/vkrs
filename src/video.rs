@@ -13,11 +13,11 @@ include!(concat!(env!("OUT_DIR"), "/video.rs"));
 request! {
     #[derive(Eq)]
     struct Get for ["video.get"](): Collection<Video> [v => "5.44"] {
-        owner_id: Option<i64> [None] {Option},
-        videos: Vec<(i64, u64)> [Vec::new()] { |value|
+        owner_id: Option<i64> [] {Option},
+        videos: Vec<(i64, u64)> [] { |value|
             &*value.iter().map(|&(o, id)| format!("{}_{}", o, id)).collect::<Vec<_>>().join(",")
         },
-        album_id: Option<u64> [None] {Option},
+        album_id: Option<u64> [] {Option},
         offset: usize [0] {},
         count: usize [30] {},
     }
@@ -27,14 +27,14 @@ request! {
     #[derive(Eq)]
     struct Search for ["video.search"](q: String {AsRef}): Collection<Video> [v => "5.44"] {
         sort: Sort [Sort::Popularity] {AsRef},
-        hd: bool [false] {bool},
-        adult: bool [false] {bool},
-        filters: Vec<Filter> [Vec::new()] { |value|
+        hd: bool [] {bool},
+        adult: bool [] {bool},
+        filters: Vec<Filter> [] { |value|
             &*value.iter().map(AsRef::as_ref).collect::<Vec<_>>().join(",")
         },
-        search_own: bool [false] {bool},
-        longer: Option<usize> [None] {Option},
-        shorter: Option<usize> [None] {Option},
+        search_own: bool [] {bool},
+        longer: Option<usize> [] {Option},
+        shorter: Option<usize> [] {Option},
         offset: usize [0] {},
         count: usize [30] {}, // 0...300, def 30
     }
