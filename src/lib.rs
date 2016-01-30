@@ -10,14 +10,7 @@ extern crate inth_oauth2 as oauth2;
 extern crate rustc_serialize;
 extern crate chrono;
 
-macro_rules! qs {
-    ($($name:ident => $value:expr),+ $(,)*) => {
-        ::url::form_urlencoded::serialize([
-            $((stringify!($name), $value)),*
-        ].into_iter().filter(|&&(_, v)| !v.is_empty()))
-    }
-}
-
+mod macros;
 pub mod api;
 pub mod auth;
 pub mod audio;

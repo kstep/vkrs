@@ -1,84 +1,15 @@
-use std::borrow::{Cow, Borrow};
-use super::api::{Request, Collection};
+use super::api::{Collection};
 
-#[derive(Debug, PartialEq, Clone)]
-pub struct Search<'a> {
-    q: Cow<'a, str>,
-    lat: f32,
-    long: f32,
-    start_time: u64,
-    end_time: u64,
-    sort: Sort,
-    offset: usize,
-    count: usize,
-    radius: u16,
-}
-
-impl<'a> Request for Search<'a> {
-    type Response = Collection<Photo>;
-    fn method_name() -> &'static str { "photos.search" }
-    fn to_query_string(&self) -> String {
-        qs![
-            q => self.q.borrow(),
-            start_time => &*self.start_time.to_string(),
-            end_time => &*self.end_time.to_string(),
-            lat => &*self.lat.to_string(),
-            long => &*self.long.to_string(),
-            radius => &*self.radius.to_string(),
-            sort => self.sort.as_ref(),
-            offset => &*self.offset.to_string(),
-            count => &*self.count.to_string(),
-            v => "5.37",
-        ]
-    }
-}
-
-impl<'a> Search<'a> {
-    pub fn new<T: Into<Cow<'a, str>>>(query: T) -> Search<'a> {
-        Search {
-            q: query.into(),
-            lat: 0.0,
-            long: 0.0,
-            start_time: 0,
-            end_time: 0,
-            sort: Sort::Popularity,
-            offset: 0,
-            count: 100,
-            radius: 5000,
-        }
-    }
-
-    pub fn latitude(&mut self, lat: f32) -> &mut Search<'a> {
-        self.lat = lat;
-        self
-    }
-    pub fn longitude(&mut self, long: f32) -> &mut Search<'a> {
-        self.long = long;
-        self
-    }
-    pub fn start_time(&mut self, start_time: u64) -> &mut Search<'a> {
-        self.start_time = start_time;
-        self
-    }
-    pub fn end_time(&mut self, end_time: u64) -> &mut Search<'a> {
-        self.end_time = end_time;
-        self
-    }
-    pub fn sort(&mut self, sort: Sort) -> &mut Search<'a> {
-        self.sort = sort;
-        self
-    }
-    pub fn count(&mut self, count: usize) -> &mut Search<'a> {
-        self.count = count;
-        self
-    }
-    pub fn offset(&mut self, offset: usize) -> &mut Search<'a> {
-        self.offset = offset;
-        self
-    }
-    pub fn radius(&mut self, radius: u16) -> &mut Search<'a> {
-        self.radius = radius;
-        self
+request! {
+    struct Search for ["photos.search"](q: String {AsRef}): Collection<Photo> [v => "5.37"] {
+        lat: f32 [0.0] {},
+        long: f32 [0.0] {},
+        start_time: u64 [0] {},
+        end_time: u64 [0] {},
+        sort: Sort [Sort::Popularity] {AsRef},
+        offset: usize [0] {},
+        count: usize [30] {},
+        radius: u16 [5000] {},
     }
 }
 
