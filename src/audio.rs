@@ -122,62 +122,110 @@ impl Into<u32> for Genre {
     }
 }
 
-#[derive(Debug, PartialEq, Eq, Clone)]
-pub struct Get<'a> {
-     owner_id: i64,
-     album_id: Option<u64>,
-     audio_ids: Cow<'a, [u64]>,
-     need_user: bool,
-     offset: usize,
-     count: usize,
-}
-
-impl<'a> Get<'a> {
-    pub fn new(owner_id: i64) -> Get<'a> {
-        Get {
-            owner_id: owner_id,
-            album_id: None,
-            audio_ids: Cow::Borrowed(&[][..]),
-            need_user: false,
-            offset: 0,
-            count: 100,
+macro_rules! request {
+    (
+        $(#[$attr:meta])*
+        struct $struct_name:ident for [$method_name:expr] (
+            $($def_param_name:ident: $def_param_type:ty { |$def_value_name:ident| $def_value_expr:expr }),*
+            ): $response_type:ty
+        [$($const_param_name:ident => $const_param_value:expr),*] {
+            $($param_name:ident: $param_type:ty { |$value_name:ident| $value_expr:expr }),+
+            $(,)*
         }
-    }
+    ) => {
+        #[derive(Debug, PartialEq, Clone)]
+        $(#[$attr])*
+        pub struct $struct_name {
+            $($def_param_name: $def_param_type),*,
+            $($param_name: $param_type),*,
+        }
 
-    pub fn audios<T: Into<Cow<'a, [u64]>>>(&mut self, audio_ids: T) -> &mut Get<'a> {
-        self.audio_ids = audio_ids.into();
-        self
-    }
+        impl Request for $struct_name {
+            type Response = $response_type;
+            fn method_name() -> &'static str { $method_name }
+            fn to_query_string(&self) -> String {
+                qs![
+                    $($def_param_name => { let $def_value_name = self.$def_param_name; $def_value_expr }),*,
+                    $($param_name => { let $value_name = &self.$param_name; $value_expr }),*,
+                    $($const_param_name => $const_param_value),*,
+                ]
+            }
+        }
 
-    pub fn album(&mut self, album_id: u64) -> &mut Get<'a> {
-        self.album_id = Some(album_id);
-        self
-    }
+        impl $struct_name {
+            $(pub fn $param_name(&mut self, value: $param_type) -> &mut Self {
+                self.$param_name = value;
+                self
+            })*
+        }
+    };
+}
 
-    pub fn count(&mut self, count: usize) -> &mut Get<'a> {
-        self.count = count;
-        self
-    }
-    pub fn offset(&mut self, offset: usize) -> &mut Get<'a> {
-        self.offset = offset;
-        self
+request! {
+    #[derive(Eq)]
+    struct Get for ["audio.get"] (owner_id: i64 { |value| &*value.to_string() }): Collection<Audio> [v => "5.37", need_user => "0"] {
+        album_id: Option<u64> { |value| value.as_ref().map(ToString::to_string).as_ref().map(Borrow::borrow).unwrap_or("") },
+        audio_ids: Vec<u64> { |value| &*value.iter().map(ToString::to_string).collect::<Vec<_>>().join(",") },
+        offset: usize { |value| &*value.to_string() },
+        count: usize { |value| &*value.to_string() },
     }
 }
 
-impl<'a> Request for Get<'a> {
-    type Response = Collection<Audio>;
-    fn method_name() -> &'static str { "audio.get" }
-    fn to_query_string(&self) -> String {
-        qs![
-            owner_id => &*self.owner_id.to_string(),
-            album_id => self.album_id.as_ref().map(ToString::to_string).as_ref().map(Borrow::borrow).unwrap_or(""),
-            audio_ids => &*self.audio_ids.iter().map(ToString::to_string).collect::<Vec<_>>().join(","),
-            need_user => "0",
-            offset => &*self.offset.to_string(),
-            v => "5.37",
-        ]
-    }
-}
+//#[derive(Debug, PartialEq, Eq, Clone)]
+//pub struct Get<'a> {
+     //owner_id: i64,
+     //album_id: Option<u64>,
+     //audio_ids: Cow<'a, [u64]>,
+     //offset: usize,
+     //count: usize,
+//}
+
+//impl<'a> Get<'a> {
+    //pub fn new(owner_id: i64) -> Get<'a> {
+        //Get {
+            //owner_id: owner_id,
+            //album_id: None,
+            //audio_ids: Cow::Borrowed(&[][..]),
+            //need_user: false,
+            //offset: 0,
+            //count: 100,
+        //}
+    //}
+
+    //pub fn audios<T: Into<Cow<'a, [u64]>>>(&mut self, audio_ids: T) -> &mut Get<'a> {
+        //self.audio_ids = audio_ids.into();
+        //self
+    //}
+
+    //pub fn album(&mut self, album_id: u64) -> &mut Get<'a> {
+        //self.album_id = Some(album_id);
+        //self
+    //}
+
+    //pub fn count(&mut self, count: usize) -> &mut Get<'a> {
+        //self.count = count;
+        //self
+    //}
+    //pub fn offset(&mut self, offset: usize) -> &mut Get<'a> {
+        //self.offset = offset;
+        //self
+    //}
+//}
+
+//impl<'a> Request for Get<'a> {
+    //type Response = Collection<Audio>;
+    //fn method_name() -> &'static str { "audio.get" }
+    //fn to_query_string(&self) -> String {
+        //qs![
+            //owner_id => &*self.owner_id.to_string(),
+            //album_id => self.album_id.as_ref().map(ToString::to_string).as_ref().map(Borrow::borrow).unwrap_or(""),
+            //audio_ids => &*self.audio_ids.iter().map(ToString::to_string).collect::<Vec<_>>().join(","),
+            //need_user => "0",
+            //offset => &*self.offset.to_string(),
+            //v => "5.37",
+        //]
+    //}
+//}
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Search<'a> {
