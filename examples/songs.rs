@@ -48,7 +48,7 @@ fn get_access_token() -> Result<AccessToken, OAuthError> {
 fn print_m3u(songs: &Collection<Audio>) {
     println!("#EXTM3U");
     for song in &songs.items {
-        println!("#EXTINF:{},{} - {}", song.duration, song.artist, song.title);
+        println!("#EXTINF:{},{} - {} ({}_{})", song.duration, song.artist, song.title, song.owner_id, song.id);
         println!("{}", song.url);
     }
 }
