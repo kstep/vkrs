@@ -1,4 +1,4 @@
-use std::borrow::{Borrow};
+use std::borrow::{Borrow, Cow};
 use std::convert::AsRef;
 use std::string::ToString;
 use std::error::Error;
@@ -124,24 +124,50 @@ impl Into<u32> for Genre {
 
 request! {
     #[derive(Eq)]
-    struct Get for ["audio.get"] (owner_id: i64 {}): Collection<Audio> [v => "5.37", need_user => "0"] {
-        album_id: Option<u64> [] { |value| value.as_ref().map(ToString::to_string).as_ref().map(Borrow::borrow).unwrap_or("") },
-        audio_ids: Vec<u64> [] { Vec },
-        offset: usize [0] {},
-        count: usize [100] {},
+    struct Get(owner_id: i64 => {}) for ["audio.get"](v => "5.37", need_user => "0") -> Collection<Audio> {
+        album_id: Option<u64> [] => { |value| value.as_ref().map(ToString::to_string).as_ref().map(Borrow::borrow).unwrap_or("") },
+        audio_ids: Vec<u64> [] => { Vec },
+        offset: usize [0] => {},
+        count: usize [100] => {},
     }
 }
 
-request! {
-    #[derive(Eq)]
-    struct Search for ["audio.search"] (q: String {}): Collection<Audio> [v => "5.44"] {
-        auto_complete: bool [] { bool },
-        lyrics: bool [] { bool },
-        performer_only: bool [] { bool },
-        sort: Sort [Sort::Popularity] { AsRef },
-        search_own: bool [] { bool },
-        offset: usize [0] {},
-        count: usize [30] {},
+#[derive(Debug, PartialEq, Clone, Eq)]
+pub struct Search<'a> {
+    q: Cow<'a, str>,
+    auto_complete: bool,
+    lyrics: bool,
+    performer_only: bool,
+    sort: Sort,
+    search_own: bool,
+    offset: usize,
+    count: usize,
+}
+impl<'a> Search<'a> {
+    request_builder_impl! {
+        Search(q: Cow<'a, str>) {
+            auto_complete: bool [],
+            lyrics: bool [],
+            performer_only: bool [],
+            sort: Sort [Sort::Popularity],
+            search_own: bool [],
+            offset: usize [0],
+            count: usize [30],
+        }
+    }
+}
+impl<'a> ::api::Request for Search<'a> {
+    request_trait_impl! {
+        ["audio.search"](v => "5.44") -> Collection<Audio> {
+            q => { Borrow },
+            auto_complete =>  { bool },
+            lyrics => { bool },
+            performer_only => { bool },
+            sort => { AsRef },
+            search_own => { bool },
+            offset => {},
+            count => {},
+        }
     }
 }
 
@@ -153,8 +179,8 @@ include!(concat!(env!("OUT_DIR"), "/audio.rs"));
 
 request! {
     #[derive(Eq)]
-    struct GetById for ["audio.getById"](): Collection<Audio> [v => "5.44"] {
-        audios: Vec<(i64, u64)> [] {
+    struct GetById() for ["audio.getById"](v => "5.44") -> Collection<Audio> {
+        audios: Vec<(i64, u64)> [] => {
             |value| &*value.iter().map(|&(o, id)| format!("{}_{}", o, id)).collect::<Vec<_>>().join(",")
         }
     }
@@ -162,44 +188,44 @@ request! {
 
 request! {
     #[derive(Copy, Eq)]
-    struct GetLyrics for ["audio.getLyrics"](lyrics_id: u64 {}): Lyrics [v => "5.44"] {}
+    struct GetLyrics(lyrics_id: u64 => {}) for ["audio.getLyrics"](v => "5.44") -> Lyrics {}
 }
 
 request! {
     #[derive(Copy, Eq)]
-    struct GetCount for ["audio.getCount"](owner_id: u64 {}): u64 [v => "5.44"] {}
+    struct GetCount(owner_id: u64 => {}) for ["audio.getCount"](v => "5.44") -> u64  {}
 }
 
 request! {
     #[derive(Copy, Eq)]
-    struct GetAlbums for ["audio.getAlbums"](owner_id: i64 {}): Collection<Album> [v => "5.44"] {
-        offset: usize [0] {},
-        count: usize [30] {},
+    struct GetAlbums(owner_id: i64 => {}) for ["audio.getAlbums"](v => "5.44") -> Collection<Album> {
+        offset: usize [0] => {},
+        count: usize [30] => {},
     }
 }
 
 request! {
     #[derive(Eq, Copy)]
-    struct GetPopular for ["audio.getPopular"](): Vec<Audio> [v => "5.44"] {
-        only_eng: bool [] {bool},
-        genre_id: Option<Genre> [None] {
+    struct GetPopular() for ["audio.getPopular"](v => "5.44") -> Vec<Audio> {
+        only_eng: bool [] => {bool},
+        genre_id: Option<Genre> [None] => {
             |value| value.map(Into::<u32>::into).as_ref().map(ToString::to_string).as_ref().map(Borrow::borrow).unwrap_or("")
         },
-        offset: usize [0] {},
-        count: usize [30] {},
+        offset: usize [0] => {},
+        count: usize [30] => {},
     }
 }
 
 request! {
     #[derive(Eq, Copy)]
-    struct GetRecommendations for ["audio.getRecommendations"](): Collection<Audio> [v => "5.44"] {
-        target_audio: Option<(i64, u64)> [None] { |value|
+    struct GetRecommendations() for ["audio.getRecommendations"](v => "5.44") -> Collection<Audio> {
+        target_audio: Option<(i64, u64)> [None] => { |value|
             value.map(|(x, y)| format!("{}_{}", x, y)).as_ref().map(Borrow::borrow).unwrap_or("")
         },
-        user_id: Option<i64> [None] {Option},
-        offset: usize [0] {},
-        count: usize [30] {},
-        shuffle: bool [] {bool},
+        user_id: Option<i64> [None] => {Option},
+        offset: usize [0] => {},
+        count: usize [30] => {},
+        shuffle: bool [] => {bool},
     }
 }
 
