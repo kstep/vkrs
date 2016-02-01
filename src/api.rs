@@ -206,6 +206,7 @@ pub enum VkErrorCode {
     Unauthorized, // 5
     Signature, // 10
     Request, // 11
+    Banned, // 18
     Blocked, // 19
     GoodsNotFound, // 20
     GoodsUnvailable, // 21
@@ -224,6 +225,7 @@ impl From<u32> for VkErrorCode {
             5 => Unauthorized,
             10 => Signature,
             11 => Request,
+            18 => Banned,
             19 => Blocked,
             20 => GoodsNotFound,
             21 => GoodsUnvailable,
@@ -243,6 +245,7 @@ impl Into<u32> for VkErrorCode {
             Unauthorized => 5,
             Signature => 10,
             Request => 11,
+            Banned => 18,
             Blocked => 19,
             GoodsNotFound => 20,
             GoodsUnvailable => 21,
@@ -263,6 +266,7 @@ impl fmt::Display for VkErrorCode {
             Unauthorized => f.write_str("unauthorized"),
             Signature => f.write_str("invalid signature"),
             Request => f.write_str("invalid request"),
+            Banned => f.write_str("banned or deleted"),
             Blocked => f.write_str("content blocked"),
             GoodsNotFound => f.write_str("goods not found"),
             GoodsUnvailable => f.write_str("goods unavailable"),
