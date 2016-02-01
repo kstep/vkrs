@@ -9,6 +9,9 @@ macro_rules! qs {
 }
 
 macro_rules! expand_value_expr {
+    ($this:ident; $param_name:ident; =) => {
+        expand_value_expr!($this; $param_name; |value| *value)
+    };
     ($this:ident; $param_name:ident;) => {
         expand_value_expr!($this; $param_name; ToString)
     };
@@ -140,6 +143,48 @@ macro_rules! request {
                 $struct_name
                 {
                     $($param_name: $param_type = $param_value),*
+                }
+            }
+        }
+    };
+}
+
+macro_rules! request_lt {
+    (
+        $(#[$attr:meta])*
+        struct $struct_name:ident for [$method_name:expr]
+        ($($const_param_name:ident => $const_param_value:expr),*) ->
+        $response_type:ty
+        {
+            sized {$($param_name:ident: $param_type:ty = $param_value:tt => {$($value:tt)*}),* $(,)*}
+            unsized {$($param_name_lt:ident: $param_type_lt:ty = $param_value_lt:tt => {$($value_lt:tt)*}),* $(,)*}
+        }
+    ) => {
+        #[derive(Debug, PartialEq, Clone)]
+        $(#[$attr])*
+        pub struct $struct_name<'a> {
+            $($param_name: $param_type,)*
+            $($param_name_lt: &'a $param_type_lt,)*
+        }
+
+        impl<'a> ::api::Request for $struct_name<'a> {
+            request_trait_impl! {
+                [$method_name]
+                ($($const_param_name => $const_param_value),*)
+                -> $response_type
+                {
+                    $($param_name => {$($value)*},)*
+                    $($param_name_lt => {$($value_lt)*},)*
+                }
+            }
+        }
+
+        impl<'a> $struct_name<'a> {
+            request_builder_impl! {
+                $struct_name
+                {
+                    $($param_name: $param_type = $param_value,)*
+                    $($param_name_lt: &'a $param_type_lt = $param_value_lt,)*
                 }
             }
         }

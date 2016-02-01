@@ -1,4 +1,4 @@
-use std::borrow::{Borrow, Cow};
+use std::borrow::Borrow;
 use std::convert::AsRef;
 use std::string::ToString;
 use std::error::Error;
@@ -133,42 +133,20 @@ request! {
     }
 }
 
-#[derive(Debug, PartialEq, Clone, Eq)]
-pub struct Search<'a> {
-    q: Cow<'a, str>,
-    auto_complete: bool,
-    lyrics: bool,
-    performer_only: bool,
-    sort: Sort,
-    search_own: bool,
-    offset: usize,
-    count: usize,
-}
-impl<'a> Search<'a> {
-    request_builder_impl! {
-        Search {
-            q: Cow<'a, str> = {Cow::Borrowed("")},
-            auto_complete: bool = (),
-            lyrics: bool = (),
-            performer_only: bool = (),
-            sort: Sort = (Sort::Popularity),
-            search_own: bool = (),
-            offset: usize = (0),
-            count: usize = (30),
+request_lt! {
+    #[derive(Eq, Copy)]
+    struct Search for ["audio.search"](v => "5.44") -> Collection<Audio> {
+        sized {
+            auto_complete: bool = () => {bool},
+            lyrics: bool = () => {bool},
+            performer_only: bool = () => {bool},
+            sort: Sort = (Sort::Popularity) => {AsRef},
+            search_own: bool = () => {bool},
+            offset: usize = (0) => {},
+            count: usize = (30) => {},
         }
-    }
-}
-impl<'a> ::api::Request for Search<'a> {
-    request_trait_impl! {
-        ["audio.search"](v => "5.44") -> Collection<Audio> {
-            q => { Borrow },
-            auto_complete =>  { bool },
-            lyrics => { bool },
-            performer_only => { bool },
-            sort => { AsRef },
-            search_own => { bool },
-            offset => {},
-            count => {},
+        unsized {
+            q: str = ("") => {=},
         }
     }
 }
