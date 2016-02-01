@@ -1,0 +1,5 @@
+#[derive(Debug, PartialEq, Eq, Deserialize, Clone)]
+pub struct Status {
+    pub text: String,
+    pub audio: Option<Audio>,
+}
