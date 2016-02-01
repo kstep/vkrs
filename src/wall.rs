@@ -12,9 +12,7 @@ request_lt! {
         }
         unsized {
             domain: str = ("") => {=},
-            fields: [UserOptionField] = (&[][..]) => {|value|
-                &*value.iter().map(AsRef::as_ref).collect::<Vec<_>>().join(",")
-            },
+            fields: [UserOptionField] = (&[][..]) => {AsRef<Vec>},
         }
     }
 }

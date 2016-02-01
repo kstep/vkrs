@@ -155,9 +155,7 @@ request_lt! {
         }
         unsized {
             user_ids: [i64] = (&[][..]) => {Vec},
-            fields: [UserOptionField] = (&[][..]) => {|value|
-                &*value.iter().map(AsRef::as_ref).collect::<Vec<_>>().join(",")
-            },
+            fields: [UserOptionField] = (&[][..]) => {AsRef<Vec>},
         }
     }
 }
@@ -202,9 +200,7 @@ request_lt! {
         unsized {
             q: str = ("") => {=},
             hometown: str = ("") => {=},
-            fields: [UserOptionField] = (&[][..]) => {|value|
-                &*value.iter().map(AsRef::as_ref).collect::<Vec<_>>().join(",")
-            },
+            fields: [UserOptionField] = (&[][..]) => {AsRef<Vec>},
             religion: str = ("") => {=},
             interests: str = ("") => {=},
             company: str = ("") => {=},
@@ -228,9 +224,7 @@ request_lt! {
             count: usize = (100) => {},
         }
         unsized {
-            fields: [UserOptionField] = (&[][..]) => {|value|
-                &*value.iter().map(AsRef::as_ref).collect::<Vec<_>>().join(",")
-            },
+            fields: [UserOptionField] = (&[][..]) => {AsRef<Vec>},
         }
     }
 }
@@ -244,9 +238,7 @@ request_lt! {
             count: usize = (100) => {},
         }
         unsized {
-            fields: [UserOptionField] = (&[][..]) => {|value|
-                &*value.iter().map(AsRef::as_ref).collect::<Vec<_>>().join(",")
-            },
+            fields: [UserOptionField] = (&[][..]) => {AsRef<Vec>},
         }
     }
 }
@@ -287,9 +279,7 @@ request_lt! {
             name_case: NameCase = (NameCase::Nominative) => {AsRef},
         }
         unsized {
-            fields: [UserOptionField] = (&[][..]) => {|value|
-                &*value.iter().map(AsRef::as_ref).collect::<Vec<_>>().join(",")
-            },
+            fields: [UserOptionField] = (&[][..]) => {AsRef<Vec>},
         }
     }
 }

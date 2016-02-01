@@ -41,9 +41,7 @@ request_lt! {
             count: usize = (30) => {},
         }
         unsized {
-            filters: [Filter] = (&[][..]) => { |value|
-                &*value.iter().map(AsRef::as_ref).collect::<Vec<_>>().join(",")
-            },
+            filters: [Filter] = (&[][..]) => {AsRef<Vec>},
             q: str = ("") => {=},
         }
     }

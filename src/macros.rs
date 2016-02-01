@@ -31,6 +31,14 @@ macro_rules! expand_value_expr {
         expand_value_expr!($this; $param_name; |value|
                            if *value {"1"} else {"0"})
     };
+    ($this:ident; $param_name:ident; AsRef<Vec>) => {
+        expand_value_expr!($this; $param_name; |value|
+                           &*value.iter().map(AsRef::as_ref).collect::<Vec<_>>().join(","))
+    };
+    ($this:ident; $param_name:ident; AsRef<Option>) => {
+        expand_value_expr!($this; $param_name; |value|
+                           &*value.as_ref().map(AsRef::as_ref).unwrap_or(""))
+    };
     ($this:ident; $param_name:ident; Vec) => {
         expand_value_expr!($this; $param_name; |value|
                            &*value.iter().map(ToString::to_string).collect::<Vec<_>>().join(","))
