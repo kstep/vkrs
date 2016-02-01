@@ -1,15 +1,16 @@
 use super::api::{Collection};
 
 request! {
-    struct Search(q: String => {AsRef}) for ["photos.search"](v => "5.37") -> Collection<Photo> {
-        lat: f32 [] => {},
-        long: f32 [] => {},
-        start_time: u64 [] => {},
-        end_time: u64 [] => {},
-        sort: Sort [Sort::Popularity] => {AsRef},
-        offset: usize [0] => {},
-        count: usize [30] => {},
-        radius: u16 [5000] => {},
+    struct Search for ["photos.search"](v => "5.37") -> Collection<Photo> {
+        q: String = () => {AsRef},
+        lat: f32 = () => {},
+        long: f32 = () => {},
+        start_time: u64 = () => {},
+        end_time: u64 = () => {},
+        sort: Sort = (Sort::Popularity) => {AsRef},
+        offset: usize = (0) => {},
+        count: usize = (30) => {},
+        radius: u16 = (5000) => {},
     }
 }
 

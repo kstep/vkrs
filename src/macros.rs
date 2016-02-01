@@ -1,7 +1,7 @@
 #![macro_use]
 
 macro_rules! qs {
-    ($($name:ident => $value:expr),+ $(),*) => {
+    ($($name:ident => $value:expr),+ $(,)*) => {
         ::url::form_urlencoded::serialize([
             $((stringify!($name), $value)),*
         ].into_iter().filter(|&&(_, v)| !v.is_empty()))
@@ -43,34 +43,35 @@ macro_rules! expand_value_expr {
 }
 
 macro_rules! expand_init_expr {
-    () => { Default::default() };
-    ($value:expr) => { $value };
+    (()) => { Default::default() };
+    ({}) => { Default::default() };
+    (($value:expr)) => { $value };
+    ({$value:expr}) => { $value };
 }
 
 macro_rules! request_builder_impl {
     (
-        $struct_name:ident (
-            $($req_param_name:ident: $req_param_type:ty),*
-        )
+        $struct_name:ident
         {
-            $($param_name:ident: $param_type:ty [$($param_value:tt)*]),*
+            $($param_name:ident: $param_type:ty = $param_value:tt),*
             $(,)*
         }
     ) => {
         #[allow(non_camel_case_types)]
-        pub fn new<$($req_param_name: Into<$req_param_type>),*>($($req_param_name: $req_param_name),*) -> Self {
+        pub fn new() -> Self {
             $struct_name {
-                $($req_param_name: $req_param_name.into(),)*
-                $($param_name: expand_init_expr!($($param_value)*),)*
+                $($param_name: expand_init_expr!($param_value),)*
             }
         }
-        $(request_builder_setter_impl!($param_name: $param_type [$($param_value)*]);)*
+        $(request_builder_setter_impl!($param_name: $param_type $param_value);)*
     }
 }
 
 macro_rules! request_builder_setter_impl {
+    ($param_name:ident: $param_type:ty {$param_value:expr}) => { request_builder_setter_impl!($param_name: $param_type {}); };
+    ($param_name:ident: $param_type:ty ($param_value:expr)) => { request_builder_setter_impl!($param_name: $param_type ()); };
     (
-        $param_name:ident: $param_type:ty [{$($param_value:tt)*}]
+        $param_name:ident: $param_type:ty {}
     ) => {
         pub fn $param_name<T: Into<$param_type>>(&mut self, value: T) -> &mut Self {
             self.$param_name = value.into();
@@ -78,7 +79,7 @@ macro_rules! request_builder_setter_impl {
         }
     };
     (
-        $param_name:ident: $param_type:ty [$($param_value:tt)*]
+        $param_name:ident: $param_type:ty ()
     ) => {
         pub fn $param_name(&mut self, value: $param_type) -> &mut Self {
             self.$param_name = value;
@@ -109,13 +110,11 @@ macro_rules! request_trait_impl {
 macro_rules! request {
     (
         $(#[$attr:meta])*
-        struct $struct_name:ident (
-            $($req_param_name:ident: $req_param_type:ty => {$($req_value:tt)*}),*
-        ) for [$method_name:expr]
+        struct $struct_name:ident for [$method_name:expr]
         ($($const_param_name:ident => $const_param_value:expr),*) ->
         $response_type:ty
         {
-            $($param_name:ident: $param_type:ty [$($param_value:tt)*] => {$($value:tt)*}),*
+            $($param_name:ident: $param_type:ty = $param_value:tt => {$($value:tt)*}),*
             $(,)*
         }
     ) => {
@@ -123,7 +122,6 @@ macro_rules! request {
         $(#[$attr])*
         pub struct $struct_name {
             $($param_name: $param_type,)*
-            $($req_param_name: $req_param_type,)*
         }
 
         impl ::api::Request for $struct_name {
@@ -132,19 +130,16 @@ macro_rules! request {
                 ($($const_param_name => $const_param_value),*)
                 -> $response_type
                 {
-                    $($req_param_name => {$($req_value)*},)*
-                    $($param_name =>  {$($value)*},)*
+                    $($param_name => {$($value)*},)*
                 }
             }
         }
 
         impl $struct_name {
             request_builder_impl! {
-                $struct_name (
-                    $($req_param_name: $req_param_type),*
-                )
+                $struct_name
                 {
-                    $($param_name: $param_type [$($param_value)*]),*
+                    $($param_name: $param_type = $param_value),*
                 }
             }
         }

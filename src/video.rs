@@ -33,12 +33,12 @@ impl<'a> ::api::Request for Get<'a> {
 }
 impl<'a> Get<'a> {
     request_builder_impl! {
-        Get () {
-            owner_id: Option<i64> [],
-            videos: Cow<'a, [(i64, u64)]> [Cow::Borrowed(&[][..])],
-            album_id: Option<u64> [],
-            offset: usize [0],
-            count: usize [30]
+        Get {
+            owner_id: Option<i64> = (),
+            videos: Cow<'a, [(i64, u64)]> = {Cow::Borrowed(&[][..])},
+            album_id: Option<u64> = (),
+            offset: usize = (0),
+            count: usize = (30)
         }
     }
 }
@@ -57,16 +57,17 @@ pub struct Search<'a> {
     count: usize,
 }
 impl<'a> Search<'a> { request_builder_impl! {
-    Search(q: Cow<'a, str>) {
-        sort: Sort [Sort::Popularity],
-        hd: bool [],
-        adult: bool [],
-        filters: Cow<'a, [Filter]> [Cow::Borrowed(&[][..])],
-        search_own: bool [],
-        longer: Option<usize> [],
-        shorter: Option<usize> [],
-        offset: usize [0],
-        count: usize [30],
+    Search {
+        q: Cow<'a, str> = {Cow::Borrowed("")},
+        sort: Sort = (Sort::Popularity),
+        hd: bool = (),
+        adult: bool = (),
+        filters: Cow<'a, [Filter]> = {Cow::Borrowed(&[][..])},
+        search_own: bool = (),
+        longer: Option<usize> = (),
+        shorter: Option<usize> = (),
+        offset: usize = (0),
+        count: usize = (30),
     }
 }}
 impl<'a> ::api::Request for Search<'a> { request_trait_impl! {
