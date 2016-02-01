@@ -104,7 +104,7 @@ macro_rules! request_trait_impl {
         fn to_query_string(&self) -> String {
             qs![
                 $($param_name => expand_value_expr!(self; $param_name; $($value)*),)*
-                $($const_param_name => $const_param_value,)*
+                $($const_param_name => concat!($const_param_value),)*
             ]
         }
     }

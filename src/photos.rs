@@ -1,7 +1,7 @@
 use super::api::{Collection};
 
 request_lt! {
-    struct Search for ["photos.search"](v => "5.37") -> Collection<Photo> {
+    struct Search for ["photos.search"](v => 5.37) -> Collection<Photo> {
         sized {
             lat: f32 = () => {},
             long: f32 = () => {},

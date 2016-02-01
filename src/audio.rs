@@ -124,7 +124,7 @@ impl Into<u32> for Genre {
 
 request! {
     #[derive(Eq)]
-    struct Get for ["audio.get"](v => "5.37", need_user => "0") -> Collection<Audio> {
+    struct Get for ["audio.get"](v => 5.37, need_user => 0) -> Collection<Audio> {
         owner_id: i64 = () => {},
         album_id: Option<u64> = () => { |value| value.as_ref().map(ToString::to_string).as_ref().map(Borrow::borrow).unwrap_or("") },
         audio_ids: Vec<u64> = () => { Vec },
@@ -135,7 +135,7 @@ request! {
 
 request_lt! {
     #[derive(Eq, Copy)]
-    struct Search for ["audio.search"](v => "5.44") -> Collection<Audio> {
+    struct Search for ["audio.search"](v => 5.44) -> Collection<Audio> {
         sized {
             auto_complete: bool = () => {bool},
             lyrics: bool = () => {bool},
@@ -192,7 +192,7 @@ impl ::api::Request for GetCount {
 
 request! {
     #[derive(Copy, Eq)]
-    struct GetAlbums for ["audio.getAlbums"](v => "5.44") -> Collection<Album> {
+    struct GetAlbums for ["audio.getAlbums"](v => 5.44) -> Collection<Album> {
         owner_id: i64 = () => {},
         offset: usize = (0) => {},
         count: usize = (30) => {},
@@ -201,7 +201,7 @@ request! {
 
 request! {
     #[derive(Eq, Copy)]
-    struct GetPopular for ["audio.getPopular"](v => "5.44") -> Vec<Audio> {
+    struct GetPopular for ["audio.getPopular"](v => 5.44) -> Vec<Audio> {
         only_eng: bool = () => {bool},
         genre_id: Option<Genre> = (None) => {
             |value| value.map(Into::<u32>::into).as_ref().map(ToString::to_string).as_ref().map(Borrow::borrow).unwrap_or("")
@@ -213,7 +213,7 @@ request! {
 
 request! {
     #[derive(Eq, Copy)]
-    struct GetRecommendations for ["audio.getRecommendations"](v => "5.44") -> Collection<Audio> {
+    struct GetRecommendations for ["audio.getRecommendations"](v => 5.44) -> Collection<Audio> {
         target_audio: Option<(i64, u64)> = (None) => { |value|
             value.map(|(x, y)| format!("{}_{}", x, y)).as_ref().map(Borrow::borrow).unwrap_or("")
         },
