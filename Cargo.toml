@@ -6,7 +6,7 @@ keywords = ["vk", "api"]
 license = "MIT"
 name = "vkrs"
 repository = "https://github.com/kstep/vkrs"
-version = "0.4.0"
+version = "0.4.1"
 
 [build-dependencies]
 
