@@ -64,12 +64,27 @@ macro_rules! request_builder_impl {
                 $($param_name: expand_init_expr!($($param_value)*),)*
             }
         }
+        $(request_builder_setter_impl!($param_name: $param_type [$($param_value)*]);)*
+    }
+}
 
-        $(pub fn $param_name<T: Into<$param_type>>(&mut self, value: T) -> &mut Self {
+macro_rules! request_builder_setter_impl {
+    (
+        $param_name:ident: $param_type:ty [{$($param_value:tt)*}]
+    ) => {
+        pub fn $param_name<T: Into<$param_type>>(&mut self, value: T) -> &mut Self {
             self.$param_name = value.into();
             self
-        })*
-    }
+        }
+    };
+    (
+        $param_name:ident: $param_type:ty [$($param_value:tt)*]
+    ) => {
+        pub fn $param_name(&mut self, value: $param_type) -> &mut Self {
+            self.$param_name = value;
+            self
+        }
+    };
 }
 
 macro_rules! request_trait_impl {
@@ -100,7 +115,7 @@ macro_rules! request {
         ($($const_param_name:ident => $const_param_value:expr),*) ->
         $response_type:ty
         {
-            $($param_name:ident: $param_type:ty [$($param_value:expr)*] => {$($value:tt)*}),*
+            $($param_name:ident: $param_type:ty [$($param_value:tt)*] => {$($value:tt)*}),*
             $(,)*
         }
     ) => {
