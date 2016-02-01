@@ -16,6 +16,7 @@ pub mod auth;
 pub mod audio;
 pub mod photos;
 pub mod video;
+pub mod users;
 
 pub use api::{Result as VkResult, Error as ClientError, VkError, VkErrorCode};
 pub use api::{Client, Collection, Sort};
@@ -26,6 +27,8 @@ pub use audio::{GetRecommendations as AudioGetRecommendations, GetCount as Audio
 pub use audio::{GetPopular as AudioGetPopular};
 pub use video::{Video};
 pub use video::{Search as VideoSearch, Get as VideoGet};
+pub use users::{Search as UsersSearch, Get as UsersGet, IsAppUser as UsersIsAppUser, GetNearby as UsersGetNearby};
+pub use users::{GetFollowers as UsersGetFollowers, GetSubscriptions as UsersGetSubscriptions};
 pub use photos::{Photo, Search as PhotosSearch};
 
 pub use hyper::client::IntoUrl;
