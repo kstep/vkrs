@@ -17,5 +17,5 @@ request_lt! {
 }
 
 request! {
-    struct GetServerTime for ["users.getServerTime"](v => 5.44) -> u64;
+    struct GetServerTime for ["utils.getServerTime"](v => 5.44) -> u64;
 }
