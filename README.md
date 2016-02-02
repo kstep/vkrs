@@ -1,4 +1,6 @@
 # vkrs
+
+[![Join the chat at https://gitter.im/kstep/vkrs](https://badges.gitter.im/kstep/vkrs.svg)](https://gitter.im/kstep/vkrs?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 Vkontakte Rust client library
 
 <a href="https://travis-ci.org/kstep/vkrs"><img src="https://img.shields.io/travis/kstep/vkrs.png?style=flat-square" /></a> <a href="https://crates.io/crates/vkrs"><img src="https://img.shields.io/crates/d/vkrs.png?style=flat-square" /></a> <a href="https://crates.io/crates/vkrs"><img src="https://img.shields.io/crates/v/vkrs.png?style=flat-square" /></a> <a href="https://crates.io/crates/vkrs"><img src="https://img.shields.io/crates/l/vkrs.png?style=flat-square" /></a> <a href="https://coveralls.io/github/kstep/vkrs"><img src="https://img.shields.io/coveralls/kstep/vkrs.png?style=flat-square" /></a>
