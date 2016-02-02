@@ -22,8 +22,8 @@ impl<T: de::Deserialize + Clone> Clone for Collection<T> {
 }
 
 #[derive(Debug, PartialEq, Eq, Deserialize, Clone)]
-pub struct VkError {
-    pub error_code: VkErrorCode,
+pub struct ApiError {
+    pub error_code: ErrorCode,
     pub error_msg: String,
     pub request_params: Vec<KeyVal>
 }

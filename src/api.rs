@@ -28,7 +28,7 @@ pub struct Client<'a> {
 
 #[derive(Debug)]
 pub enum Error {
-    Api(VkError),
+    Api(ApiError),
     Http(HttpError),
     Json(JsonError),
 }
@@ -43,8 +43,8 @@ impl ::std::fmt::Display for Error {
     }
 }
 
-impl From<VkError> for Error {
-    fn from(err: VkError) -> Error {
+impl From<ApiError> for Error {
+    fn from(err: ApiError) -> Error {
         Error::Api(err)
     }
 }
@@ -107,7 +107,7 @@ impl<'a> Client<'a> {
             .send()
             .map_err(Error::Http)
             .and_then(|resp| {
-                serde_json::from_reader::<_, VkResult<T::Response>>(resp)
+                serde_json::from_reader::<_, ApiResult<T::Response>>(resp)
                     .map_err(Error::Json)
             })
             .and_then(|vkres| vkres.0.map_err(Error::Api))
@@ -141,57 +141,59 @@ pub trait Request {
 }
 
 #[derive(Debug)]
-pub struct VkResult<T>(pub StdResult<T, VkError>);
+pub struct ApiResult<T>(pub StdResult<T, ApiError>);
 
-impl<T> Deref for VkResult<T> {
-    type Target = StdResult<T, VkError>;
-    fn deref(&self) -> &StdResult<T, VkError> {
+pub type VkResult<T> = StdResult<T, ApiError>;
+
+impl<T> Deref for ApiResult<T> {
+    type Target = StdResult<T, ApiError>;
+    fn deref(&self) -> &StdResult<T, ApiError> {
         &self.0
     }
 }
 
-enum VkResultField {
+enum ApiResultField {
     Response,
     Error
 }
 
-impl de::Deserialize for VkResultField {
-    fn deserialize<D: de::Deserializer>(d: &mut D) -> StdResult<VkResultField, D::Error> {
-        struct VkResultFieldVisitor;
+impl de::Deserialize for ApiResultField {
+    fn deserialize<D: de::Deserializer>(d: &mut D) -> StdResult<ApiResultField, D::Error> {
+        struct ApiResultFieldVisitor;
 
-        impl de::Visitor for VkResultFieldVisitor {
-            type Value = VkResultField;
-            fn visit_str<E: de::Error>(&mut self, value: &str) -> StdResult<VkResultField, E> {
+        impl de::Visitor for ApiResultFieldVisitor {
+            type Value = ApiResultField;
+            fn visit_str<E: de::Error>(&mut self, value: &str) -> StdResult<ApiResultField, E> {
                 match value {
-                    "response" => Ok(VkResultField::Response),
-                    "error" => Ok(VkResultField::Error),
+                    "response" => Ok(ApiResultField::Response),
+                    "error" => Ok(ApiResultField::Error),
                     _ => Err(de::Error::syntax("expected response or error"))
                 }
             }
         }
 
-        d.visit(VkResultFieldVisitor)
+        d.visit(ApiResultFieldVisitor)
     }
 }
 
-impl<T: de::Deserialize> de::Deserialize for VkResult<T> {
-    fn deserialize<D: de::Deserializer>(d: &mut D) -> StdResult<VkResult<T>, D::Error> {
-        struct VkResultVisitor<T: de::Deserialize>(PhantomData<T>);
+impl<T: de::Deserialize> de::Deserialize for ApiResult<T> {
+    fn deserialize<D: de::Deserializer>(d: &mut D) -> StdResult<ApiResult<T>, D::Error> {
+        struct ApiResultVisitor<T: de::Deserialize>(PhantomData<T>);
 
-        impl<T: de::Deserialize> de::Visitor for VkResultVisitor<T> {
-            type Value = VkResult<T>;
-            fn visit_map<V: de::MapVisitor>(&mut self, mut v: V) -> StdResult<VkResult<T>, V::Error> {
+        impl<T: de::Deserialize> de::Visitor for ApiResultVisitor<T> {
+            type Value = ApiResult<T>;
+            fn visit_map<V: de::MapVisitor>(&mut self, mut v: V) -> StdResult<ApiResult<T>, V::Error> {
                 v.visit_key()
                  .and_then(|k| k.map(|k| match k {
-                    VkResultField::Response => v.visit_value::<T>().map(Ok),
-                    VkResultField::Error => v.visit_value::<VkError>().map(Err),
+                    ApiResultField::Response => v.visit_value::<T>().map(Ok),
+                    ApiResultField::Error => v.visit_value::<ApiError>().map(Err),
                  }).unwrap_or_else(|| v.missing_field("response or error")))
                  .and_then(|res| v.end().map(|_| res))
-                 .map(VkResult)
+                 .map(ApiResult)
             }
         }
 
-        d.visit_map(VkResultVisitor(PhantomData::<T>))
+        d.visit_map(ApiResultVisitor(PhantomData::<T>))
     }
 }
 
@@ -202,7 +204,7 @@ impl Into<(String, String)> for KeyVal {
 }
 
 #[derive(Debug, PartialEq, Eq, Copy, Clone)]
-pub enum VkErrorCode {
+pub enum ErrorCode {
     General, // 1
     Database, // 2
     Unauthorized, // 5
@@ -223,9 +225,9 @@ pub enum VkErrorCode {
     Unknown(u32), // other
 }
 
-impl From<u32> for VkErrorCode {
-    fn from(value: u32) -> VkErrorCode {
-        use self::VkErrorCode::*;
+impl From<u32> for ErrorCode {
+    fn from(value: u32) -> ErrorCode {
+        use self::ErrorCode::*;
         match value {
             1 => General,
             2 => Database,
@@ -248,9 +250,9 @@ impl From<u32> for VkErrorCode {
         }
     }
 }
-impl Into<u32> for VkErrorCode {
+impl Into<u32> for ErrorCode {
     fn into(self) -> u32 {
-        use self::VkErrorCode::*;
+        use self::ErrorCode::*;
         match self {
             General => 1,
             Database => 2,
@@ -274,9 +276,9 @@ impl Into<u32> for VkErrorCode {
     }
 }
 
-impl fmt::Display for VkErrorCode {
+impl fmt::Display for ErrorCode {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        use self::VkErrorCode::*;
+        use self::ErrorCode::*;
         match *self {
             General => f.write_str("general error"),
             Database => f.write_str("database error"),
@@ -300,19 +302,19 @@ impl fmt::Display for VkErrorCode {
     }
 }
 
-impl de::Deserialize for VkErrorCode {
-    fn deserialize<D: de::Deserializer>(d: &mut D) -> StdResult<VkErrorCode, D::Error> {
+impl de::Deserialize for ErrorCode {
+    fn deserialize<D: de::Deserializer>(d: &mut D) -> StdResult<ErrorCode, D::Error> {
         u32::deserialize(d).map(From::from)
     }
 }
 
-impl StdError for VkError {
+impl StdError for ApiError {
     fn description(&self) -> &str {
         &*self.error_msg
     }
 }
 
-impl fmt::Display for VkError {
+impl fmt::Display for ApiError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}: {}", self.error_code, self.error_msg)
     }
