@@ -1,9 +1,9 @@
 #![macro_use]
 
 macro_rules! qs {
-    ($($name:ident => $value:expr),+ $(,)*) => {
+    ($($name:expr => $value:expr),+ $(,)*) => {
         ::url::form_urlencoded::serialize([
-            $((stringify!($name), $value)),*
+            $(($name, $value)),*
         ].into_iter().filter(|&&(_, v)| !v.is_empty()))
     }
 }
@@ -104,7 +104,7 @@ macro_rules! request_trait_impl {
         [$method_name:expr]($($const_param_name:ident => $const_param_value:expr),*) ->
         $response_type:ty[$($permission:ident),*]
         {
-            $($param_name:ident => {$($value:tt)*}),*
+            $($param_name:ident as $param_alias:expr => {$($value:tt)*}),*
             $(,)*
         }
     ) => {
@@ -113,14 +113,32 @@ macro_rules! request_trait_impl {
         fn permissions() -> ::auth::Permissions { ::auth::Permissions::from($(::auth::Permission::$permission as i32 +)* 0) }
         fn to_query_string(&self) -> String {
             qs![
-                $($param_name => expand_value_expr!(self; $param_name; $($value)*),)*
-                $($const_param_name => concat!($const_param_value),)*
+                $($param_alias => expand_value_expr!(self; $param_name; $($value)*),)*
+                $(stringify!($const_param_name) => concat!($const_param_value),)*
             ]
         }
-    }
+    };
+
+    (
+        [$method_name:expr]($($const_param_name:ident => $const_param_value:expr),*) ->
+        $response_type:ty[$($permission:ident),*]
+        {
+            $($param_name:ident => {$($value:tt)*}),*
+            $(,)*
+        }
+    ) => {
+        request_trait_impl! {
+            [$method_name]($($const_param_name => $const_param_value),*) ->
+            $response_type [$($permission),*]
+            {
+                $($param_name as stringify!($param_name) => {$($value)*}),*
+            }
+        }
+    };
 }
 
 macro_rules! request {
+    // Empty struct without permissions
     (
         $(#[$attr:meta])*
         struct $struct_name:ident for [$method_name:expr]
@@ -134,6 +152,8 @@ macro_rules! request {
             $response_type [];
         }
     };
+
+    // Empty struct with permissions
     (
         $(#[$attr:meta])*
         struct $struct_name:ident for [$method_name:expr]
@@ -148,10 +168,12 @@ macro_rules! request {
             request_trait_impl! {
                 [$method_name]
                 ($($const_param_name => $const_param_value),*)
-                -> $response_type[$($permission),*] {}
+                -> $response_type [$($permission),*] {}
             }
         }
     };
+
+    // Struct without both aliased fields and permissions
     (
         $(#[$attr:meta])*
         struct $struct_name:ident for [$method_name:expr]
@@ -166,19 +188,65 @@ macro_rules! request {
             $(#[$attr])*
             struct $struct_name for [$method_name]
             ($($const_param_name => $const_param_value),*) ->
-            $response_type[]
+            $response_type []
             {
-                $($param_name: $param_type = $param_value => {$($value)*}),*
+                $($param_name as (stringify!($param_name)): $param_type = $param_value => {$($value)*}),*
             }
         }
     };
+
+    // Struct without aliased fields, with permissions
     (
         $(#[$attr:meta])*
         struct $struct_name:ident for [$method_name:expr]
         ($($const_param_name:ident => $const_param_value:expr),*) ->
-        $response_type:ty[$($permission:ident),*]
+        $response_type:ty [$($permission:ident),*]
         {
             $($param_name:ident: $param_type:ty = $param_value:tt => {$($value:tt)*}),*
+            $(,)*
+        }
+    ) => {
+        request! {
+            $(#[$attr])*
+            struct $struct_name for [$method_name]
+            ($($const_param_name => $const_param_value),*) ->
+            $response_type [$($permission),*]
+            {
+                $($param_name as (stringify!($param_name)): $param_type = $param_value => {$($value)*}),*
+            }
+        }
+    };
+
+    // Struct with aliased fields, without permissions
+    (
+        $(#[$attr:meta])*
+        struct $struct_name:ident for [$method_name:expr]
+        ($($const_param_name:ident => $const_param_value:expr),*) ->
+        $response_type:ty
+        {
+            $($param_name:ident as ($param_alias:expr): $param_type:ty = $param_value:tt => {$($value:tt)*}),*
+            $(,)*
+        }
+    ) => {
+        request! {
+            $(#[$attr])*
+            struct $struct_name for [$method_name]
+            ($($const_param_name => $const_param_value),*) ->
+            $response_type []
+            {
+                $($param_name as ($param_alias): $param_type = $param_value => {$($value)*}),*
+            }
+        }
+    };
+
+    // Struct with aliased fields and permissions
+    (
+        $(#[$attr:meta])*
+        struct $struct_name:ident for [$method_name:expr]
+        ($($const_param_name:ident => $const_param_value:expr),*) ->
+        $response_type:ty [$($permission:ident),*]
+        {
+            $($param_name:ident as ($param_alias:expr): $param_type:ty = $param_value:tt => {$($value:tt)*}),*
             $(,)*
         }
     ) => {
@@ -192,9 +260,9 @@ macro_rules! request {
             request_trait_impl! {
                 [$method_name]
                 ($($const_param_name => $const_param_value),*)
-                -> $response_type[$($permission),*]
+                -> $response_type [$($permission),*]
                 {
-                    $($param_name => {$($value)*},)*
+                    $($param_name as $param_alias => {$($value)*},)*
                 }
             }
         }
@@ -211,6 +279,7 @@ macro_rules! request {
 }
 
 macro_rules! request_ref {
+    // Struct without permissions, aliases and sized fields
     (
         $(#[$attr:meta])*
         struct $struct_name:ident for [$method_name:expr]
@@ -226,10 +295,64 @@ macro_rules! request_ref {
             ($($const_param_name => $const_param_value),*) ->
             $response_type []
             {
-                $($param_name_lt: $param_type_lt = $param_value_lt => {$($value_lt)*}),*
+                $($param_name_lt as (stringify!($param_name_lt)): $param_type_lt = $param_value_lt => {$($value_lt)*}),*
             }
         }
     };
+
+    // Struct with sized fields, without permissions and aliases
+    (
+        $(#[$attr:meta])*
+        struct $struct_name:ident for [$method_name:expr]
+        ($($const_param_name:ident => $const_param_value:expr),*) ->
+        $response_type:ty
+        {
+            sized { $($param_name:ident: $param_type:ty = $param_value:tt => {$($value:tt)*}),* $(,)* }
+            unsized { $($param_name_lt:ident: $param_type_lt:ty = $param_value_lt:tt => {$($value_lt:tt)*}),* $(,)* }
+        }
+    ) => {
+        request_ref! {
+            $(#[$attr])*
+            struct $struct_name for [$method_name]
+            ($($const_param_name => $const_param_value),*) ->
+            $response_type []
+            {
+                sized {
+                    $($param_name as (stringify!($param_name)): $param_type = $param_value => {$($value)*}),*
+                }
+                unsized {
+                    $($param_name_lt as (stringify!($param_name_lt)): $param_type_lt = $param_value_lt => {$($value_lt)*}),*
+                }
+            }
+        }
+    };
+
+    // Struct with aliases, without sized fields and permissions
+    (
+        $(#[$attr:meta])*
+        struct $struct_name:ident for [$method_name:expr]
+        ($($const_param_name:ident => $const_param_value:expr),*) ->
+        $response_type:ty
+        {
+            $($param_name_lt:ident as ($param_alias_lt:expr): $param_type_lt:ty = $param_value_lt:tt => {$($value_lt:tt)*}),* $(,)*
+        }
+    ) => {
+        request_ref! {
+            $(#[$attr])*
+            struct $struct_name for [$method_name]
+            ($($const_param_name => $const_param_value),*) ->
+            $response_type []
+            {
+                sized {
+                }
+                unsized {
+                    $($param_name_lt as ($param_alias_lt): $param_type_lt = $param_value_lt => {$($value_lt)*}),*
+                }
+            }
+        }
+    };
+
+    // Struct with permissions, without sized fields and aliases
     (
         $(#[$attr:meta])*
         struct $struct_name:ident for [$method_name:expr]
@@ -253,11 +376,38 @@ macro_rules! request_ref {
             }
         }
     };
+
+    // Struct with permissions and aliases, without sized fields
     (
         $(#[$attr:meta])*
         struct $struct_name:ident for [$method_name:expr]
         ($($const_param_name:ident => $const_param_value:expr),*) ->
-        $response_type:ty
+        $response_type:ty [$($permission:ident),*]
+        {
+            $($param_name_lt:ident as ($param_alias_lt:expr): $param_type_lt:ty = $param_value_lt:tt => {$($value_lt:tt)*}),* $(,)*
+        }
+    ) => {
+        request_ref! {
+            $(#[$attr])*
+            struct $struct_name for [$method_name]
+            ($($const_param_name => $const_param_value),*) ->
+            $response_type [$($permission:ident),*]
+            {
+                sized {
+                }
+                unsized {
+                    $($param_name_lt as ($param_alias_lt): $param_type_lt = $param_value_lt => {$($value_lt)*}),*
+                }
+            }
+        }
+    };
+
+    // Struct with sized fields and permissions, without aliases
+    (
+        $(#[$attr:meta])*
+        struct $struct_name:ident for [$method_name:expr]
+        ($($const_param_name:ident => $const_param_value:expr),*) ->
+        $response_type:ty [$($permission:ident),*]
         {
             sized {$($param_name:ident: $param_type:ty = $param_value:tt => {$($value:tt)*}),* $(,)*}
             unsized {$($param_name_lt:ident: $param_type_lt:ty = $param_value_lt:tt => {$($value_lt:tt)*}),* $(,)*}
@@ -267,21 +417,46 @@ macro_rules! request_ref {
             $(#[$attr])*
             struct $struct_name for [$method_name]
             ($($const_param_name => $const_param_value),*) ->
-            $response_type[]
+            $response_type [$($permission),*]
             {
-                sized { $($param_name: $param_type = $param_value => {$($value)*}),* }
-                unsized { $($param_name_lt: $param_type_lt = $param_value_lt => {$($value_lt)*}),* }
+                sized { $($param_name as (stringify!($param_name)): $param_type = $param_value => {$($value)*}),* }
+                unsized { $($param_name_lt as (stringify!($param_name_lt)): $param_type_lt = $param_value_lt => {$($value_lt)*}),* }
             }
         }
     };
+
+    // Struct with sized fields and aliases, without permissions
     (
         $(#[$attr:meta])*
         struct $struct_name:ident for [$method_name:expr]
         ($($const_param_name:ident => $const_param_value:expr),*) ->
-        $response_type:ty[$($permission:ident),*]
+        $response_type:ty
         {
-            sized {$($param_name:ident: $param_type:ty = $param_value:tt => {$($value:tt)*}),* $(,)*}
-            unsized {$($param_name_lt:ident: $param_type_lt:ty = $param_value_lt:tt => {$($value_lt:tt)*}),* $(,)*}
+            sized {$($param_name:ident as ($param_alias:expr): $param_type:ty = $param_value:tt => {$($value:tt)*}),* $(,)*}
+            unsized {$($param_name_lt:ident as ($param_alias_lt:expr): $param_type_lt:ty = $param_value_lt:tt => {$($value_lt:tt)*}),* $(,)*}
+        }
+    ) => {
+        request_ref! {
+            $(#[$attr])*
+            struct $struct_name for [$method_name]
+            ($($const_param_name => $const_param_value),*) ->
+            $response_type []
+            {
+                sized { $($param_name as ($param_alias): $param_type = $param_value => {$($value)*}),* }
+                unsized { $($param_name_lt as ($param_alias_lt): $param_type_lt = $param_value_lt => {$($value_lt)*}),* }
+            }
+        }
+    };
+
+    // Struct with sized fields, permissions and aliases
+    (
+        $(#[$attr:meta])*
+        struct $struct_name:ident for [$method_name:expr]
+        ($($const_param_name:ident => $const_param_value:expr),*) ->
+        $response_type:ty [$($permission:ident),*]
+        {
+            sized {$($param_name:ident as ($param_alias:expr): $param_type:ty = $param_value:tt => {$($value:tt)*}),* $(,)*}
+            unsized {$($param_name_lt:ident as ($param_alias_lt:expr): $param_type_lt:ty = $param_value_lt:tt => {$($value_lt:tt)*}),* $(,)*}
         }
     ) => {
         #[derive(Debug, PartialEq, Clone)]
@@ -295,10 +470,10 @@ macro_rules! request_ref {
             request_trait_impl! {
                 [$method_name]
                 ($($const_param_name => $const_param_value),*)
-                -> $response_type[$($permission),*]
+                -> $response_type [$($permission),*]
                 {
-                    $($param_name => {$($value)*},)*
-                    $($param_name_lt => {$($value_lt)*},)*
+                    $($param_name as $param_alias => {$($value)*},)*
+                    $($param_name_lt as $param_alias_lt => {$($value_lt)*},)*
                 }
             }
         }

@@ -157,37 +157,27 @@ include!("audio.rs.in");
 #[cfg(not(feature = "nightly"))]
 include!(concat!(env!("OUT_DIR"), "/audio.rs"));
 
-#[derive(Copy, Eq, PartialEq, Clone, Debug)]
-pub struct GetById<'a>(pub &'a [(i64, u64)]);
-impl<'a> ::api::Request for GetById<'a> {
-    type Response = Collection<Audio>;
-    fn method_name() -> &'static str { "audio.getById" }
-    fn to_query_string(&self) -> String { qs![
-        audios => &*self.0.iter().map(|&(o, id)| format!("{}_{}", o, id)).collect::<Vec<_>>().join(","),
-        v => "5.44"
-    ]}
+request_ref! {
+    #[derive(Copy, Eq)]
+    struct GetById for ["audio.getById"](v => 5.44) -> Collection<Audio> {
+        audios: [(i64, u64)] = (&[][..]) => {|value|
+            &*value.iter().map(|&(o, id)| format!("{}_{}", o, id)).collect::<Vec<_>>().join(",")
+        }
+    }
 }
 
-#[derive(Copy, Eq, PartialEq, Clone, Debug)]
-pub struct GetLyrics(pub u64);
-impl ::api::Request for GetLyrics {
-    type Response = Lyrics;
-    fn method_name() -> &'static str { "audio.getLyrics" }
-    fn to_query_string(&self) -> String { qs![
-        lyrics_id => &*self.0.to_string(),
-        v => "5.44"
-    ]}
+request! {
+    #[derive(Copy, Eq)]
+    struct GetLyrics for ["audio.getLyrics"](v => 5.44) -> Lyrics {
+        lyrics_id: u64 = () => {}
+    }
 }
 
-#[derive(Copy, Eq, PartialEq, Clone, Debug)]
-pub struct GetCount(pub u64);
-impl ::api::Request for GetCount {
-    type Response = u64;
-    fn method_name() -> &'static str { "audio.getCount" }
-    fn to_query_string(&self) -> String { qs![
-        owner_id => &*self.0.to_string(),
-        v => "5.44"
-    ]}
+request! {
+    #[derive(Copy, Eq)]
+    struct GetCount for ["audio.getCount"](v => 5.44) -> u64 {
+        lyrics_id: u64 = () => {}
+    }
 }
 
 request! {
@@ -217,7 +207,7 @@ request! {
         target_audio: Option<(i64, u64)> = (None) => { |value|
             value.map(|(x, y)| format!("{}_{}", x, y)).as_ref().map(Borrow::borrow).unwrap_or("")
         },
-        user_id: Option<i64> = (None) => {Option},
+        user_id: Option<i64> = () => {Option},
         offset: usize = (0) => {},
         count: usize = (30) => {},
         shuffle: bool = () => {bool},

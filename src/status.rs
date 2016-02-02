@@ -8,6 +8,7 @@ include!("status.rs.in");
 include!(concat!(env!("OUT_DIR"), "/status.rs"));
 
 request! {
+    #[derive(Copy, Eq)]
     struct Get for ["status.get"](v => 5.44) -> Status [Status] {
         user_id: Option<i64> = () => {Option},
         group_id: Option<i64> = () => {Option},
@@ -15,6 +16,7 @@ request! {
 }
 
 request_ref! {
+    #[derive(Copy, Eq)]
     struct Set for ["status.set"](v => 5.44) -> u8 [Status] {
         sized {
             group_id: Option<i64> = () => {Option},
