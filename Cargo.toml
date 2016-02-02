@@ -38,4 +38,4 @@ version = "^0.6.5"
 
 [features]
 default = ["serde_codegen", "syntex"]
-nightly = ["serde_macros"]
+unstable = ["serde_macros"]
