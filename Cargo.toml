@@ -6,7 +6,7 @@ keywords = ["vk", "api"]
 license = "MIT/Apache-2.0"
 name = "vkrs"
 repository = "https://github.com/kstep/vkrs"
-version = "0.4.1"
+version = "0.4.2"
 
 [build-dependencies]
 
