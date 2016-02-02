@@ -9,14 +9,14 @@ include!("status.rs.in");
 include!(concat!(env!("OUT_DIR"), "/status.rs"));
 
 request! {
-    struct Get for ["status.get"](v => 5.44) -> Collection<Status> {
+    struct Get for ["status.get"](v => 5.44) -> Status [Status] {
         user_id: Option<i64> = () => {Option},
         group_id: Option<i64> = () => {Option},
     }
 }
 
 request_lt! {
-    struct Set for ["status.set"](v => 5.44) -> u8 {
+    struct Set for ["status.set"](v => 5.44) -> u8 [Status] {
         sized {
             group_id: Option<i64> = () => {Option},
         }
