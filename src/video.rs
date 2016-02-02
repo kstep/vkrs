@@ -10,7 +10,7 @@ include!("video.rs.in");
 #[cfg(not(feature = "nightly"))]
 include!(concat!(env!("OUT_DIR"), "/video.rs"));
 
-request_lt! {
+request_ref! {
     #[derive(Eq, Copy)]
     struct Get for ["video.get"](v => 5.44) -> Collection<Video> {
         sized {
@@ -27,7 +27,7 @@ request_lt! {
     }
 }
 
-request_lt! {
+request_ref! {
     #[derive(Eq, Copy)]
     struct Search for ["video.search"](v => 5.44) -> Collection<Video> {
         sized {

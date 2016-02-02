@@ -8,7 +8,7 @@ include!("wall.rs.in");
 #[cfg(not(feature = "nightly"))]
 include!(concat!(env!("OUT_DIR"), "/wall.rs"));
 
-request_lt! {
+request_ref! {
     struct Get for ["wall.get"](v => 5.44, extended => 0) -> Collection<WallPost> {
         sized {
             owner_id: i64 = () => {},
@@ -32,7 +32,7 @@ impl de::Deserialize for PostId {
     }
 }
 
-request_lt! {
+request_ref! {
     struct Post for ["wall.post"](v => 5.44) -> PostId [Wall] {
         sized {
             owner_id: i64 = () => {},

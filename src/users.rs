@@ -148,7 +148,7 @@ impl AsRef<str> for UserOptionField {
     }
 }
 
-request_lt! {
+request_ref! {
     struct Get for ["users.get"](v => 5.44) -> Vec<User> {
         sized {
             name_case: NameCase = (NameCase::Nominative) => {AsRef},
@@ -160,7 +160,7 @@ request_lt! {
     }
 }
 
-request_lt! {
+request_ref! {
     struct Search for ["users.search"](v => 5.44) -> Collection<User> {
         sized {
             sort: Sort = (Sort::Rating) => {AsRef},
@@ -216,7 +216,7 @@ request! {
     }
 }
 
-request_lt! {
+request_ref! {
     struct GetSubscriptions for ["users.getSubscriptions"](v => 5.44, extended => 1) -> Collection<User> {
         sized {
             user_id: i64 = (0) => {},
@@ -229,7 +229,7 @@ request_lt! {
     }
 }
 
-request_lt! {
+request_ref! {
     struct GetFollowers for ["users.getFollowers"](v => 5.44) -> Collection<User> {
         sized {
             user_id: i64 = (0) => {},
@@ -243,7 +243,7 @@ request_lt! {
     }
 }
 
-request_lt! {
+request_ref! {
     struct Report for ["users.report"](v => 5.44) -> u8 {
         sized {
             user_id: i64 = (0) => {},
@@ -255,7 +255,7 @@ request_lt! {
     }
 }
 
-//request_lt! {
+//request_ref! {
     //struct GetSubscriptionIds for ["users.getSubscriptions"](v => 5.44, extended => 0) -> Collection<i64> {
         //sized {
             //user_id: i64 (0) => {},
@@ -268,7 +268,7 @@ request_lt! {
     //}
 //}
 
-request_lt! {
+request_ref! {
     struct GetNearby for ["users.getNearby"](v => 5.44) -> Collection<User> {
         sized {
             latitude: f32 = () => {},

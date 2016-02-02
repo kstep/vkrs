@@ -1,6 +1,6 @@
 use super::api::{Collection};
 
-request_lt! {
+request_ref! {
     struct Search for ["photos.search"](v => 5.37) -> Collection<Photo> {
         sized {
             lat: f32 = () => {},

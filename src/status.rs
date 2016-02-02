@@ -14,7 +14,7 @@ request! {
     }
 }
 
-request_lt! {
+request_ref! {
     struct Set for ["status.set"](v => 5.44) -> u8 [Status] {
         sized {
             group_id: Option<i64> = () => {Option},

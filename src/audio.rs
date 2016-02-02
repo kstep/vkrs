@@ -133,7 +133,7 @@ request! {
     }
 }
 
-request_lt! {
+request_ref! {
     #[derive(Eq, Copy)]
     struct Search for ["audio.search"](v => 5.44) -> Collection<Audio> {
         sized {

@@ -210,7 +210,7 @@ macro_rules! request {
     };
 }
 
-macro_rules! request_lt {
+macro_rules! request_ref {
     (
         $(#[$attr:meta])*
         struct $struct_name:ident for [$method_name:expr]
@@ -220,7 +220,7 @@ macro_rules! request_lt {
             $($param_name_lt:ident: $param_type_lt:ty = $param_value_lt:tt => {$($value_lt:tt)*}),* $(,)*
         }
     ) => {
-        request_lt! {
+        request_ref! {
             $(#[$attr])*
             struct $struct_name for [$method_name]
             ($($const_param_name => $const_param_value),*) ->
@@ -239,7 +239,7 @@ macro_rules! request_lt {
             $($param_name_lt:ident: $param_type_lt:ty = $param_value_lt:tt => {$($value_lt:tt)*}),* $(,)*
         }
     ) => {
-        request_lt! {
+        request_ref! {
             $(#[$attr])*
             struct $struct_name for [$method_name]
             ($($const_param_name => $const_param_value),*) ->
@@ -263,7 +263,7 @@ macro_rules! request_lt {
             unsized {$($param_name_lt:ident: $param_type_lt:ty = $param_value_lt:tt => {$($value_lt:tt)*}),* $(,)*}
         }
     ) => {
-        request_lt! {
+        request_ref! {
             $(#[$attr])*
             struct $struct_name for [$method_name]
             ($($const_param_name => $const_param_value),*) ->
