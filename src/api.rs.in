@@ -35,7 +35,7 @@ pub struct KeyVal {
 }
 
 #[derive(Debug, PartialEq, Eq, Deserialize, Copy, Clone)]
-pub struct Likes {
+pub struct LikesCount {
     pub user_likes: u32,
     pub count: u32,
 }

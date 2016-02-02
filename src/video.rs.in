@@ -29,7 +29,7 @@ pub struct Video {
     #[serde(default)]
     pub repeat: u8, // bool
     pub files: Option<VideoFiles>,
-    pub likes: Option<Likes>,
+    pub likes: Option<LikesCount>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]

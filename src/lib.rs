@@ -18,6 +18,7 @@ pub mod photos;
 pub mod video;
 pub mod users;
 pub mod status;
+pub mod wall;
 
 pub use api::{Result as VkResult, Error as ClientError, VkError, VkErrorCode};
 pub use api::{Client, Collection, Sort};

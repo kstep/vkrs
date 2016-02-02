@@ -2,7 +2,7 @@ use std::borrow::Borrow;
 use std::convert::AsRef;
 use std::string::ToString;
 use std::error::Error;
-use super::api::{Collection, Sort, Likes};
+use super::api::{Collection, Sort, LikesCount};
 
 #[cfg(feature = "nightly")]
 include!("video.rs.in");

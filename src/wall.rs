@@ -1,11 +1,17 @@
-use super::users::NameCase;
-use super::api::Collection;
+use super::users::{UserOptionField};
+use super::api::{Collection, LikesCount};
+use serde::de;
+
+#[cfg(feature = "nightly")]
+include!("wall.rs.in");
+
+#[cfg(not(feature = "nightly"))]
+include!(concat!(env!("OUT_DIR"), "/wall.rs"));
 
 request_lt! {
-    struct Get for ["users.get"](v => 5.44, extended => 0) -> Collection<Post> {
+    struct Get for ["wall.get"](v => 5.44, extended => 0) -> Collection<WallPost> {
         sized {
             owner_id: i64 = () => {},
-            name_case: NameCase = (NameCase::Nominative) => {AsRef},
             filter: Filter = (Filter::All) => {AsRef},
             offset: usize = (0) => {},
             count: usize = (100) => {},
@@ -17,6 +23,36 @@ request_lt! {
     }
 }
 
+#[derive(Copy, Clone, PartialEq, Eq, Debug)]
+pub struct PostId(u64);
+
+impl de::Deserialize for PostId {
+    fn deserialize<D: de::Deserializer>(d: &mut D) -> Result<PostId, D::Error> {
+        de::Deserialize::deserialize(d).map(PostId)
+    }
+}
+
+request_lt! {
+    struct Post for ["wall.post"](v => 5.44) -> PostId [Wall] {
+        sized {
+            owner_id: i64 = () => {},
+            friend_only: bool = (true) => {bool},
+            from_group: bool = (false) => {bool},
+            signed: bool = (false) => {bool},
+            publish_date: u64 = (0) => {},
+            lat: f32 = () => {},
+            long: f32 = () => {},
+            place_id: u64 = () => {},
+            post_id: u64 = () => {},
+        }
+        unsized {
+            message: str = ("") => {=},
+            services: str = ("") => {=},
+        }
+    }
+}
+
+#[derive(Copy, Clone, PartialEq, Eq, Debug)]
 pub enum Filter {
     Owner,
     Others,

@@ -1,0 +1,53 @@
+
+#[derive(Debug, PartialEq, Eq, Deserialize, Clone)]
+pub struct WallPost {
+    id: u64,
+    owner_id: i64,
+    from_id: i64,
+    date: u64,
+    text: String,
+    reply_owner_id: i64,
+    reply_post_id: u64,
+    friends_only: u8,
+    comments: CommentsCount,
+    likes: LikesCount,
+    reposts: RepostsCount,
+    post_type: PostType,
+    post_source: PostSource, // TODO
+    attachments: Vec<Attachment>, // TODO
+    geo: GeoLocation, // TODO
+    signer_id: i64,
+    copy_history: Option<Vec<RepostInfo>>, // TODO
+    can_pin: u8,
+    is_pinned: u8,
+}
+
+#[derive(Debug, PartialEq, Eq, Deserialize, Clone, Copy)]
+pub struct CommentsCount {
+    count: u32,
+    can_post: u8,
+}
+
+#[derive(Debug, PartialEq, Eq, Deserialize, Clone, Copy)]
+pub struct RepostsCount {
+    count: u32,
+    user_reposted: u8,
+}
+
+#[derive(Debug, PartialEq, Eq, Deserialize, Clone, Copy)]
+pub enum PostType {
+    Post,
+    Copy,
+    Reply,
+    Postpone,
+    Suggest
+}
+
+#[derive(Debug, PartialEq, Eq, Deserialize, Clone, Copy)]
+pub struct PostSource;
+#[derive(Debug, PartialEq, Eq, Deserialize, Clone, Copy)]
+pub struct Attachment;
+#[derive(Debug, PartialEq, Eq, Deserialize, Clone, Copy)]
+pub struct GeoLocation;
+#[derive(Debug, PartialEq, Eq, Deserialize, Clone, Copy)]
+pub struct RepostInfo;

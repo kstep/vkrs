@@ -214,6 +214,10 @@ pub enum VkErrorCode {
     GoodsUnvailable, // 21
     UserNotFound, // 22
     AccessDenied, // 204
+    PostAddAccessDenied, // 214
+    AdsPostWasRecentlyAdded, // 219,
+    TooManyRecipients, // 220,
+    HyperlinksForbidden, // 222
     UserDisabledTrackBroadcast, // 221
     App(u32), // 100-999
     Unknown(u32), // other
@@ -234,6 +238,10 @@ impl From<u32> for VkErrorCode {
             21 => GoodsUnvailable,
             22 => UserNotFound,
             204 => AccessDenied,
+            214 => PostAddAccessDenied,
+            219 => AdsPostWasRecentlyAdded,
+            220 => TooManyRecipients,
+            222 => HyperlinksForbidden,
             221 => UserDisabledTrackBroadcast,
             v @ 100...999 => App(v),
             v @ _ => Unknown(v)
@@ -255,6 +263,10 @@ impl Into<u32> for VkErrorCode {
             GoodsUnvailable => 21,
             UserNotFound => 22,
             AccessDenied => 204,
+            PostAddAccessDenied => 214,
+            AdsPostWasRecentlyAdded => 219,
+            TooManyRecipients => 220,
+            HyperlinksForbidden => 222,
             UserDisabledTrackBroadcast => 221,
             App(v) => v,
             Unknown(v) => v,
@@ -277,6 +289,10 @@ impl fmt::Display for VkErrorCode {
             GoodsUnvailable => f.write_str("goods unavailable"),
             UserNotFound => f.write_str("user not found"),
             AccessDenied => f.write_str("access denied"),
+            PostAddAccessDenied => f.write_str("access to adding post denied"),
+            AdsPostWasRecentlyAdded => f.write_str("ads post was recently added"),
+            TooManyRecipients => f.write_str("too many recipients"),
+            HyperlinksForbidden => f.write_str("hyperlinks are forbidden"),
             UserDisabledTrackBroadcast => f.write_str("user disabled track name broadcast"),
             App(v) => write!(f, "application error #{}", v),
             Unknown(v) => write!(f, "unknown error #{}", v),
