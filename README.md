@@ -55,7 +55,7 @@ fn main() {
     // And then you can load it again:
     // let token: auth::AccessToken = File::open(TOKEN_FILE).ok().and_then(|mut f| serde_json::from_reader(&mut f).ok()).unwrap();
 
-    let songs = Client::new().token(&token).get(
+    let songs = api.get(Some(&token),
         audio::Search::new()
             .q("Poets Of The Fall")
             .performer_only(true)

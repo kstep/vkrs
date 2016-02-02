@@ -21,9 +21,8 @@ include!("api.rs.in");
 #[cfg(not(feature = "nightly"))]
 include!(concat!(env!("OUT_DIR"), "/api.rs"));
 
-pub struct Client<'a> {
+pub struct Client {
     client: HttpClient,
-    token: Option<&'a AccessToken>,
 }
 
 #[derive(Debug)]
@@ -69,14 +68,7 @@ impl From<UrlError> for Error {
 
 pub type Result<T> = StdResult<T, Error>;
 
-impl<'a> Deref for Client<'a> {
-    type Target = HttpClient;
-    fn deref(&self) -> &HttpClient {
-        &self.client
-    }
-}
-
-impl<'a> Client<'a> {
+impl Client {
     pub fn auth<K, S>(&self, key: K, secret: S) -> OAuth where K: Into<String>, S: Into<String> {
         OAuth::new(
             &self.client,
@@ -84,21 +76,15 @@ impl<'a> Client<'a> {
             secret.into())
     }
 
-    pub fn new() -> Client<'a> {
+    pub fn new() -> Client {
         Client {
             client: HttpClient::new(),
-            token: None,
         }
     }
 
-    pub fn token(&mut self, token: &'a AccessToken) -> &mut Self {
-        self.token = Some(token);
-        self
-    }
-
-    pub fn get<T: Request>(&self, req: &T) -> Result<T::Response> {
+    pub fn get<T: Request>(&self, token: Option<&AccessToken>, req: &T) -> Result<T::Response> {
         let mut url = req.to_url();
-        if let Some(ref token) = self.token {
+        if let Some(ref token) = token {
             if let Some(ref mut query) = url.query {
                 query.push_str("&access_token=");
                 query.push_str(token.access_token());

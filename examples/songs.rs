@@ -56,17 +56,15 @@ fn print_m3u(songs: &Collection<Audio>) {
     }
 }
 
-fn find_songs(api: &mut Client, query: &str, performer_only: bool) {
-    let songs: api::Result<Collection<Audio>> = api.get(audio::Search::new().q(query).performer_only(performer_only).count(200));
-    //let songs: api::Result<Collection<Audio>> = Client::new().token(token).get(AudioGetRecommendations::new().count(200));
+fn find_songs(api: &Client, token: &AccessToken, query: &str, performer_only: bool) {
+    let songs: api::Result<Collection<Audio>> = api.get(Some(token), audio::Search::new().q(query).performer_only(performer_only).count(200));
+    //let songs: api::Result<Collection<Audio>> = Client::new().token(token).get(Some(token), AudioGetRecommendations::new().count(200));
 
     match songs {
         Ok(songs) => print_m3u(&songs),
-        //Err(api::Error::Api(api::ApiError { error_code: api::ErrorCode::Unauthorized, .. })) => {
-            //let token = fetch_access_token(api).unwrap();
-            //api.token(&token);
-            //find_songs(api, query, performer_only)
-        //},
+        Err(api::Error::Api(api::ApiError { error_code: api::ErrorCode::Unauthorized, .. })) => {
+            find_songs(api, &fetch_access_token(api).unwrap(), query, performer_only)
+        },
         Err(err) => println!("Error: {}", err)
     }
 }
@@ -88,17 +86,15 @@ fn main() {
              .help("User id"))
         .get_matches();
 
-    let token = get_access_token(&Client::new()).unwrap();
+    let api = Client::new();
+    let token = get_access_token(&api).unwrap();
 
     let query = args.value_of("query").unwrap();
     //let lookup_type = if args.is_present("user") { LookUpType::User }
         //else if args.is_present("performer") { LookUpType::Performer }
         //else { LookUpType::Title };
 
-    let mut api = Client::new();
-    api.token(&token);
-
-    find_songs(&mut api, query,
+    find_songs(&api, &token, query,
                args.is_present("Performer"));
                //args.value_of("user").and_then(|v| v.parse::<i64>().ok()));
 }
