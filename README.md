@@ -30,11 +30,12 @@ use std::{env, io};
 use vkrs::*;
 
 fn main() {
-    let oauth = api::Client::auth(
+    let api = api::Client::new();
+    let oauth = api.auth(
         env::var("VK_APP_ID").unwrap(),
         env::var("VK_APP_SECRET").unwrap());
 
-    let auth_uri = oauth.auth_uri(Some(auth::Permission::Audio.as_ref()), None).unwrap();
+    let auth_uri = oauth.auth_uri(auth::Permission::Audio).unwrap();
     println!("Go to {} and enter code below...", auth_uri);
 
     let inp = io::stdin();

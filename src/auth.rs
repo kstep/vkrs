@@ -1,5 +1,6 @@
 use std::convert::AsRef;
 
+use hyper::client::Client as HttpClient;
 use oauth2::provider::Provider;
 use oauth2::client::response::{FromResponse, ParseError};
 use oauth2::token::{Lifetime, Token};
@@ -75,7 +76,20 @@ impl AccessToken {
     }
 }
 
-pub type OAuth = ::oauth2::client::Client<Auth>;
+pub struct OAuth<'a>(::oauth2::client::Client<Auth>, &'a HttpClient);
+
+impl<'a> OAuth<'a> {
+    pub fn new(client: &'a HttpClient, key: String, secret: String) -> OAuth {
+        OAuth(::oauth2::client::Client::<Auth>::new(key, secret, Some(String::from(OAUTH_DEFAULT_REDIRECT_URI))), client)
+    }
+    pub fn auth_uri<T: Into<Permissions>>(&self, scope: T) -> Result<String, OAuthError> {
+        let scope: String = scope.into().into();
+        self.0.auth_uri(Some(&scope), None)
+    }
+    pub fn request_token(&self, code: &str) -> Result<AccessToken, OAuthError> {
+        self.0.request_token(self.1, code)
+    }
+}
 
 pub struct Auth;
 impl Provider for Auth {
@@ -119,6 +133,47 @@ pub struct Permissions(i32);
 impl From<i32> for Permissions {
     fn from(n: i32) -> Permissions {
         Permissions(n & 0x5ebdff)
+    }
+}
+
+impl Into<String> for Permissions {
+    fn into(self) -> String {
+        use self::Permission::*;
+        let Permissions(n) = self;
+        [
+            Notify,
+            Friends,
+            Photos,
+            Audio,
+            Video,
+            Docs,
+            Notes,
+            Pages,
+            Menu,
+            Status,
+            Offers,
+            Questions,
+            Wall,
+            Groups,
+            Messages,
+            Email,
+            Notifications,
+            Stats,
+            Ads,
+        ]
+        .iter()
+        .map(|&mask| mask)
+        .filter(|&mask| mask as i32 & n != 0)
+        // TODO: suboptimal
+        .map(|mask| mask.as_ref().to_owned())
+        .collect::<Vec<_>>()
+        .join(",")
+    }
+}
+
+impl From<Permission> for Permissions {
+    fn from(perm: Permission) -> Permissions {
+        Permissions(perm as i32)
     }
 }
 

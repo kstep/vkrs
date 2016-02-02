@@ -26,7 +26,7 @@ clap = "^1.5.4"
 [dependencies]
 chrono = "0.2.18"
 hyper = "^0.7.1"
-inth-oauth2 = "0.6.0"
+inth-oauth2 = "0.7.0"
 rustc-serialize = "0.3.16"
 serde = "^0.6.6"
 serde_json = "^0.6.0"

@@ -69,13 +69,19 @@ impl From<UrlError> for Error {
 
 pub type Result<T> = StdResult<T, Error>;
 
+impl<'a> Deref for Client<'a> {
+    type Target = HttpClient;
+    fn deref(&self) -> &HttpClient {
+        &self.client
+    }
+}
+
 impl<'a> Client<'a> {
-    pub fn auth<K, S>(key: K, secret: S) -> OAuth where K: Into<String>, S: Into<String> {
+    pub fn auth<K, S>(&self, key: K, secret: S) -> OAuth where K: Into<String>, S: Into<String> {
         OAuth::new(
-            Default::default(),
+            &self.client,
             key.into(),
-            secret.into(),
-            Some(String::from(::auth::OAUTH_DEFAULT_REDIRECT_URI)))
+            secret.into())
     }
 
     pub fn new() -> Client<'a> {
@@ -90,7 +96,7 @@ impl<'a> Client<'a> {
         self
     }
 
-    pub fn get<T: Request>(&mut self, req: &T) -> Result<T::Response> {
+    pub fn get<T: Request>(&self, req: &T) -> Result<T::Response> {
         let mut url = req.to_url();
         if let Some(ref token) = self.token {
             if let Some(ref mut query) = url.query {

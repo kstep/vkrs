@@ -14,12 +14,12 @@ use vkrs::api::{Client, Collection};
 
 static TOKEN_FILE: &'static str = "token.json";
 
-fn fetch_access_token() -> Result<AccessToken, OAuthError> {
-    let oauth = Client::auth(
+fn fetch_access_token(api: &Client) -> Result<AccessToken, OAuthError> {
+    let oauth = api.auth(
         env::var("VK_APP_ID").unwrap(),
         env::var("VK_APP_SECRET").unwrap());
 
-    let auth_uri = oauth.auth_uri(Some(auth::Permission::Audio.as_ref()), None).unwrap();
+    let auth_uri = oauth.auth_uri(auth::Permission::Audio).unwrap();
     println!("Go to {} and enter code below...", auth_uri);
 
     let inp = stdin();
@@ -34,17 +34,17 @@ fn fetch_access_token() -> Result<AccessToken, OAuthError> {
     Ok(token)
 }
 
-fn get_access_token() -> Result<AccessToken, OAuthError> {
+fn get_access_token(api: &Client) -> Result<AccessToken, OAuthError> {
     let token: Option<AccessToken> = File::open(TOKEN_FILE).ok().and_then(|mut f| json::from_reader(&mut f).ok());
 
     if let Some(token) = token {
         if token.expired() {
-            fetch_access_token()
+            fetch_access_token(api)
         } else {
             Ok(token)
         }
     } else {
-        fetch_access_token()
+        fetch_access_token(api)
     }
 }
 
@@ -56,14 +56,17 @@ fn print_m3u(songs: &Collection<Audio>) {
     }
 }
 
-fn find_songs(token: &AccessToken, query: &str, performer_only: bool) {
-    let songs: api::Result<Collection<Audio>> = Client::new().token(token).get(audio::Search::new().q(query).performer_only(performer_only).count(200));
+fn find_songs(api: &mut Client, query: &str, performer_only: bool) {
+    let songs: api::Result<Collection<Audio>> = api.get(audio::Search::new().q(query).performer_only(performer_only).count(200));
     //let songs: api::Result<Collection<Audio>> = Client::new().token(token).get(AudioGetRecommendations::new().count(200));
 
     match songs {
         Ok(songs) => print_m3u(&songs),
-        Err(api::Error::Api(api::ApiError { error_code: api::ErrorCode::Unauthorized, .. })) =>
-            find_songs(&fetch_access_token().unwrap(), query, performer_only),
+        //Err(api::Error::Api(api::ApiError { error_code: api::ErrorCode::Unauthorized, .. })) => {
+            //let token = fetch_access_token(api).unwrap();
+            //api.token(&token);
+            //find_songs(api, query, performer_only)
+        //},
         Err(err) => println!("Error: {}", err)
     }
 }
@@ -85,14 +88,17 @@ fn main() {
              .help("User id"))
         .get_matches();
 
-    let token = get_access_token().unwrap();
+    let token = get_access_token(&Client::new()).unwrap();
 
     let query = args.value_of("query").unwrap();
     //let lookup_type = if args.is_present("user") { LookUpType::User }
         //else if args.is_present("performer") { LookUpType::Performer }
         //else { LookUpType::Title };
 
-    find_songs(&token, query,
+    let mut api = Client::new();
+    api.token(&token);
+
+    find_songs(&mut api, query,
                args.is_present("Performer"));
                //args.value_of("user").and_then(|v| v.parse::<i64>().ok()));
 }
