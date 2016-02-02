@@ -246,11 +246,11 @@ request_ref! {
 request_ref! {
     struct Report for ["users.report"](v => 5.44) -> u8 {
         sized {
-            user_id: i64 = (0) => {},
-            //type: ReportReason = (ReportReason::Spam) => {AsRef},
+            user_id as ("user_id"): i64 = (0) => {},
+            kind as ("type"): ReportKind = (ReportKind::Spam) => {AsRef},
         }
         unsized {
-            comment: str = ("") => {=},
+            comment as ("comment"): str = ("") => {=},
         }
     }
 }
@@ -365,7 +365,7 @@ impl AsRef<str> for Status {
 }
 
 #[derive(Debug, Eq, PartialEq, Copy, Clone)]
-pub enum ReportReason {
+pub enum ReportKind {
     Porn,
     Spam,
     Insult,
@@ -373,9 +373,9 @@ pub enum ReportReason {
 }
 
 
-impl AsRef<str> for ReportReason {
+impl AsRef<str> for ReportKind {
     fn as_ref(&self) -> &str {
-        use self::ReportReason::*;
+        use self::ReportKind::*;
         match *self {
             Porn => "porn",
             Spam => "spam",
