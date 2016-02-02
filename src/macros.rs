@@ -125,6 +125,37 @@ macro_rules! request {
         $(#[$attr:meta])*
         struct $struct_name:ident for [$method_name:expr]
         ($($const_param_name:ident => $const_param_value:expr),*) ->
+        $response_type:ty;
+    ) => {
+        request! {
+            $(#[$attr])*
+            struct $struct_name for [$method_name]
+            ($($const_param_name => $const_param_value),*) ->
+            $response_type [];
+        }
+    };
+    (
+        $(#[$attr:meta])*
+        struct $struct_name:ident for [$method_name:expr]
+        ($($const_param_name:ident => $const_param_value:expr),*) ->
+        $response_type:ty [$($permission:ident),*];
+    ) => {
+        #[derive(Debug, PartialEq, Clone, Copy, Eq)]
+        $(#[$attr])*
+        pub struct $struct_name;
+
+        impl ::api::Request for $struct_name {
+            request_trait_impl! {
+                [$method_name]
+                ($($const_param_name => $const_param_value),*)
+                -> $response_type[$($permission),*] {}
+            }
+        }
+    };
+    (
+        $(#[$attr:meta])*
+        struct $struct_name:ident for [$method_name:expr]
+        ($($const_param_name:ident => $const_param_value:expr),*) ->
         $response_type:ty
         {
             $($param_name:ident: $param_type:ty = $param_value:tt => {$($value:tt)*}),*
@@ -180,6 +211,48 @@ macro_rules! request {
 }
 
 macro_rules! request_lt {
+    (
+        $(#[$attr:meta])*
+        struct $struct_name:ident for [$method_name:expr]
+        ($($const_param_name:ident => $const_param_value:expr),*) ->
+        $response_type:ty
+        {
+            $($param_name_lt:ident: $param_type_lt:ty = $param_value_lt:tt => {$($value_lt:tt)*}),* $(,)*
+        }
+    ) => {
+        request_lt! {
+            $(#[$attr])*
+            struct $struct_name for [$method_name]
+            ($($const_param_name => $const_param_value),*) ->
+            $response_type []
+            {
+                $($param_name_lt: $param_type_lt = $param_value_lt => {$($value_lt)*}),*
+            }
+        }
+    };
+    (
+        $(#[$attr:meta])*
+        struct $struct_name:ident for [$method_name:expr]
+        ($($const_param_name:ident => $const_param_value:expr),*) ->
+        $response_type:ty [$($permission:ident),*]
+        {
+            $($param_name_lt:ident: $param_type_lt:ty = $param_value_lt:tt => {$($value_lt:tt)*}),* $(,)*
+        }
+    ) => {
+        request_lt! {
+            $(#[$attr])*
+            struct $struct_name for [$method_name]
+            ($($const_param_name => $const_param_value),*) ->
+            $response_type [$($permission:ident),*]
+            {
+                sized {
+                }
+                unsized {
+                    $($param_name_lt: $param_type_lt = $param_value_lt => {$($value_lt)*}),*
+                }
+            }
+        }
+    };
     (
         $(#[$attr:meta])*
         struct $struct_name:ident for [$method_name:expr]
