@@ -101,7 +101,8 @@ macro_rules! request_builder_setter_impl {
 
 macro_rules! request_trait_impl {
     (
-        [$method_name:expr]($($const_param_name:ident => $const_param_value:expr),*) -> $response_type:ty
+        [$method_name:expr]($($const_param_name:ident => $const_param_value:expr),*) ->
+        $response_type:ty[$($permission:ident),*]
         {
             $($param_name:ident => {$($value:tt)*}),*
             $(,)*
@@ -109,6 +110,7 @@ macro_rules! request_trait_impl {
     ) => {
         type Response = $response_type;
         fn method_name() -> &'static str { $method_name }
+        fn permissions() -> ::auth::Permissions { ::auth::Permissions::from($(::auth::Permission::$permission as i32 +)* 0) }
         fn to_query_string(&self) -> String {
             qs![
                 $($param_name => expand_value_expr!(self; $param_name; $($value)*),)*
@@ -129,6 +131,26 @@ macro_rules! request {
             $(,)*
         }
     ) => {
+        request! {
+            $(#[$attr])*
+            struct $struct_name for [$method_name]
+            ($($const_param_name => $const_param_value),*) ->
+            $response_type[]
+            {
+                $($param_name: $param_type = $param_value => {$($value)*}),*
+            }
+        }
+    };
+    (
+        $(#[$attr:meta])*
+        struct $struct_name:ident for [$method_name:expr]
+        ($($const_param_name:ident => $const_param_value:expr),*) ->
+        $response_type:ty[$($permission:ident),*]
+        {
+            $($param_name:ident: $param_type:ty = $param_value:tt => {$($value:tt)*}),*
+            $(,)*
+        }
+    ) => {
         #[derive(Debug, PartialEq, Clone)]
         $(#[$attr])*
         pub struct $struct_name {
@@ -139,7 +161,7 @@ macro_rules! request {
             request_trait_impl! {
                 [$method_name]
                 ($($const_param_name => $const_param_value),*)
-                -> $response_type
+                -> $response_type[$($permission),*]
                 {
                     $($param_name => {$($value)*},)*
                 }
@@ -168,6 +190,27 @@ macro_rules! request_lt {
             unsized {$($param_name_lt:ident: $param_type_lt:ty = $param_value_lt:tt => {$($value_lt:tt)*}),* $(,)*}
         }
     ) => {
+        request_lt! {
+            $(#[$attr])*
+            struct $struct_name for [$method_name]
+            ($($const_param_name => $const_param_value),*) ->
+            $response_type[]
+            {
+                sized { $($param_name: $param_type = $param_value => {$($value)*}),* }
+                unsized { $($param_name_lt: $param_type_lt = $param_value_lt => {$($value_lt)*}),* }
+            }
+        }
+    };
+    (
+        $(#[$attr:meta])*
+        struct $struct_name:ident for [$method_name:expr]
+        ($($const_param_name:ident => $const_param_value:expr),*) ->
+        $response_type:ty[$($permission:ident),*]
+        {
+            sized {$($param_name:ident: $param_type:ty = $param_value:tt => {$($value:tt)*}),* $(,)*}
+            unsized {$($param_name_lt:ident: $param_type_lt:ty = $param_value_lt:tt => {$($value_lt:tt)*}),* $(,)*}
+        }
+    ) => {
         #[derive(Debug, PartialEq, Clone)]
         $(#[$attr])*
         pub struct $struct_name<'a> {
@@ -179,7 +222,7 @@ macro_rules! request_lt {
             request_trait_impl! {
                 [$method_name]
                 ($($const_param_name => $const_param_value),*)
-                -> $response_type
+                -> $response_type[$($permission),*]
                 {
                     $($param_name => {$($value)*},)*
                     $($param_name_lt => {$($value_lt)*},)*

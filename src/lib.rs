@@ -30,6 +30,7 @@ pub use video::{Video};
 pub use video::{Search as VideoSearch, Get as VideoGet};
 pub use users::{Search as UsersSearch, Get as UsersGet, IsAppUser as UsersIsAppUser, GetNearby as UsersGetNearby};
 pub use users::{GetFollowers as UsersGetFollowers, GetSubscriptions as UsersGetSubscriptions};
+pub use wall::{PostId as WallPostId, Post as WallPost, Get as WallGet};
 pub use photos::{Photo, Search as PhotosSearch};
 pub use status::{Status};
 pub use status::{Get as StatusGet, Set as StatusSet};

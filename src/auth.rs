@@ -88,29 +88,78 @@ impl Provider for Auth {
 
 pub static OAUTH_DEFAULT_REDIRECT_URI: &'static str = "https://oauth.vk.com/blank.html";
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, Copy, Clone)]
+#[repr(i32)]
 pub enum Permission {
-    Notify,
-    Friends,
-    Photos,
-    Audio,
-    Video,
-    Docs,
-    Notes,
-    Pages,
-    Menu,
-    Status,
-    Offers,
-    Questions,
-    Wall,
-    Groups,
-    Messages,
-    Email,
-    Notifications,
-    Stats,
-    Ads,
-    Offline,
-    NoHttps,
+    Notify = 1,
+    Friends = 2,
+    Photos = 4,
+    Audio = 8,
+    Video = 16,
+    Docs = 131072,
+    Notes = 2048,
+    Pages = 128,
+    Menu = 256,
+    Status = 1024,
+    Offers = 32,
+    Questions = 64,
+    Wall = 8192,
+    Groups = 262144,
+    Messages = 4096,
+    Email = 4194304,
+    Notifications = 524288,
+    Stats = 1048576,
+    Ads = 32768,
+    Offline = 0,
+    NoHttps = -1,
+}
+
+#[derive(Debug, PartialEq, Eq, Copy, Clone, Default)]
+pub struct Permissions(i32);
+impl From<i32> for Permissions {
+    fn from(n: i32) -> Permissions {
+        Permissions(n & 0x5ebdff)
+    }
+}
+
+impl<'a> From<&'a [Permission]> for Permissions {
+    fn from(vec: &[Permission]) -> Permissions {
+        Permissions(vec.into_iter()
+                    .map(|&mask| mask as i32)
+                    .fold(0, |a, x| a + x))
+    }
+}
+
+impl Into<Vec<Permission>> for Permissions {
+    fn into(self) -> Vec<Permission> {
+        use self::Permission::*;
+        let Permissions(n) = self;
+        [
+            Notify,
+            Friends,
+            Photos,
+            Audio,
+            Video,
+            Docs,
+            Notes,
+            Pages,
+            Menu,
+            Status,
+            Offers,
+            Questions,
+            Wall,
+            Groups,
+            Messages,
+            Email,
+            Notifications,
+            Stats,
+            Ads,
+        ]
+        .iter()
+        .map(|&mask| mask)
+        .filter(|&mask| mask as i32 & n != 0)
+        .collect()
+    }
 }
 
 impl AsRef<str> for Permission {
