@@ -1,10 +1,14 @@
 # vkrs
 Vkontakte API Rust client library
 
-<a href="https://travis-ci.org/kstep/vkrs"><img src="https://img.shields.io/travis/kstep/vkrs.png?style=flat-square" /></a> <a href="https://crates.io/crates/vkrs"><img src="https://img.shields.io/crates/d/vkrs.png?style=flat-square" /></a> <a href="https://crates.io/crates/vkrs"><img src="https://img.shields.io/crates/v/vkrs.png?style=flat-square" /></a> <a href="https://crates.io/crates/vkrs"><img src="https://img.shields.io/crates/l/vkrs.png?style=flat-square" /></a> <a href="https://coveralls.io/github/kstep/vkrs"><img src="https://img.shields.io/coveralls/kstep/vkrs.png?style=flat-square" /></a>
+[![Join the chat at https://gitter.im/kstep/vkrs](https://badges.gitter.im/kstep/vkrs.svg)](https://gitter.im/kstep/vkrs)
+[![Travis CI build status](https://img.shields.io/travis/kstep/vkrs.png)](https://travis-ci.org/kstep/vkrs)
+[![Downloads](https://img.shields.io/crates/d/vkrs.png)](https://crates.io/crates/vkrs)
+[![Version](https://img.shields.io/crates/v/vkrs.png)](https://crates.io/crates/vkrs)
+[![License MIT/Apache-2.0](https://img.shields.io/crates/l/vkrs.png)](https://crates.io/crates/vkrs)
+[![Code coverage at Coveralls](https://img.shields.io/coveralls/kstep/vkrs.png)](https://coveralls.io/github/kstep/vkrs)
 
 [Documentation](http://kstep.me/vkrs/vkrs/index.html)
-
 
 ## Usage
 
