@@ -1,4 +1,3 @@
-use super::api::Collection;
 use std::borrow::Borrow;
 use audio::Audio;
 
