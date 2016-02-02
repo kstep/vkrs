@@ -1,9 +1,9 @@
 [package]
 authors = ["Konstantin Stepanov <me@kstep.me>"]
 build = "build.rs"
-description = "Vkontakte Rust client library"
+description = "Vkontakte API Rust client library"
 keywords = ["vk", "api"]
-license = "MIT"
+license = "MIT/Apache-2.0"
 name = "vkrs"
 repository = "https://github.com/kstep/vkrs"
 version = "0.4.1"
