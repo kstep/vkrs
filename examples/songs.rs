@@ -8,6 +8,9 @@ use std::fs::File;
 use std::env;
 use clap::{Arg, App};
 use vkrs::*;
+use vkrs::auth::{AccessToken, OAuthError};
+use vkrs::audio::Audio;
+use vkrs::api::{Client, Collection};
 
 static TOKEN_FILE: &'static str = "token.json";
 
@@ -16,7 +19,7 @@ fn fetch_access_token() -> Result<AccessToken, OAuthError> {
         env::var("VK_APP_ID").unwrap(),
         env::var("VK_APP_SECRET").unwrap());
 
-    let auth_uri = oauth.auth_uri(Some(Permission::Audio.as_ref()), None).unwrap();
+    let auth_uri = oauth.auth_uri(Some(auth::Permission::Audio.as_ref()), None).unwrap();
     println!("Go to {} and enter code below...", auth_uri);
 
     let inp = stdin();
@@ -54,12 +57,12 @@ fn print_m3u(songs: &Collection<Audio>) {
 }
 
 fn find_songs(token: &AccessToken, query: &str, performer_only: bool) {
-    let songs: VkResult<Collection<Audio>> = Client::new().token(token).get(AudioSearch::new().q(query).performer_only(performer_only).count(200));
-    //let songs: VkResult<Collection<Audio>> = Client::new().token(token).get(AudioGetRecommendations::new().count(200));
+    let songs: api::Result<Collection<Audio>> = Client::new().token(token).get(audio::Search::new().q(query).performer_only(performer_only).count(200));
+    //let songs: api::Result<Collection<Audio>> = Client::new().token(token).get(AudioGetRecommendations::new().count(200));
 
     match songs {
         Ok(songs) => print_m3u(&songs),
-        Err(ClientError::Api(VkError { error_code: VkErrorCode::Unauthorized, .. })) =>
+        Err(api::Error::Api(api::ApiError { error_code: api::ErrorCode::Unauthorized, .. })) =>
             find_songs(&fetch_access_token().unwrap(), query, performer_only),
         Err(err) => println!("Error: {}", err)
     }

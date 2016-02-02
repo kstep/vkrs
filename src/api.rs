@@ -143,8 +143,6 @@ pub trait Request {
 #[derive(Debug)]
 pub struct ApiResult<T>(pub StdResult<T, ApiError>);
 
-pub type VkResult<T> = StdResult<T, ApiError>;
-
 impl<T> Deref for ApiResult<T> {
     type Target = StdResult<T, ApiError>;
     fn deref(&self) -> &StdResult<T, ApiError> {
