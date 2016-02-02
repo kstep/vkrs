@@ -19,4 +19,4 @@ pub mod video;
 pub mod users;
 pub mod status;
 pub mod wall;
-
+pub mod utils;
