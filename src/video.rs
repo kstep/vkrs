@@ -2,7 +2,7 @@ use std::borrow::Borrow;
 use std::convert::AsRef;
 use std::string::ToString;
 use std::error::Error;
-use super::api::{Collection, Sort, LikesCount, Id, OwnerId, Date, Bool, Duration, FullId};
+use super::api::{Bool, Collection, Date, Duration, FullId, Id, LikesCount, OwnerId, Sort};
 
 #[cfg(feature = "unstable")]
 include!("video.rs.in");
@@ -66,4 +66,3 @@ impl AsRef<str> for Filter {
         }
     }
 }
-

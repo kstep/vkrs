@@ -1,6 +1,6 @@
 use std::borrow::Borrow;
 use std::convert::AsRef;
-use super::api::{Collection, Id, Bool};
+use super::api::{Bool, Collection, Id};
 
 #[cfg(feature = "unstable")]
 include!("users.rs.in");
@@ -255,18 +255,18 @@ request_ref! {
     }
 }
 
-//request_ref! {
-    //struct GetSubscriptionIds for ["users.getSubscriptions"](v => 5.44, extended => 0) -> Collection<i64> {
-        //sized {
-            //user_id: Id (0) => {},
-            //offset: usize (0) => {},
-            //count: usize (100) => {},
-        //}
-        //unsized {
-            //fields: str = ("") => {=},
-        //}
-    //}
-//}
+// request_ref! {
+// struct GetSubscriptionIds for ["users.getSubscriptions"](v => 5.44, extended => 0) -> Collection<i64> {
+// sized {
+// user_id: Id (0) => {},
+// offset: usize (0) => {},
+// count: usize (100) => {},
+// }
+// unsized {
+// fields: str = ("") => {=},
+// }
+// }
+// }
 
 request_ref! {
     struct GetNearby for ["users.getNearby"](v => 5.44) -> Collection<User> {
@@ -369,7 +369,7 @@ pub enum ReportKind {
     Porn,
     Spam,
     Insult,
-    Ads
+    Ads,
 }
 
 

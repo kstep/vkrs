@@ -4,7 +4,7 @@ use hyper::client::Client as HttpClient;
 use oauth2::provider::Provider;
 use oauth2::client::response::{FromResponse, ParseError};
 use oauth2::token::{Lifetime, Token};
-use chrono::{DateTime, UTC, Duration, NaiveDateTime};
+use chrono::{DateTime, Duration, NaiveDateTime, UTC};
 use rustc_serialize::json::Json;
 use serde::{de, ser};
 use super::api::Id;
@@ -18,9 +18,8 @@ pub struct AccessTokenLifetime {
 
 impl de::Deserialize for AccessTokenLifetime {
     fn deserialize<D: de::Deserializer>(d: &mut D) -> Result<AccessTokenLifetime, D::Error> {
-        de::Deserialize::deserialize(d).map(|ts| AccessTokenLifetime {
-            expires: DateTime::from_utc(NaiveDateTime::from_timestamp(ts, 0), UTC)
-        })
+        de::Deserialize::deserialize(d)
+            .map(|ts| AccessTokenLifetime { expires: DateTime::from_utc(NaiveDateTime::from_timestamp(ts, 0), UTC) })
     }
 }
 
@@ -38,7 +37,8 @@ include!(concat!(env!("OUT_DIR"), "/auth.rs"));
 
 impl FromResponse for AccessTokenLifetime {
     fn from_response(json: &Json) -> Result<AccessTokenLifetime, ParseError> {
-        json.find("expires_in").and_then(Json::as_i64)
+        json.find("expires_in")
+            .and_then(Json::as_i64)
             .map(|expires_in| AccessTokenLifetime { expires: UTC::now() + Duration::seconds(expires_in) })
             .ok_or(ParseError::ExpectedFieldType("expires_in", "i64"))
     }
@@ -49,11 +49,12 @@ impl FromResponse for AccessToken {
         Ok(AccessToken {
             email: json.find("email").and_then(Json::as_string).map(ToOwned::to_owned),
             user_id: try!(json.find("user_id")
-                          .and_then(Json::as_u64)
-                          .ok_or(ParseError::ExpectedFieldType("user_id", "u64"))),
+                              .and_then(Json::as_u64)
+                              .ok_or(ParseError::ExpectedFieldType("user_id", "u64"))),
             access_token: try!(json.find("access_token")
-                               .and_then(Json::as_string)
-                               .map(ToOwned::to_owned).ok_or(ParseError::ExpectedFieldType("access_token", "string"))),
+                                   .and_then(Json::as_string)
+                                   .map(ToOwned::to_owned)
+                                   .ok_or(ParseError::ExpectedFieldType("access_token", "string"))),
             lifetime: try!(AccessTokenLifetime::from_response(json)),
         })
     }
@@ -66,9 +67,15 @@ impl Lifetime for AccessTokenLifetime {
 }
 
 impl Token<AccessTokenLifetime> for AccessToken {
-    fn access_token(&self) -> &str { &*self.access_token }
-    fn scope(&self) -> Option<&str> { None }
-    fn lifetime(&self) -> &AccessTokenLifetime { &self.lifetime }
+    fn access_token(&self) -> &str {
+        &*self.access_token
+    }
+    fn scope(&self) -> Option<&str> {
+        None
+    }
+    fn lifetime(&self) -> &AccessTokenLifetime {
+        &self.lifetime
+    }
 }
 
 impl AccessToken {
@@ -96,9 +103,15 @@ pub struct Auth;
 impl Provider for Auth {
     type Lifetime = AccessTokenLifetime;
     type Token = AccessToken;
-    fn auth_uri() -> &'static str { "https://oauth.vk.com/authorize" }
-    fn token_uri() -> &'static str { "https://oauth.vk.com/access_token" }
-    fn credentials_in_body() -> bool { true }
+    fn auth_uri() -> &'static str {
+        "https://oauth.vk.com/authorize"
+    }
+    fn token_uri() -> &'static str {
+        "https://oauth.vk.com/access_token"
+    }
+    fn credentials_in_body() -> bool {
+        true
+    }
 }
 
 pub static OAUTH_DEFAULT_REDIRECT_URI: &'static str = "https://oauth.vk.com/blank.html";
@@ -141,34 +154,31 @@ impl Into<String> for Permissions {
     fn into(self) -> String {
         use self::Permission::*;
         let Permissions(n) = self;
-        [
-            Notify,
-            Friends,
-            Photos,
-            Audio,
-            Video,
-            Docs,
-            Notes,
-            Pages,
-            Menu,
-            Status,
-            Offers,
-            Questions,
-            Wall,
-            Groups,
-            Messages,
-            Email,
-            Notifications,
-            Stats,
-            Ads,
-        ]
-        .iter()
-        .map(|&mask| mask)
-        .filter(|&mask| mask as i32 & n != 0)
-        // TODO: suboptimal
-        .map(|mask| mask.as_ref().to_owned())
-        .collect::<Vec<_>>()
-        .join(",")
+        [Notify,
+         Friends,
+         Photos,
+         Audio,
+         Video,
+         Docs,
+         Notes,
+         Pages,
+         Menu,
+         Status,
+         Offers,
+         Questions,
+         Wall,
+         Groups,
+         Messages,
+         Email,
+         Notifications,
+         Stats,
+         Ads]
+            .iter()
+            .map(|&mask| mask)
+            .filter(|&mask| mask as i32 & n != 0)
+            .map(|mask| mask.as_ref().to_owned())
+            .collect::<Vec<_>>()
+            .join(",")
     }
 }
 
@@ -181,8 +191,8 @@ impl From<Permission> for Permissions {
 impl<'a> From<&'a [Permission]> for Permissions {
     fn from(vec: &[Permission]) -> Permissions {
         Permissions(vec.into_iter()
-                    .map(|&mask| mask as i32)
-                    .fold(0, |a, x| a + x))
+                       .map(|&mask| mask as i32)
+                       .fold(0, |a, x| a + x))
     }
 }
 
@@ -190,31 +200,29 @@ impl Into<Vec<Permission>> for Permissions {
     fn into(self) -> Vec<Permission> {
         use self::Permission::*;
         let Permissions(n) = self;
-        [
-            Notify,
-            Friends,
-            Photos,
-            Audio,
-            Video,
-            Docs,
-            Notes,
-            Pages,
-            Menu,
-            Status,
-            Offers,
-            Questions,
-            Wall,
-            Groups,
-            Messages,
-            Email,
-            Notifications,
-            Stats,
-            Ads,
-        ]
-        .iter()
-        .map(|&mask| mask)
-        .filter(|&mask| mask as i32 & n != 0)
-        .collect()
+        [Notify,
+         Friends,
+         Photos,
+         Audio,
+         Video,
+         Docs,
+         Notes,
+         Pages,
+         Menu,
+         Status,
+         Offers,
+         Questions,
+         Wall,
+         Groups,
+         Messages,
+         Email,
+         Notifications,
+         Stats,
+         Ads]
+            .iter()
+            .map(|&mask| mask)
+            .filter(|&mask| mask as i32 & n != 0)
+            .collect()
     }
 }
 

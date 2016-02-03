@@ -1,5 +1,5 @@
-use super::users::{UserOptionField};
-use super::api::{Collection, LikesCount, Id, OwnerId, Date, Bool};
+use super::users::UserOptionField;
+use super::api::{Bool, Collection, Date, Id, LikesCount, OwnerId};
 
 #[cfg(feature = "unstable")]
 include!("wall.rs.in");

@@ -76,17 +76,15 @@ impl From<UrlError> for Error {
 pub type Result<T> = StdResult<T, Error>;
 
 impl Client {
-    pub fn auth<K, S>(&self, key: K, secret: S) -> OAuth where K: Into<String>, S: Into<String> {
-        OAuth::new(
-            &self.client,
-            key.into(),
-            secret.into())
+    pub fn auth<K, S>(&self, key: K, secret: S) -> OAuth
+        where K: Into<String>,
+              S: Into<String>
+    {
+        OAuth::new(&self.client, key.into(), secret.into())
     }
 
     pub fn new() -> Client {
-        Client {
-            client: HttpClient::new(),
-        }
+        Client { client: HttpClient::new() }
     }
 
     pub fn get<T: Request>(&self, token: Option<&AccessToken>, req: &T) -> Result<T::Response> {
@@ -96,8 +94,7 @@ impl Client {
                 query.push_str("&access_token=");
                 query.push_str(token.access_token());
             } else {
-                url.query = Some(String::from("access_token=")
-                                 + token.access_token());
+                url.query = Some(String::from("access_token=") + token.access_token());
             }
         }
 
@@ -105,10 +102,7 @@ impl Client {
             .get(url)
             .send()
             .map_err(Error::Http)
-            .and_then(|resp| {
-                serde_json::from_reader::<_, ApiResult<T::Response>>(resp)
-                    .map_err(Error::Json)
-            })
+            .and_then(|resp| serde_json::from_reader::<_, ApiResult<T::Response>>(resp).map_err(Error::Json))
             .and_then(|vkres| vkres.0.map_err(Error::Api))
     }
 }
@@ -119,7 +113,9 @@ pub trait Request {
     fn method_name() -> &'static str;
     fn to_query_string(&self) -> String;
 
-    fn permissions() -> Permissions { Permissions::from(0) }
+    fn permissions() -> Permissions {
+        Permissions::from(0)
+    }
 
     fn to_url(&self) -> Url {
         Url {
@@ -130,8 +126,8 @@ pub trait Request {
                 host: url::Host::Domain(String::from(VK_DOMAIN)),
                 port: None,
                 default_port: Some(443),
-                path: vec![String::from(VK_PATH), String::from(Self::method_name())]
-                }),
+                path: vec![String::from(VK_PATH), String::from(Self::method_name())],
+            }),
             query: Some(self.to_query_string()),
             fragment: None,
         }
@@ -151,7 +147,7 @@ impl<T> Deref for ApiResult<T> {
 
 enum ApiResultField {
     Response,
-    Error
+    Error,
 }
 
 impl de::Deserialize for ApiResultField {
@@ -164,7 +160,7 @@ impl de::Deserialize for ApiResultField {
                 match value {
                     "response" => Ok(ApiResultField::Response),
                     "error" => Ok(ApiResultField::Error),
-                    _ => Err(de::Error::syntax("expected response or error"))
+                    _ => Err(de::Error::syntax("expected response or error")),
                 }
             }
         }
@@ -181,10 +177,15 @@ impl<T: de::Deserialize> de::Deserialize for ApiResult<T> {
             type Value = ApiResult<T>;
             fn visit_map<V: de::MapVisitor>(&mut self, mut v: V) -> StdResult<ApiResult<T>, V::Error> {
                 v.visit_key()
-                 .and_then(|k| k.map(|k| match k {
-                    ApiResultField::Response => v.visit_value::<T>().map(Ok),
-                    ApiResultField::Error => v.visit_value::<ApiError>().map(Err),
-                 }).unwrap_or_else(|| v.missing_field("response or error")))
+                 .and_then(|k| {
+                     k.map(|k| {
+                          match k {
+                              ApiResultField::Response => v.visit_value::<T>().map(Ok),
+                              ApiResultField::Error => v.visit_value::<ApiError>().map(Err),
+                          }
+                      })
+                      .unwrap_or_else(|| v.missing_field("response or error"))
+                 })
                  .and_then(|res| v.end().map(|_| res))
                  .map(ApiResult)
             }
@@ -247,7 +248,7 @@ impl From<u32> for ErrorCode {
             222 => HyperlinksForbidden,
             221 => UserDisabledTrackBroadcast,
             v @ 100...999 => App(v),
-            v @ _ => Unknown(v)
+            v @ _ => Unknown(v),
         }
     }
 }
@@ -356,4 +357,3 @@ impl AsRef<str> for Sort {
         }
     }
 }
-

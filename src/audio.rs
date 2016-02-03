@@ -3,7 +3,7 @@ use std::convert::AsRef;
 use std::string::ToString;
 use std::error::Error;
 use serde::de;
-use super::api::{Collection, Sort, OwnerId, Id, Date, Bool, Duration, FullId};
+use super::api::{Bool, Collection, Date, Duration, FullId, Id, OwnerId, Sort};
 use std::fmt;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -65,29 +65,31 @@ impl fmt::Display for Genre {
 impl de::Deserialize for Genre {
     fn deserialize<D: de::Deserializer>(d: &mut D) -> Result<Genre, D::Error> {
         use self::Genre::*;
-        de::Deserialize::deserialize(d).and_then(|v: u32| match v {
-            1 => Ok(Rock),
-            2 => Ok(Pop),
-            3 => Ok(RapHipHop),
-            4 => Ok(EasyListen),
-            5 => Ok(DanceHouse),
-            6 => Ok(Instrumental),
-            7 => Ok(Metal),
-            21 => Ok(Alternative),
-            8 => Ok(Dubstep),
-            9 => Ok(JazzBlues),
-            10 => Ok(DrumBass),
-            11 => Ok(Trance),
-            12 => Ok(Chanson),
-            13 => Ok(Ethnic),
-            14 => Ok(AcousticVocal),
-            15 => Ok(Reggae),
-            16 => Ok(Classical),
-            17 => Ok(IndiePop),
-            19 => Ok(Speech),
-            22 => Ok(ElectropopDisco),
-            18 => Ok(Other),
-            v => Ok(Unknown(v)),
+        de::Deserialize::deserialize(d).and_then(|v: u32| {
+            match v {
+                1 => Ok(Rock),
+                2 => Ok(Pop),
+                3 => Ok(RapHipHop),
+                4 => Ok(EasyListen),
+                5 => Ok(DanceHouse),
+                6 => Ok(Instrumental),
+                7 => Ok(Metal),
+                21 => Ok(Alternative),
+                8 => Ok(Dubstep),
+                9 => Ok(JazzBlues),
+                10 => Ok(DrumBass),
+                11 => Ok(Trance),
+                12 => Ok(Chanson),
+                13 => Ok(Ethnic),
+                14 => Ok(AcousticVocal),
+                15 => Ok(Reggae),
+                16 => Ok(Classical),
+                17 => Ok(IndiePop),
+                19 => Ok(Speech),
+                22 => Ok(ElectropopDisco),
+                18 => Ok(Other),
+                v => Ok(Unknown(v)),
+            }
         })
     }
 }
@@ -228,4 +230,3 @@ request! {
 // audio.setBroadcast Транслирует аудиозапись в статус пользователю или сообществу.
 // audio.getBroadcastList Возвращает список друзей и сообществ пользователя, которые транслируют музыку в статус.
 // audio.getRecommendations Возвращает список рекомендуемых аудиозаписей на основе списка воспроизведения заданного пользователя или на основе одной выбранной аудиозаписи.
-

@@ -432,8 +432,14 @@ macro_rules! request_ref {
         ($($const_param_name:ident => $const_param_value:expr),*) ->
         $response_type:ty
         {
-            sized {$($param_name:ident as ($param_alias:expr): $param_type:ty = $param_value:tt => {$($value:tt)*}),* $(,)*}
-            unsized {$($param_name_lt:ident as ($param_alias_lt:expr): $param_type_lt:ty = $param_value_lt:tt => {$($value_lt:tt)*}),* $(,)*}
+            sized {
+                $($param_name:ident as ($param_alias:expr): $param_type:ty = $param_value:tt => {$($value:tt)*}),*
+                $(,)*
+            }
+            unsized {
+                $($param_name_lt:ident as ($param_alias_lt:expr): $param_type_lt:ty = $param_value_lt:tt => {$($value_lt:tt)*}),*
+                $(,)*
+            }
         }
     ) => {
         request_ref! {
@@ -455,8 +461,14 @@ macro_rules! request_ref {
         ($($const_param_name:ident => $const_param_value:expr),*) ->
         $response_type:ty [$($permission:ident),*]
         {
-            sized {$($param_name:ident as ($param_alias:expr): $param_type:ty = $param_value:tt => {$($value:tt)*}),* $(,)*}
-            unsized {$($param_name_lt:ident as ($param_alias_lt:expr): $param_type_lt:ty = $param_value_lt:tt => {$($value_lt:tt)*}),* $(,)*}
+            sized {
+                $($param_name:ident as ($param_alias:expr): $param_type:ty = $param_value:tt => {$($value:tt)*}),*
+                $(,)*
+            }
+            unsized {
+                $($param_name_lt:ident as ($param_alias_lt:expr): $param_type_lt:ty = $param_value_lt:tt => {$($value_lt:tt)*}),*
+                $(,)*
+            }
         }
     ) => {
         #[derive(Debug, PartialEq, Clone)]
@@ -489,4 +501,3 @@ macro_rules! request_ref {
         }
     };
 }
-
