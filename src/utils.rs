@@ -19,6 +19,5 @@ request_ref! {
 }
 
 request! {
-    #[derive(Copy, Eq)]
     struct GetServerTime for ["utils.getServerTime"](v => 5.44) -> u64;
 }
