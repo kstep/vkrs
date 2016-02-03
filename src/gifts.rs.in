@@ -1,0 +1,17 @@
+#[derive(Debug, PartialEq, Eq, Deserialize, Clone)]
+pub struct GiftItem {
+    pub id: u64,
+    pub from_id: i64,
+    pub message: String,
+    pub date: u64,
+    pub gift: Gift,
+    pub privacy: GiftPrivacy,
+}
+
+#[derive(Debug, PartialEq, Eq, Deserialize, Clone)]
+pub struct Gift {
+    pub id: u64,
+    pub thumb_256: String, // Url
+    pub thumb_96: String, // Url
+    pub thumb_48: String, // Url
+}
