@@ -1,5 +1,5 @@
-#![cfg_attr(feature = "nightly", feature(custom_derive, plugin))]
-#![cfg_attr(feature = "nightly", plugin(serde_macros))]
+#![cfg_attr(feature = "unstable", feature(custom_derive, plugin))]
+#![cfg_attr(feature = "unstable", plugin(serde_macros))]
 #![deny(unused_imports)]
 
 extern crate serde;

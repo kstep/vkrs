@@ -4,10 +4,10 @@ use std::string::ToString;
 use std::error::Error;
 use super::api::{Collection, Sort, LikesCount};
 
-#[cfg(feature = "nightly")]
+#[cfg(feature = "unstable")]
 include!("video.rs.in");
 
-#[cfg(not(feature = "nightly"))]
+#[cfg(not(feature = "unstable"))]
 include!(concat!(env!("OUT_DIR"), "/video.rs"));
 
 request_ref! {

@@ -1,7 +1,7 @@
-#[cfg(feature = "nightly")]
+#[cfg(feature = "unstable")]
 include!("utils.rs.in");
 
-#[cfg(not(feature = "nightly"))]
+#[cfg(not(feature = "unstable"))]
 include!(concat!(env!("OUT_DIR"), "/utils.rs"));
 
 request_ref! {

@@ -1,9 +1,9 @@
-#[cfg(feature = "nightly")]
+#[cfg(feature = "unstable")]
 mod inner {
     pub fn main() {}
 }
 
-#[cfg(not(feature = "nightly"))]
+#[cfg(not(feature = "unstable"))]
 mod inner {
     extern crate syntex;
     extern crate serde_codegen;

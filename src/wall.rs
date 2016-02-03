@@ -2,10 +2,10 @@ use super::users::{UserOptionField};
 use super::api::{Collection, LikesCount};
 use serde::de;
 
-#[cfg(feature = "nightly")]
+#[cfg(feature = "unstable")]
 include!("wall.rs.in");
 
-#[cfg(not(feature = "nightly"))]
+#[cfg(not(feature = "unstable"))]
 include!(concat!(env!("OUT_DIR"), "/wall.rs"));
 
 request_ref! {

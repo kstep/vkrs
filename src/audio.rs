@@ -151,10 +151,10 @@ request_ref! {
     }
 }
 
-#[cfg(feature = "nightly")]
+#[cfg(feature = "unstable")]
 include!("audio.rs.in");
 
-#[cfg(not(feature = "nightly"))]
+#[cfg(not(feature = "unstable"))]
 include!(concat!(env!("OUT_DIR"), "/audio.rs"));
 
 request_ref! {

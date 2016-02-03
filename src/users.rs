@@ -2,10 +2,10 @@ use std::borrow::Borrow;
 use std::convert::AsRef;
 use super::api::Collection;
 
-#[cfg(feature = "nightly")]
+#[cfg(feature = "unstable")]
 include!("users.rs.in");
 
-#[cfg(not(feature = "nightly"))]
+#[cfg(not(feature = "unstable"))]
 include!(concat!(env!("OUT_DIR"), "/users.rs"));
 
 #[derive(Debug, Eq, PartialEq, Copy, Clone)]

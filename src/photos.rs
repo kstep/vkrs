@@ -18,10 +18,10 @@ request_ref! {
     }
 }
 
-#[cfg(feature = "nightly")]
+#[cfg(feature = "unstable")]
 include!("photos.rs.in");
 
-#[cfg(not(feature = "nightly"))]
+#[cfg(not(feature = "unstable"))]
 include!(concat!(env!("OUT_DIR"), "/photos.rs"));
 
 #[derive(Debug, PartialEq, Eq, Copy, Clone)]

@@ -29,10 +29,10 @@ impl ser::Serialize for AccessTokenLifetime {
     }
 }
 
-#[cfg(feature = "nightly")]
+#[cfg(feature = "unstable")]
 include!("auth.rs.in");
 
-#[cfg(not(feature = "nightly"))]
+#[cfg(not(feature = "unstable"))]
 include!(concat!(env!("OUT_DIR"), "/auth.rs"));
 
 impl FromResponse for AccessTokenLifetime {

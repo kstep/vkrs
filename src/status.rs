@@ -1,10 +1,10 @@
 use std::borrow::Borrow;
 use audio::Audio;
 
-#[cfg(feature = "nightly")]
+#[cfg(feature = "unstable")]
 include!("status.rs.in");
 
-#[cfg(not(feature = "nightly"))]
+#[cfg(not(feature = "unstable"))]
 include!(concat!(env!("OUT_DIR"), "/status.rs"));
 
 request! {

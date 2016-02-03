@@ -15,10 +15,10 @@ use super::auth::{AccessToken, OAuth, Permissions};
 pub const VK_DOMAIN: &'static str = "api.vk.com";
 pub const VK_PATH: &'static str = "method";
 
-#[cfg(feature = "nightly")]
+#[cfg(feature = "unstable")]
 include!("api.rs.in");
 
-#[cfg(not(feature = "nightly"))]
+#[cfg(not(feature = "unstable"))]
 include!(concat!(env!("OUT_DIR"), "/api.rs"));
 
 pub struct Client {
