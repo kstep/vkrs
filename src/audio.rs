@@ -3,7 +3,7 @@ use std::convert::AsRef;
 use std::string::ToString;
 use std::error::Error;
 use serde::de;
-use super::api::{Collection, Sort};
+use super::api::{Collection, Sort, OwnerId, Id, Date, Bool, Duration, FullId};
 use std::fmt;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -125,9 +125,9 @@ impl Into<u32> for Genre {
 request! {
     #[derive(Eq)]
     struct Get for ["audio.get"](v => 5.37, need_user => 0) -> Collection<Audio> {
-        owner_id: i64 = () => {},
-        album_id: Option<u64> = () => { |value| value.as_ref().map(ToString::to_string).as_ref().map(Borrow::borrow).unwrap_or("") },
-        audio_ids: Vec<u64> = () => { Vec },
+        owner_id: OwnerId = () => {},
+        album_id: Option<Id> = () => { |value| value.as_ref().map(ToString::to_string).as_ref().map(Borrow::borrow).unwrap_or("") },
+        audio_ids: Vec<Id> = () => { Vec },
         offset: usize = (0) => {},
         count: usize = (100) => {},
     }
@@ -160,7 +160,7 @@ include!(concat!(env!("OUT_DIR"), "/audio.rs"));
 request_ref! {
     #[derive(Copy, Eq)]
     struct GetById for ["audio.getById"](v => 5.44) -> Collection<Audio> {
-        audios: [(i64, u64)] = (&[][..]) => {|value|
+        audios: [FullId] = (&[][..]) => {|value|
             &*value.iter().map(|&(o, id)| format!("{}_{}", o, id)).collect::<Vec<_>>().join(",")
         }
     }
@@ -169,21 +169,21 @@ request_ref! {
 request! {
     #[derive(Copy, Eq)]
     struct GetLyrics for ["audio.getLyrics"](v => 5.44) -> Lyrics {
-        lyrics_id: u64 = () => {}
+        lyrics_id: Id = () => {}
     }
 }
 
 request! {
     #[derive(Copy, Eq)]
     struct GetCount for ["audio.getCount"](v => 5.44) -> u64 {
-        lyrics_id: u64 = () => {}
+        owner_id: OwnerId = () => {}
     }
 }
 
 request! {
     #[derive(Copy, Eq)]
     struct GetAlbums for ["audio.getAlbums"](v => 5.44) -> Collection<Album> {
-        owner_id: i64 = () => {},
+        owner_id: OwnerId = () => {},
         offset: usize = (0) => {},
         count: usize = (30) => {},
     }
@@ -204,10 +204,10 @@ request! {
 request! {
     #[derive(Eq, Copy)]
     struct GetRecommendations for ["audio.getRecommendations"](v => 5.44) -> Collection<Audio> {
-        target_audio: Option<(i64, u64)> = (None) => { |value|
+        target_audio: Option<FullId> = (None) => { |value|
             value.map(|(x, y)| format!("{}_{}", x, y)).as_ref().map(Borrow::borrow).unwrap_or("")
         },
-        user_id: Option<i64> = () => {Option},
+        user_id: Option<Id> = () => {Option},
         offset: usize = (0) => {},
         count: usize = (30) => {},
         shuffle: bool = () => {bool},

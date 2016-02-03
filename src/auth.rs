@@ -7,6 +7,7 @@ use oauth2::token::{Lifetime, Token};
 use chrono::{DateTime, UTC, Duration, NaiveDateTime};
 use rustc_serialize::json::Json;
 use serde::{de, ser};
+use super::api::Id;
 
 pub use oauth2::ClientError as OAuthError;
 

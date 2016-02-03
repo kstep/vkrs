@@ -1,6 +1,6 @@
 use std::borrow::Borrow;
 use std::convert::AsRef;
-use super::api::Collection;
+use super::api::{Collection, Id, Bool};
 
 #[cfg(feature = "unstable")]
 include!("users.rs.in");
@@ -154,7 +154,7 @@ request_ref! {
             name_case: NameCase = (NameCase::Nominative) => {AsRef},
         }
         unsized {
-            user_ids: [i64] = (&[][..]) => {Vec},
+            user_ids: [Id] = (&[][..]) => {Vec},
             fields: [UserOptionField] = (&[][..]) => {AsRef<Vec>},
         }
     }
@@ -165,13 +165,13 @@ request_ref! {
         sized {
             sort: Sort = (Sort::Rating) => {AsRef},
 
-            city: Option<u64> = () => {Option},
-            country: Option<u64> = () => {Option},
+            city: Option<Id> = () => {Option},
+            country: Option<Id> = () => {Option},
 
-            university: Option<u64> = () => {Option},
-            university_country: Option<u64> = () => {Option},
-            university_faculty: Option<u64> = () => {Option},
-            university_chair: Option<u64> = () => {Option},
+            university: Option<Id> = () => {Option},
+            university_country: Option<Id> = () => {Option},
+            university_faculty: Option<Id> = () => {Option},
+            university_chair: Option<Id> = () => {Option},
             university_year: Option<u16> = () => {Option},
 
             sex: Sex = (Sex::Any) => {AsRef},
@@ -186,13 +186,13 @@ request_ref! {
             online: bool = (false) => {bool},
             has_photo: bool = (false) => {bool},
 
-            school: Option<u64> = () => {Option},
-            school_country: Option<u64> = () => {Option},
-            school_city: Option<u64> = () => {Option},
-            school_class: Option<u64> = () => {Option},
+            school: Option<Id> = () => {Option},
+            school_country: Option<Id> = () => {Option},
+            school_city: Option<Id> = () => {Option},
+            school_class: Option<Id> = () => {Option},
             school_year: Option<u16> = () => {Option},
 
-            group_id: Option<i64> = () => {Option},
+            group_id: Option<Id> = () => {Option},
 
             offset: usize = (0) => {},
             count: usize = (100) => {},
@@ -211,15 +211,15 @@ request_ref! {
 }
 
 request! {
-    struct IsAppUser for ["users.isAppUser"](v => 5.44) -> u8 {
-        user_id: i64 = (0) => {}
+    struct IsAppUser for ["users.isAppUser"](v => 5.44) -> Bool {
+        user_id: Id = (0) => {}
     }
 }
 
 request_ref! {
     struct GetSubscriptions for ["users.getSubscriptions"](v => 5.44, extended => 1) -> Collection<User> {
         sized {
-            user_id: i64 = (0) => {},
+            user_id: Id = (0) => {},
             offset: usize = (0) => {},
             count: usize = (100) => {},
         }
@@ -232,7 +232,7 @@ request_ref! {
 request_ref! {
     struct GetFollowers for ["users.getFollowers"](v => 5.44) -> Collection<User> {
         sized {
-            user_id: i64 = (0) => {},
+            user_id: Id = (0) => {},
             name_case: NameCase = (NameCase::Nominative) => {AsRef},
             offset: usize = (0) => {},
             count: usize = (100) => {},
@@ -244,9 +244,9 @@ request_ref! {
 }
 
 request_ref! {
-    struct Report for ["users.report"](v => 5.44) -> u8 {
+    struct Report for ["users.report"](v => 5.44) -> Bool {
         sized {
-            user_id as ("user_id"): i64 = (0) => {},
+            user_id as ("user_id"): Id = (0) => {},
             kind as ("type"): ReportKind = (ReportKind::Spam) => {AsRef},
         }
         unsized {
@@ -258,7 +258,7 @@ request_ref! {
 //request_ref! {
     //struct GetSubscriptionIds for ["users.getSubscriptions"](v => 5.44, extended => 0) -> Collection<i64> {
         //sized {
-            //user_id: i64 (0) => {},
+            //user_id: Id (0) => {},
             //offset: usize (0) => {},
             //count: usize (100) => {},
         //}

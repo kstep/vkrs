@@ -1,5 +1,6 @@
 use std::borrow::Borrow;
-use audio::Audio;
+use super::audio::Audio;
+use super::api::Bool;
 
 #[cfg(feature = "unstable")]
 include!("status.rs.in");
@@ -17,7 +18,7 @@ request! {
 
 request_ref! {
     #[derive(Copy, Eq)]
-    struct Set for ["status.set"](v => 5.44) -> u8 [Status] {
+    struct Set for ["status.set"](v => 5.44) -> Bool [Status] {
         sized {
             group_id: Option<i64> = () => {Option},
         }

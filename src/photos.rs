@@ -1,12 +1,12 @@
-use super::api::{Collection};
+use super::api::{Collection, Id, OwnerId, Date};
 
 request_ref! {
     struct Search for ["photos.search"](v => 5.37) -> Collection<Photo> {
         sized {
             lat: f32 = () => {},
             long: f32 = () => {},
-            start_time: u64 = () => {},
-            end_time: u64 = () => {},
+            start_time: Date = () => {},
+            end_time: Date = () => {},
             sort: Sort = (Sort::Popularity) => {AsRef},
             offset: usize = (0) => {},
             count: usize = (30) => {},

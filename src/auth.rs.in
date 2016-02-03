@@ -2,7 +2,7 @@
 #[derive(Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct AccessToken {
     access_token: String,
-    pub user_id: u64,
+    pub user_id: Id,
     pub email: Option<String>,
     lifetime: AccessTokenLifetime,
 }

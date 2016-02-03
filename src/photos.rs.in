@@ -1,16 +1,16 @@
 
 #[derive(Debug, PartialEq, Eq, Deserialize)]
 pub struct Photo {
-    pub id: u64,
-    pub album_id: i64,
-    pub owner_id: i64,
-    pub user_id: i64,
+    pub id: Id,
+    pub album_id: Id,
+    pub owner_id: OwnerId,
+    pub user_id: Id,
     pub photo_75: String,
     pub photo_130: String,
     pub photo_604: String,
     pub width: u16,
     pub height: u16,
     pub text: String,
-    pub date: u64,
+    pub date: Date,
 }
 

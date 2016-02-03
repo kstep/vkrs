@@ -2,7 +2,7 @@ use std::borrow::Borrow;
 use std::convert::AsRef;
 use std::string::ToString;
 use std::error::Error;
-use super::api::{Collection, Sort, LikesCount};
+use super::api::{Collection, Sort, LikesCount, Id, OwnerId, Date, Bool, Duration, FullId};
 
 #[cfg(feature = "unstable")]
 include!("video.rs.in");
@@ -14,13 +14,13 @@ request_ref! {
     #[derive(Eq, Copy)]
     struct Get for ["video.get"](v => 5.44) -> Collection<Video> {
         sized {
-            owner_id: Option<i64> = () => {Option},
-            album_id: Option<u64> = () => {Option},
+            owner_id: Option<OwnerId> = () => {Option},
+            album_id: Option<Id> = () => {Option},
             offset: usize = (0) => {},
             count: usize = (30) => {},
         }
         unsized {
-            videos: [(i64, u64)] = (&[][..]) => { |value|
+            videos: [FullId] = (&[][..]) => { |value|
                 &*value.iter().map(|&(o, id)| format!("{}_{}", o, id)).collect::<Vec<_>>().join(",")
             }
         }

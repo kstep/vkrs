@@ -6,7 +6,7 @@ pub struct LinkStatus {
 
 #[derive(Debug, PartialEq, Eq, Deserialize, Clone)]
 pub struct ScreenNameInfo {
-	#[serde(rename="type")]
+    #[serde(rename="type")]
     pub kind: String,
-    pub object_id: u64,
+    pub object_id: Id,
 }
