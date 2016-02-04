@@ -24,7 +24,6 @@ it will setup indentation, end-of-lines and other basic text formatting options
 to conform the coding conventions described above. It will save you from many
 (mis)formatting problems and help keep code clean and tidy.
 
-
 ### Environment setup
 
 You will need stable Rust 1.6.0 or later. I follow stable Rust channel,
@@ -38,9 +37,9 @@ You can download Cargo and Rust from the [Rust download page][rust-dl].
 I recommend you to install [rustfmt][] for code formatting. Install it with
 `cargo install rustfmt`. Make sure you have the directory Cargo installs
 binaries in is in your `PATH`. After this, you can use `cargo fmt` command in
-the project directory to format code according code conventions.
+the project directory to format code according to code conventions.
 
-And of cause you will need [Git][]. No excuses here, you must know Git basics in
+And of course you will need [Git][]. No excuses here, you must know Git basics in
 order to work with Github.
 
 [rust-dl]: https://www.rust-lang.org/downloads.html
@@ -53,9 +52,9 @@ Fork the [main project repo][vkrs] into your Github account, then clone it and
 add upstream remote to keep it in sync with upstream:
 
 ```bash
-$ git clone git@github.com:$USER/vkrs.git
-$ cd vkrs
-$ git remote add upstream https://github.com/kstep/vkrs
+git clone git@github.com:$USER/vkrs.git
+cd vkrs
+git remote add upstream https://github.com/kstep/vkrs
 ```
 
 OK, you are all set now!
@@ -84,7 +83,7 @@ number in the branch name, e.g. `issue-123`, as it will help everybody keep
 track of your progress on the task:
 
 ```bash
-$ git checkout -b issue-123-fix-bug
+git checkout -b issue-123-fix-bug
 ```
 
 Then you are free to hack. Commit often, try to place meaningful names into
@@ -92,25 +91,25 @@ your commit messages, keep your commits small and try to place logically linked
 changes into single commit, while keeping unrelated changes into different
 commits.
 
-Once you are done, it's good idea to make sure your code is formatted according
-coding conventions by running `rustfmt` on it:
+Once you are done, it's a good idea to make sure your code is formatted
+according to coding conventions by running `rustfmt` on it:
 
 ```bash
-$ cargo fmt
-$ git commit -a -m "rustfmt"
+cargo fmt
+git commit -a -m "rustfmt"
 ```
 
 And then push your branch to Github:
 
 ```bash
-$ git push origin -u issue-123-fix-bug
+git push origin -u issue-123-fix-bug
 ```
 
 Then [create a Pull Request][PR] to let me know you are ready to merge your changes.
 I'll review your commits if they are all OK, I'll merge them. If not, I'll try
 to point you to things you may need to change. It may take several iterations
 and new commits to make your changes fit the project, but once everything is
-OK, PR will be merged.
+fine, PR will be merged.
 
 After successful merge, you are safe to remove the issue branch:
 
@@ -122,9 +121,9 @@ $ git branch -d issue-123-fix-bug     # remove local branch
 Don't forget to update your fork to the upstream after this:
 
 ```bash
-$ git checkout master
-$ git pull --rebase upstream master
-$ git push origin master
+git checkout master
+git pull --rebase upstream master
+git push origin master
 ```
 
 Then you are ready to take on the next issue. Good luck!
@@ -144,19 +143,19 @@ but try at least skim it to have some common overview of the project shape.
 
 The project is about [VK API][vkapi] implementation in Rust. The VK API is
 quite large, so one need to keep to some strict conventions to avoid confusion
-(not to say "avoid to get crazy").
+(not to say "avoid to getting crazy").
 
-The API requests are all made with either GET or POST HTTP methods,
-interchangeably. The current implementation always uses GET requests, but it
-may change in the future. OAuthy authorization is used, and some requests
-require certain permissions and an access token, while others require neither.
+All API requests are made with either GET or POST HTTP methods,
+interchangeably. Current implementation always uses GET requests, but it may
+change in the future. OAuthy authorization is used, and some requests require
+certain permissions and an access token, while others require neither.
 
 Request bodies are always www-form-urlencoded strings, responses are always JSON
 encoded (they may be XML encoded by client request, but this feature is never
 used in the client implementation).
 
-Request bodies define response structure in a strict way, so once request
-is known, we can expect some definite JSON structure in response.
+Request bodies stricly define response structure, so once request is known, we
+can expect some definite JSON structure in response.
 
 The VK API is also versioned, API version is passed in a `v` argument in any
 request and may affect the response structure. So each request is also marked
@@ -223,12 +222,15 @@ So main layout is simple:
   [photos API][photos] go to `photos` module (`photos.rs` and `photos.rs.in`),
   etc.;
 
+[audio]: https://vk.com/dev/audio
+[photos]: https://vk.com/dev/photos
+
 You may notice, that modules come in pairs: `*.rs` and `*.rs.in` files. The
 `*.rs.in` files are processed with [serde_codegen] code generator during build
 process, so all response types go to `*.rs.in` files, so serde_codgen can
 generate `Deserialize` trait for them.
 
-Request types and all helper types which doesn't come with response (and don't)
+Request types and all helper types which doesn't come with response (and don't
 require `Deserialize` trait implementation) go to `*.rs` files.
 
 To join up the files during compilation, you will need to place the following
@@ -267,13 +269,13 @@ Now to the naming conventions:
 [serde_json]: https://crates.io/crates/serde_json/
 [serde_codegen]: https://crates.io/crates/serde_codegen/
 [syntex]: https://crates.io/crates/syntex/
-[audio]: https://vk.com/dev/audio
 
 ### Main API request implementation workflow
 
-So, first things first. You need to find or create a module for the API method to place.
-If you read the previous section carefully, you now know where to place all these things.
-Let's say you want to implement [audio.search][] method.
+So, first things first. You need to find or create a module for the API method
+to place. If you read the previous section carefully, you now know where to
+place all these things. Let's say you want to implement [audio.search][]
+method.
 
 You need to find (or create if they're not there) the following files:
 
@@ -281,9 +283,9 @@ You need to find (or create if they're not there) the following files:
 - `src/audio.rs.in` for responses to be processed with serde_codegen (so you
   don't to implement Deserialize trait manually).
 
-In our case the files are already here. But what if they would be already in place?
-Well, you will need to create them. Let's leave `audio.rs.in` empty for now. Now place
-the following snippet into `audio.rs` file:
+In our case the files are already here. But what if they would be already in
+place? Well, you will need to create them. Let's leave `audio.rs.in` empty for
+now. Now place the following snippet into `audio.rs` file:
 
 ```rust
 #[cfg(feature = "unstable")]
@@ -294,7 +296,8 @@ include!(concat!(env!("OUT_DIR"), "/audio.rs"));
 ```
 
 This snippet will join up both files into single module during compilation.
-Place all imports (`use` clauses) above this code, and all other things below this code.
+Place all imports (`use` clauses) above this code, and all other things below
+this code.
 
 Now add the following line into `lib.rs` file in order to make this module visible:
 
@@ -324,10 +327,10 @@ possible. Usual minimum I implement via `#[derive()]` is `Debug`, `PartialEq`
 and `Clone`. Also, if possible, I implement `Copy` (if all type fields are
 copyable) and `Eq` (almost always, except for some rare cases when a type
 contains something like floating number fields (`f32` or `f64`) which are not
-`Eq`). However it's all about putting correct `#[derive()]` clause before type
+`Eq`). However, it's all about putting correct `#[derive()]` clause before type
 definition, so hustle is minimum. Here's a snippet:
 
-```
+```rust
 #[derive(Debug, Clone, PartialEq, Eq, Copy)]
 ```
 
@@ -386,11 +389,11 @@ due to orphan trait implementation rule.
 Then we define a struct in usual way. We don't mark it as `pub`lic, macro will
 do it for us. We name our structure `Search` according to our conventions
 (remember we are defining `audio.search` method, and `audio` part is
-already encoded in our module name). We define this struct `for
+already encoded in our module name). Also, we define this struct `for
 ["audio.search"]` with hardcoded argument `(v => 5.44)`. We could move this
 `v` into struct fields and let user change version number in runtime, but
 it will ruin our queries flow, because version defines response type, so if
-we give user this freedom to choose API version, we will loose our freedom
+we give user this freedom to choose API version, we will lose our freedom
 to set response type structure. So we hardcode it in our implementation.
 The same thing can have sense for other fields, e.g. `exteded` fields for in
 requests change the available fields drastically, redefining response structure
@@ -404,7 +407,7 @@ it very often, actually almost always when a method returns some collection
 of objects. If our method were to return single object, we would write
 `-> Audio` here instead.
 
-After it we see `[Audio]` slice-like thingy. It's a permission definition
+After it, we see `[Audio]` slice-like thingy. It's a permission definition
 block. It can actually contain a comma-separated list of permission names, as
 defined in `enum api::Permission` type. In our case the `audio.search` method
 requires "audio" permission, defined by `api::Permission::Audio` variant. If
@@ -413,9 +416,9 @@ would write `[Audio, Video]` here. This block can be empty or omitted
 altogether for public methods which doesn't require authorization and/or
 special permissions, like `utils.getServerTime`.
 
-Now we go to fields definition, and we wrap them into curly braces `{}` as we
-would for simple struct type. Let's ignore `sized {}` and `unsized {}` blocks
-for now and go straight to field definitions.
+Now we go to the fields definition block wrapped in the curly braces `{}` as a
+simple struct type. Let's ignore `sized {}` and `unsized {}` blocks for now and
+go straight to field definitions.
 
 Fields are defined in a way very similar to usual struct fields definition,
 but with some extra meta info stuck in. Let's look at it closer:
@@ -463,10 +466,13 @@ keywords, which define some common mapping pattern:
   elements into strings.
 - `{=}` — pass the field value intact. The field must already be of type `&str`.
 
-Also it can have closure-like syntax like this:
+Also, it can have closure-like syntax like this:
 
 ```rust
-album_id: Option<Id> = () => { |value| value.as_ref().map(ToString::to_string).as_ref().map(Borrow::borrow).unwrap_or("") },
+album_id: Option<Id> = () => { |value|
+    value.as_ref().map(ToString::to_string).as_ref()
+        .map(Borrow::borrow).unwrap_or("")
+},
 ```
 
 In this case the mapper block contains variable name in pipes `|value|`, which
@@ -491,7 +497,7 @@ request! {
 gone through all the words above.)
 
 As block names say, they define sized and unsized request fields. The fields
-definition syntax in them are the same, except for one small but important
+declaration syntax in them are the same, except for one small but important
 detail: in `unsized {}` block all field types *can* (but *don't have to*) have
 unsized types, like `str` or `[T]`. The macro will prepend these types with
 reference prefix `&` and a lifetime specifier, bound to the parent structure.
@@ -530,8 +536,8 @@ pub struct Search<'a> {
 }
 ```
 
-Now we are done with request. So, why all this hustle with custom DSL, you would ask?
-Well, let's me show you the code again:
+Now we are done with request. So, why all this hustle with custom DSL, you
+would ask? Well, let me show you the code again:
 
 ```rust
 request_ref! {
@@ -572,29 +578,68 @@ Yes, the DSL is very dense, but it describes exactly what request does in a
 reasonable enough way, so I bet you already can read all (or almost all)
 request definitions in the project, and even compose several yourself.
 
+If a request field name is equal to a Rust keyword, you will have to choose
+another field name in the struct type. To do it, use the extended `request!`
+DSL syntax with field aliases. For now, if you set an alias for at least one
+field in a structure, you must set aliases for *all* fields. This not very
+convenient, and [I know it][issue41], but it's a macro system limitation I
+haven't found a way to work around yet.
+
+For example you have a request with a `type` field name, and you decided
+to name it `kind` in your struct type. Here's how you can do it:
+
+```rust
+request! {
+    struct Report for ["users.report"](v => 5.44) -> Bool {
+        user_id as ("user_id"): Id = (0) => {},
+        kind as ("type"): ReportKind = (ReportKind::Spam) => {AsRef},
+    }
+}
+```
+
+Note, even if other fields are valid Rust identifiers (the `user_id` field
+here), you must use alias syntax `user_id as ("user_id")` for them as well.
+This may change in the future if I find a way to work around this issue.
+
 [audio.search]: https://vk.com/dev/audio.search
+[issue41]: https://github.com/kstep/vkrs/issues/41
 
 #### Response structure implementation
 
-This one is even simpler. You just take response JSON and write it down as as
+This one is even simpler. You just take response JSON and write it down as
 `pub struct Something {}` into `*.rs.in` file (that would be `audio.rs.in` in
 our example). And you will use this `Something` after arrow `->` in some
-request definition DSL clause.
+request definition DSL clause. Also remember to make the struct type and all
+its fields `pub`lic.
 
 Then you just put the following snippet right above your new structure type
 definition:
 
-```
+```rust
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 ```
 
 And you are done.
 
-Note `Deserialize` trait (which is required for response types!). Also note that
-it doesn't include `Copy` trait, as responses usually contain at least one `String`
-field, which is not copyable. If you response doesn't have non-copyable fields,
-add `Copy` to derived traits as well. And yes, if your response contains non-Eq
-fields (like floats), remove `Eq` from derive attribute.
+Note the `Deserialize` trait (which is required for response types!). Also,
+note that it doesn't include `Copy` trait, as responses usually contain at
+least one `String` field, which is not copyable. If you response doesn't have
+non-copyable fields, add `Copy` to derived traits as well. And yes, if your
+response contains non-Eq fields (like floats), remove `Eq` from derive
+attribute.
+
+If a response field name is equal to a Rust keyword, you will have to choose
+another field name in the struct type. To do it, add `#[derive(rename)]`
+attribute to the field. For example, if a response contains `type` field, you
+may rename to `kind` this way:
+
+```rust
+#[derive(Debug, PartialEq, Eq, Copy, Clone, Deserialize)]
+pub struct Object {
+    #[serde(rename="type")]
+    pub kind: u32,
+}
+```
 
 #### List of helpful/important predefined types
 
@@ -603,7 +648,7 @@ Now to the last point. This will be really simple, I promise.
 There are some helpful types around this library, you will need to know about
 in order to use them instead of reinventing a wheel.
 
-Some of the types I already mentioned above, e.g. `api::Collection<T>` and
+Some types I already mentioned above, e.g. `api::Collection<T>` and
 `auth::Permission`.
 
 There are also several types and type aliases which add some semantic meaning
@@ -647,7 +692,6 @@ Here's the full list:
 - `api::Result` — a convenience alias to `Result<T, Error>`, the main return
   type from the request. For library users, so just know it exists.
 
-
 #### New error codes definition
 
 The `enum api::ErrorCode` type described above contains a full list of VK API
@@ -669,3 +713,10 @@ implementation for the new codes. A good default is to just take the error
 description from VK docs page and put it into `f.write_str()` in lower case.
 
 [wall.post]: https://vk.com/dev/wall.post
+
+### Useful links
+
+- [Official VK API docs][vkapi]
+- [Serde docs](https://serde-rs.github.io/serde/serde/serde/index.html)
+- [Serde attributes](https://github.com/serde-rs/serde#annotations)
+
