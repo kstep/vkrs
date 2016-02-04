@@ -95,6 +95,15 @@ request_ref! {
     }
 }
 
+request! {
+    #[derive(Eq, Copy)]
+    struct Delete for ["video.delete"](v => 5.44) -> Bool [Video] {
+        video_id: Id = () => {},
+        owner_id: Option<OwnerId> = () => {Option},
+        target_id: Option<OwnerId> = () => {Option},
+    }
+}
+
 enum_str! { Filter {
     YouTube = "youtube",
     Vimeo = "vimeo",
