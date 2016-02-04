@@ -112,6 +112,15 @@ request! {
     }
 }
 
+request! {
+    #[derive(Eq, Copy)]
+    struct GetUserVideos for ["video.getUserVideos"](v => 5.44, extended => 0) -> Collection<Video> [Video] {
+        user_id: Option<Id> = () => {Option},
+        offset: usize = (0) => {},
+        count: usize = (30) => {},
+    }
+}
+
 enum_str! { Filter {
     YouTube = "youtube",
     Vimeo = "vimeo",
