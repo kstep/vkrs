@@ -14,6 +14,7 @@ mod macros;
 pub mod api;
 pub mod auth;
 pub mod audio;
+pub mod gifts;
 pub mod photos;
 pub mod video;
 pub mod users;
