@@ -70,15 +70,15 @@ To start contribution, you will need to find some task to do. Visit the
 wanted` label][search].
 
 Find some issue you are interested in and comment on it to let me know you want
-to take it. I will assign it to you and will try guide you in your first steps
-to contribution. It's OK if you don't know Rust, or systems programming, or
-some tricky Git workflow, whatever it is, I'll be happy to help you, answer
+to take it. I will assign it to you and will try to guide you in your first
+steps to contribution. It's OK if you don't know Rust, or systems programming,
+or some tricky Git workflow, whatever it is, I'll be happy to help you, answer
 your questions if I can, or introduce you to forums and chats where more wise
 people will be able to help you, if I can't.
 
 Once you have your first task chosen, create a branch in your repository. You
-may name it however you want, just make sure its name somehow reflect the
-issue problem in one-to-three short words. It's also a good idea to place
+may name it however you want, just make sure its name somehow reflect the issue
+problem in one-to-three short words. It's also a good idea to place issue
 number in the branch name, e.g. `issue-123`, as it will help everybody keep
 track of your progress on the task:
 
@@ -86,10 +86,9 @@ track of your progress on the task:
 git checkout -b issue-123-fix-bug
 ```
 
-Then you are free to hack. Commit often, try to place meaningful names into
-your commit messages, keep your commits small and try to place logically linked
-changes into single commit, while keeping unrelated changes into different
-commits.
+Then you are free to hack. Commit often, try to keep your commits messages
+meaningful, your commits small and try to place logically related changes into
+distinct commits, while keeping unrelated changes in different commits.
 
 Once you are done, it's a good idea to make sure your code is formatted
 according to coding conventions by running `rustfmt` on it:
@@ -105,17 +104,17 @@ And then push your branch to Github:
 git push origin -u issue-123-fix-bug
 ```
 
-Then [create a Pull Request][PR] to let me know you are ready to merge your changes.
-I'll review your commits if they are all OK, I'll merge them. If not, I'll try
-to point you to things you may need to change. It may take several iterations
-and new commits to make your changes fit the project, but once everything is
-fine, PR will be merged.
+Then [create a Pull Request][PR] to let me know you are ready to merge your
+changes. I'll review your commits, and if they are all OK, I'll merge them. If
+not, I'll try to point you to things you may need to change. It may take
+several iterations and new commits to make your changes fit the project, but
+once everything is fine, PR will be merged.
 
 After successful merge, you are safe to remove the issue branch:
 
 ```bash
-$ git branch -d issue-123-fix-bug     # remove local branch
-# git push origin :issue-123-fix-bug  # remove remote branch
+git branch -d issue-123-fix-bug     # remove local branch
+git push origin :issue-123-fix-bug  # remove remote branch
 ```
 
 Don't forget to update your fork to the upstream after this:
@@ -571,8 +570,8 @@ This sixteen lines have just generated the following things for us:
    that is about 15 lines of code, if you write short methods in one line, and
    more if you format them nicely).
 
-This amounts to 62 simple lines of code, which comments and empty lines, using
-one-liner methods, vs. 16 lines of macro invocation.
+This amounts to 62 simple lines of code, without comments and empty lines,
+using one-liner methods, vs. 16 lines of macro invocation.
 
 Yes, the DSL is very dense, but it describes exactly what request does in a
 reasonable enough way, so I bet you already can read all (or almost all)
@@ -623,7 +622,7 @@ And you are done.
 
 Note the `Deserialize` trait (which is required for response types!). Also,
 note that it doesn't include `Copy` trait, as responses usually contain at
-least one `String` field, which is not copyable. If you response doesn't have
+least one `String` field, which is not copyable. If your response doesn't have
 non-copyable fields, add `Copy` to derived traits as well. And yes, if your
 response contains non-Eq fields (like floats), remove `Eq` from derive
 attribute.
@@ -631,7 +630,7 @@ attribute.
 If a response field name is equal to a Rust keyword, you will have to choose
 another field name in the struct type. To do it, add `#[derive(rename)]`
 attribute to the field. For example, if a response contains `type` field, you
-may rename to `kind` this way:
+may rename it to `kind` this way:
 
 ```rust
 #[derive(Debug, PartialEq, Eq, Copy, Clone, Deserialize)]
