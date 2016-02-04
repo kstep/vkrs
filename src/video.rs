@@ -104,6 +104,14 @@ request! {
     }
 }
 
+request! {
+    #[derive(Eq, Copy)]
+    struct Restore for ["video.restore"](v => 5.44) -> Bool [Video] {
+        video_id: Id = () => {},
+        owner_id: Option<OwnerId> = () => {Option},
+    }
+}
+
 enum_str! { Filter {
     YouTube = "youtube",
     Vimeo = "vimeo",
