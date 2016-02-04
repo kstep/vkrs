@@ -24,7 +24,6 @@ it will setup indentation, end-of-lines and other basic text formatting options
 to conform the coding conventions described above. It will save you from many
 (mis)formatting problems and help keep code clean and tidy.
 
-
 ### Environment setup
 
 You will need stable Rust 1.6.0 or later. I follow stable Rust channel,
@@ -53,9 +52,9 @@ Fork the [main project repo][vkrs] into your Github account, then clone it and
 add upstream remote to keep it in sync with upstream:
 
 ```bash
-$ git clone git@github.com:$USER/vkrs.git
-$ cd vkrs
-$ git remote add upstream https://github.com/kstep/vkrs
+git clone git@github.com:$USER/vkrs.git
+cd vkrs
+git remote add upstream https://github.com/kstep/vkrs
 ```
 
 OK, you are all set now!
@@ -84,7 +83,7 @@ number in the branch name, e.g. `issue-123`, as it will help everybody keep
 track of your progress on the task:
 
 ```bash
-$ git checkout -b issue-123-fix-bug
+git checkout -b issue-123-fix-bug
 ```
 
 Then you are free to hack. Commit often, try to place meaningful names into
@@ -96,14 +95,14 @@ Once you are done, it's a good idea to make sure your code is formatted
 according to coding conventions by running `rustfmt` on it:
 
 ```bash
-$ cargo fmt
-$ git commit -a -m "rustfmt"
+cargo fmt
+git commit -a -m "rustfmt"
 ```
 
 And then push your branch to Github:
 
 ```bash
-$ git push origin -u issue-123-fix-bug
+git push origin -u issue-123-fix-bug
 ```
 
 Then [create a Pull Request][PR] to let me know you are ready to merge your changes.
@@ -122,9 +121,9 @@ $ git branch -d issue-123-fix-bug     # remove local branch
 Don't forget to update your fork to the upstream after this:
 
 ```bash
-$ git checkout master
-$ git pull --rebase upstream master
-$ git push origin master
+git checkout master
+git pull --rebase upstream master
+git push origin master
 ```
 
 Then you are ready to take on the next issue. Good luck!
@@ -224,7 +223,7 @@ So main layout is simple:
   etc.;
 
 [audio]: https://vk.com/dev/audio
-[photos]: https://vk.com/dev/audio
+[photos]: https://vk.com/dev/photos
 
 You may notice, that modules come in pairs: `*.rs` and `*.rs.in` files. The
 `*.rs.in` files are processed with [serde_codegen] code generator during build
@@ -273,9 +272,10 @@ Now to the naming conventions:
 
 ### Main API request implementation workflow
 
-So, first things first. You need to find or create a module for the API method to place.
-If you read the previous section carefully, you now know where to place all these things.
-Let's say you want to implement [audio.search][] method.
+So, first things first. You need to find or create a module for the API method
+to place. If you read the previous section carefully, you now know where to
+place all these things. Let's say you want to implement [audio.search][]
+method.
 
 You need to find (or create if they're not there) the following files:
 
@@ -283,9 +283,9 @@ You need to find (or create if they're not there) the following files:
 - `src/audio.rs.in` for responses to be processed with serde_codegen (so you
   don't to implement Deserialize trait manually).
 
-In our case the files are already here. But what if they would be already in place?
-Well, you will need to create them. Let's leave `audio.rs.in` empty for now. Now place
-the following snippet into `audio.rs` file:
+In our case the files are already here. But what if they would be already in
+place? Well, you will need to create them. Let's leave `audio.rs.in` empty for
+now. Now place the following snippet into `audio.rs` file:
 
 ```rust
 #[cfg(feature = "unstable")]
@@ -296,7 +296,8 @@ include!(concat!(env!("OUT_DIR"), "/audio.rs"));
 ```
 
 This snippet will join up both files into single module during compilation.
-Place all imports (`use` clauses) above this code, and all other things below this code.
+Place all imports (`use` clauses) above this code, and all other things below
+this code.
 
 Now add the following line into `lib.rs` file in order to make this module visible:
 
@@ -329,7 +330,7 @@ contains something like floating number fields (`f32` or `f64`) which are not
 `Eq`). However, it's all about putting correct `#[derive()]` clause before type
 definition, so hustle is minimum. Here's a snippet:
 
-```
+```rust
 #[derive(Debug, Clone, PartialEq, Eq, Copy)]
 ```
 
@@ -468,7 +469,10 @@ keywords, which define some common mapping pattern:
 Also, it can have closure-like syntax like this:
 
 ```rust
-album_id: Option<Id> = () => { |value| value.as_ref().map(ToString::to_string).as_ref().map(Borrow::borrow).unwrap_or("") },
+album_id: Option<Id> = () => { |value|
+    value.as_ref().map(ToString::to_string).as_ref()
+        .map(Borrow::borrow).unwrap_or("")
+},
 ```
 
 In this case the mapper block contains variable name in pipes `|value|`, which
@@ -532,8 +536,8 @@ pub struct Search<'a> {
 }
 ```
 
-Now we are done with request. So, why all this hustle with custom DSL, you would ask?
-Well, let me show you the code again:
+Now we are done with request. So, why all this hustle with custom DSL, you
+would ask? Well, let me show you the code again:
 
 ```rust
 request_ref! {
@@ -586,7 +590,7 @@ request definition DSL clause.
 Then you just put the following snippet right above your new structure type
 definition:
 
-```
+```rust
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 ```
 
@@ -648,7 +652,6 @@ Here's the full list:
   exists.
 - `api::Result` — a convenience alias to `Result<T, Error>`, the main return
   type from the request. For library users, so just know it exists.
-
 
 #### New error codes definition
 
