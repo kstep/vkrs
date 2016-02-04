@@ -47,6 +47,24 @@ request_ref! {
     }
 }
 
+request_ref! {
+    #[derive(Eq, Copy)]
+    struct Edit for ["video.edit"](v => 5.44) -> Bool [Video] {
+        sized {
+            owner_id: Option<OwnerId> = () => {Option},
+            video_id: Id = () => {},
+            no_comments: bool = () => {bool},
+            repeat: bool = () => {bool},
+        }
+        unsized {
+            name: str = ("") => {=},
+            desc: str = ("") => {=},
+            privacy_view: str = ("") => {=},
+            privacy_comment: str = ("") => {=},
+        }
+    }
+}
+
 enum_str! { Filter {
     YouTube = "youtube",
     Vimeo = "vimeo",
