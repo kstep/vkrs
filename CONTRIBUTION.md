@@ -674,3 +674,10 @@ implementation for the new codes. A good default is to just take the error
 description from VK docs page and put it into `f.write_str()` in lower case.
 
 [wall.post]: https://vk.com/dev/wall.post
+
+### Useful links
+
+- [Official VK API docs][vkapi]
+- [Serde docs](https://serde-rs.github.io/serde/serde/serde/index.html)
+- [Serde attributes](https://github.com/serde-rs/serde#annotations)
+
