@@ -104,6 +104,14 @@ request! {
     }
 }
 
+request! {
+    #[derive(Eq, Copy)]
+    struct Restore for ["video.restore"](v => 5.44) -> Bool {
+        video_id: Id = () => {},
+        owner_id: Option<OwnerId> = () => {},
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Filter {
     YouTube,
