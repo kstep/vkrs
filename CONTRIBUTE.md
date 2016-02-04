@@ -69,7 +69,7 @@ To start contribution, you will need to find some task to do. Visit the
 [project issues page][issues] and look for [unassigned issues with `s-help
 wanted` label][search].
 
-Find some issue you are interested in and comment in it to let me know you want
+Find some issue you are interested in and comment on it to let me know you want
 to take it. I will assign it to you and will try guide you in your first steps
 to contribution. It's OK if you don't know Rust, or systems programming, or
 some tricky Git workflow, whatever it is, I'll be happy to help you, answer
@@ -77,7 +77,7 @@ your questions if I can, or introduce you to forums and chats where more wise
 people will be able to help you, if I can't.
 
 Once you have your first task chosen, create a branch in your repository. You
-may name it however you want, just make sure it's name somehow reflect the
+may name it however you want, just make sure its name somehow reflect the
 issue problem in one-to-three short words. It's also a good idea to place
 number in the branch name, e.g. `issue-123`, as it will help everybody keep
 track of your progress on the task:
