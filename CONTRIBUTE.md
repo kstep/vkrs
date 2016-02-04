@@ -40,7 +40,7 @@ I recommend you to install [rustfmt][] for code formatting. Install it with
 binaries in is in your `PATH`. After this, you can use `cargo fmt` command in
 the project directory to format code according code conventions.
 
-And of cause you will need [Git][]. No excuses here, you must now Git basics in
+And of cause you will need [Git][]. No excuses here, you must know Git basics in
 order to work with Github.
 
 [rust-dl]: https://www.rust-lang.org/downloads.html
