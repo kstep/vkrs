@@ -38,7 +38,7 @@ You can download Cargo and Rust from the [Rust download page][rust-dl].
 I recommend you to install [rustfmt][] for code formatting. Install it with
 `cargo install rustfmt`. Make sure you have the directory Cargo installs
 binaries in is in your `PATH`. After this, you can use `cargo fmt` command in
-the project directory to format code according code conventions.
+the project directory to format code according to code conventions.
 
 And of course you will need [Git][]. No excuses here, you must know Git basics in
 order to work with Github.
@@ -93,7 +93,7 @@ changes into single commit, while keeping unrelated changes into different
 commits.
 
 Once you are done, it's a good idea to make sure your code is formatted
-according coding conventions by running `rustfmt` on it:
+according to coding conventions by running `rustfmt` on it:
 
 ```bash
 $ cargo fmt
@@ -110,7 +110,7 @@ Then [create a Pull Request][PR] to let me know you are ready to merge your chan
 I'll review your commits if they are all OK, I'll merge them. If not, I'll try
 to point you to things you may need to change. It may take several iterations
 and new commits to make your changes fit the project, but once everything is
-OK, PR will be merged.
+fine, PR will be merged.
 
 After successful merge, you are safe to remove the issue branch:
 
@@ -223,12 +223,15 @@ So main layout is simple:
   [photos API][photos] go to `photos` module (`photos.rs` and `photos.rs.in`),
   etc.;
 
+[audio]: https://vk.com/dev/audio
+[photos]: https://vk.com/dev/audio
+
 You may notice, that modules come in pairs: `*.rs` and `*.rs.in` files. The
 `*.rs.in` files are processed with [serde_codegen] code generator during build
 process, so all response types go to `*.rs.in` files, so serde_codgen can
 generate `Deserialize` trait for them.
 
-Request types and all helper types which doesn't come with response (and don't)
+Request types and all helper types which doesn't come with response (and don't
 require `Deserialize` trait implementation) go to `*.rs` files.
 
 To join up the files during compilation, you will need to place the following
@@ -267,7 +270,6 @@ Now to the naming conventions:
 [serde_json]: https://crates.io/crates/serde_json/
 [serde_codegen]: https://crates.io/crates/serde_codegen/
 [syntex]: https://crates.io/crates/syntex/
-[audio]: https://vk.com/dev/audio
 
 ### Main API request implementation workflow
 
