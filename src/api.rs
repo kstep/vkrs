@@ -88,18 +88,16 @@ impl Client {
     }
 
     pub fn get<T: Request>(&self, token: Option<&AccessToken>, req: &T) -> Result<T::Response> {
-        let mut url = req.to_url();
+        let url = req.to_url();
+        let mut query = req.to_query_string();
         if let Some(ref token) = token {
-            if let Some(ref mut query) = url.query {
-                query.push_str("&access_token=");
-                query.push_str(token.access_token());
-            } else {
-                url.query = Some(String::from("access_token=") + token.access_token());
-            }
+            query.push_str("&access_token=");
+            query.push_str(token.access_token());
         }
 
         self.client
-            .get(url)
+            .post(url)
+            .body(&query)
             .send()
             .map_err(Error::Http)
             .and_then(|resp| serde_json::from_reader::<_, ApiResult<T::Response>>(resp).map_err(Error::Json))
@@ -128,7 +126,7 @@ pub trait Request {
                 default_port: Some(443),
                 path: vec![String::from(VK_PATH), String::from(Self::method_name())],
             }),
-            query: Some(self.to_query_string()),
+            query: None,
             fragment: None,
         }
     }

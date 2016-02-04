@@ -145,7 +145,7 @@ quite large, so one need to keep to some strict conventions to avoid confusion
 (not to say "avoid to getting crazy").
 
 All API requests are made with either GET or POST HTTP methods,
-interchangeably. Current implementation always uses GET requests, but it may
+interchangeably. Current implementation always uses POST requests, but it may
 change in the future. OAuthy authorization is used, and some requests require
 certain permissions and an access token, while others require neither.
 
