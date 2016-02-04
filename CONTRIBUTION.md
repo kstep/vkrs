@@ -40,7 +40,7 @@ I recommend you to install [rustfmt][] for code formatting. Install it with
 binaries in is in your `PATH`. After this, you can use `cargo fmt` command in
 the project directory to format code according code conventions.
 
-And of cause you will need [Git][]. No excuses here, you must know Git basics in
+And of course you will need [Git][]. No excuses here, you must know Git basics in
 order to work with Github.
 
 [rust-dl]: https://www.rust-lang.org/downloads.html
@@ -92,8 +92,8 @@ your commit messages, keep your commits small and try to place logically linked
 changes into single commit, while keeping unrelated changes into different
 commits.
 
-Once you are done, it's good idea to make sure your code is formatted according
-coding conventions by running `rustfmt` on it:
+Once you are done, it's a good idea to make sure your code is formatted
+according coding conventions by running `rustfmt` on it:
 
 ```bash
 $ cargo fmt
@@ -144,19 +144,19 @@ but try at least skim it to have some common overview of the project shape.
 
 The project is about [VK API][vkapi] implementation in Rust. The VK API is
 quite large, so one need to keep to some strict conventions to avoid confusion
-(not to say "avoid to get crazy").
+(not to say "avoid to getting crazy").
 
-The API requests are all made with either GET or POST HTTP methods,
-interchangeably. The current implementation always uses GET requests, but it
-may change in the future. OAuthy authorization is used, and some requests
-require certain permissions and an access token, while others require neither.
+All API requests are made with either GET or POST HTTP methods,
+interchangeably. Current implementation always uses GET requests, but it may
+change in the future. OAuthy authorization is used, and some requests require
+certain permissions and an access token, while others require neither.
 
 Request bodies are always www-form-urlencoded strings, responses are always JSON
 encoded (they may be XML encoded by client request, but this feature is never
 used in the client implementation).
 
-Request bodies define response structure in a strict way, so once request
-is known, we can expect some definite JSON structure in response.
+Request bodies stricly define response structure, so once request is known, we
+can expect some definite JSON structure in response.
 
 The VK API is also versioned, API version is passed in a `v` argument in any
 request and may affect the response structure. So each request is also marked
@@ -324,7 +324,7 @@ possible. Usual minimum I implement via `#[derive()]` is `Debug`, `PartialEq`
 and `Clone`. Also, if possible, I implement `Copy` (if all type fields are
 copyable) and `Eq` (almost always, except for some rare cases when a type
 contains something like floating number fields (`f32` or `f64`) which are not
-`Eq`). However it's all about putting correct `#[derive()]` clause before type
+`Eq`). However, it's all about putting correct `#[derive()]` clause before type
 definition, so hustle is minimum. Here's a snippet:
 
 ```
@@ -386,11 +386,11 @@ due to orphan trait implementation rule.
 Then we define a struct in usual way. We don't mark it as `pub`lic, macro will
 do it for us. We name our structure `Search` according to our conventions
 (remember we are defining `audio.search` method, and `audio` part is
-already encoded in our module name). We define this struct `for
+already encoded in our module name). Also, we define this struct `for
 ["audio.search"]` with hardcoded argument `(v => 5.44)`. We could move this
 `v` into struct fields and let user change version number in runtime, but
 it will ruin our queries flow, because version defines response type, so if
-we give user this freedom to choose API version, we will loose our freedom
+we give user this freedom to choose API version, we will lose our freedom
 to set response type structure. So we hardcode it in our implementation.
 The same thing can have sense for other fields, e.g. `exteded` fields for in
 requests change the available fields drastically, redefining response structure
@@ -404,7 +404,7 @@ it very often, actually almost always when a method returns some collection
 of objects. If our method were to return single object, we would write
 `-> Audio` here instead.
 
-After it we see `[Audio]` slice-like thingy. It's a permission definition
+After it, we see `[Audio]` slice-like thingy. It's a permission definition
 block. It can actually contain a comma-separated list of permission names, as
 defined in `enum api::Permission` type. In our case the `audio.search` method
 requires "audio" permission, defined by `api::Permission::Audio` variant. If
@@ -413,9 +413,9 @@ would write `[Audio, Video]` here. This block can be empty or omitted
 altogether for public methods which doesn't require authorization and/or
 special permissions, like `utils.getServerTime`.
 
-Now we go to fields definition, and we wrap them into curly braces `{}` as we
-would for simple struct type. Let's ignore `sized {}` and `unsized {}` blocks
-for now and go straight to field definitions.
+Now we go to the fields definition block wrapped in the curly braces `{}` as a
+simple struct type. Let's ignore `sized {}` and `unsized {}` blocks for now and
+go straight to field definitions.
 
 Fields are defined in a way very similar to usual struct fields definition,
 but with some extra meta info stuck in. Let's look at it closer:
@@ -463,7 +463,7 @@ keywords, which define some common mapping pattern:
   elements into strings.
 - `{=}` — pass the field value intact. The field must already be of type `&str`.
 
-Also it can have closure-like syntax like this:
+Also, it can have closure-like syntax like this:
 
 ```rust
 album_id: Option<Id> = () => { |value| value.as_ref().map(ToString::to_string).as_ref().map(Borrow::borrow).unwrap_or("") },
@@ -491,7 +491,7 @@ request! {
 gone through all the words above.)
 
 As block names say, they define sized and unsized request fields. The fields
-definition syntax in them are the same, except for one small but important
+declaration syntax in them are the same, except for one small but important
 detail: in `unsized {}` block all field types *can* (but *don't have to*) have
 unsized types, like `str` or `[T]`. The macro will prepend these types with
 reference prefix `&` and a lifetime specifier, bound to the parent structure.
@@ -531,7 +531,7 @@ pub struct Search<'a> {
 ```
 
 Now we are done with request. So, why all this hustle with custom DSL, you would ask?
-Well, let's me show you the code again:
+Well, let me show you the code again:
 
 ```rust
 request_ref! {
@@ -576,7 +576,7 @@ request definitions in the project, and even compose several yourself.
 
 #### Response structure implementation
 
-This one is even simpler. You just take response JSON and write it down as as
+This one is even simpler. You just take response JSON and write it down as
 `pub struct Something {}` into `*.rs.in` file (that would be `audio.rs.in` in
 our example). And you will use this `Something` after arrow `->` in some
 request definition DSL clause.
@@ -590,7 +590,7 @@ definition:
 
 And you are done.
 
-Note `Deserialize` trait (which is required for response types!). Also note that
+Note `Deserialize` trait (which is required for response types!). Also, note that
 it doesn't include `Copy` trait, as responses usually contain at least one `String`
 field, which is not copyable. If you response doesn't have non-copyable fields,
 add `Copy` to derived traits as well. And yes, if your response contains non-Eq
@@ -603,7 +603,7 @@ Now to the last point. This will be really simple, I promise.
 There are some helpful types around this library, you will need to know about
 in order to use them instead of reinventing a wheel.
 
-Some of the types I already mentioned above, e.g. `api::Collection<T>` and
+Some types I already mentioned above, e.g. `api::Collection<T>` and
 `auth::Permission`.
 
 There are also several types and type aliases which add some semantic meaning
