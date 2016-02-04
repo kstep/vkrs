@@ -74,6 +74,27 @@ request! {
     }
 }
 
+request_ref! {
+    #[derive(Eq, Copy)]
+    struct Save for ["video.save"](v => 5.44) -> SavedVideo [Video] {
+        sized {
+            is_private: bool = (true) => {bool},
+            wallpost: bool = () => {bool},
+            group_id: Id = () => {},
+            album_id: Id = () => {},
+            no_comments: bool = () => {bool},
+            repeat: bool = () => {bool},
+        }
+        unsized {
+            name: str = ("") => {=},
+            description: str = ("") => {=},
+            link: str = ("") => {=},
+            privacy_view: str = ("") => {=},
+            privacy_comment: str = ("") => {=},
+        }
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Filter {
     YouTube,

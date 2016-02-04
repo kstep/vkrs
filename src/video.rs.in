@@ -40,3 +40,14 @@ pub struct VideoFiles {
     pub mp4_720: Option<String>,
     pub external: Option<String>,
 }
+
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+pub struct SavedVideo {
+    pub upload_url: String,
+    pub vid: Id,
+    pub owner_id: OwnerId,
+    pub name: String,
+    pub description: String,
+    pub access_key: Option<String>,
+}
+
