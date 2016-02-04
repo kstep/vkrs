@@ -65,6 +65,15 @@ request_ref! {
     }
 }
 
+request! {
+    #[derive(Eq, Copy)]
+    struct Add for ["video.add"](v => 5.44) -> Bool [Video] {
+        target_id: OwnerId = () => {},
+        video_id: Id = () => {},
+        owner_id: OwnerId = () => {},
+    }
+}
+
 enum_str! { Filter {
     YouTube = "youtube",
     Vimeo = "vimeo",
