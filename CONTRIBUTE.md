@@ -49,9 +49,19 @@ $ cd vkrs
 $ git remote add upstream https://github.com/kstep/vkrs
 ```
 
+Also, the project has `.editorconfig` file with basic coding style definitions
+readable by most IDEs and editors. Please look at [editorconfig.org][ec] for
+details and find a plugin for your editor of choice in
+[the download section][ec-dl]. If you install this plugin into your IDE/editor,
+it will setup indentation, end-of-lines and other basic text formatting options
+to conform the coding conventions described above. It will save you from many
+(mis)formatting problems and help keep code clean and tidy.
+
 OK, you are all set now!
 
 [vkrs]: https://github.com/kstep/vkrs
+[ec]: http://editorconfig.org/
+[ec-dl]: http://editorconfig.org/#download
 
 ### Contribution workflow
 
