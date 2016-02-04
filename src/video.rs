@@ -12,7 +12,7 @@ include!(concat!(env!("OUT_DIR"), "/video.rs"));
 
 request_ref! {
     #[derive(Eq, Copy)]
-    struct Get for ["video.get"](v => 5.44) -> Collection<Video> {
+    struct Get for ["video.get"](v => 5.44) -> Collection<Video> [Video] {
         sized {
             owner_id: Option<OwnerId> = () => {Option},
             album_id: Option<Id> = () => {Option},
@@ -29,7 +29,7 @@ request_ref! {
 
 request_ref! {
     #[derive(Eq, Copy)]
-    struct Search for ["video.search"](v => 5.44) -> Collection<Video> {
+    struct Search for ["video.search"](v => 5.44) -> Collection<Video> [Video] {
         sized {
             sort: Sort = (Sort::Popularity) => {AsRef},
             hd: bool = () => {bool},
