@@ -578,14 +578,39 @@ Yes, the DSL is very dense, but it describes exactly what request does in a
 reasonable enough way, so I bet you already can read all (or almost all)
 request definitions in the project, and even compose several yourself.
 
+If a request field name is equal to a Rust keyword, you will have to choose
+another field name in the struct type. To do it, use the extended `request!`
+DSL syntax with field aliases. For now, if you set an alias for at least one
+field in a structure, you must set aliases for *all* fields. This not very
+convenient, and [I know it][issue41], but it's a macro system limitation I
+haven't found a way to work around yet.
+
+For example you have a request with a `type` field name, and you decided
+to name it `kind` in your struct type. Here's how you can do it:
+
+```rust
+request! {
+    struct Report for ["users.report"](v => 5.44) -> Bool {
+        user_id as ("user_id"): Id = (0) => {},
+        kind as ("type"): ReportKind = (ReportKind::Spam) => {AsRef},
+    }
+}
+```
+
+Note, even if other fields are valid Rust identifiers (the `user_id` field
+here), you must use alias syntax `user_id as ("user_id")` for them as well.
+This may change in the future if I find a way to work around this issue.
+
 [audio.search]: https://vk.com/dev/audio.search
+[issue41]: https://github.com/kstep/vkrs/issues/41
 
 #### Response structure implementation
 
 This one is even simpler. You just take response JSON and write it down as
 `pub struct Something {}` into `*.rs.in` file (that would be `audio.rs.in` in
 our example). And you will use this `Something` after arrow `->` in some
-request definition DSL clause.
+request definition DSL clause. Also remember to make the struct type and all
+its fields `pub`lic.
 
 Then you just put the following snippet right above your new structure type
 definition:
@@ -596,11 +621,25 @@ definition:
 
 And you are done.
 
-Note `Deserialize` trait (which is required for response types!). Also, note that
-it doesn't include `Copy` trait, as responses usually contain at least one `String`
-field, which is not copyable. If you response doesn't have non-copyable fields,
-add `Copy` to derived traits as well. And yes, if your response contains non-Eq
-fields (like floats), remove `Eq` from derive attribute.
+Note the `Deserialize` trait (which is required for response types!). Also,
+note that it doesn't include `Copy` trait, as responses usually contain at
+least one `String` field, which is not copyable. If you response doesn't have
+non-copyable fields, add `Copy` to derived traits as well. And yes, if your
+response contains non-Eq fields (like floats), remove `Eq` from derive
+attribute.
+
+If a response field name is equal to a Rust keyword, you will have to choose
+another field name in the struct type. To do it, add `#[derive(rename)]`
+attribute to the field. For example, if a response contains `type` field, you
+may rename to `kind` this way:
+
+```rust
+#[derive(Debug, PartialEq, Eq, Copy, Clone, Deserialize)]
+pub struct Object {
+    #[serde(rename="type")]
+    pub kind: u32,
+}
+```
 
 #### List of helpful/important predefined types
 
