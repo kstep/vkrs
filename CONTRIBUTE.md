@@ -16,9 +16,18 @@
 - Use `rustfmt` to format code from time to time (preferable way is to run
   `cargo fmt`).
 
+Also, the project has `.editorconfig` file with basic coding style definitions
+readable by most IDEs and editors. Please look at [editorconfig.org][ec] for
+details and find a plugin for your editor of choice in
+[the download section][ec-dl]. If you install this plugin into your IDE/editor,
+it will setup indentation, end-of-lines and other basic text formatting options
+to conform the coding conventions described above. It will save you from many
+(mis)formatting problems and help keep code clean and tidy.
+
+
 ### Environment setup
 
-You will need stable Rust 1.6.0 or later. I try to follow stable Rust channel,
+You will need stable Rust 1.6.0 or later. I follow stable Rust channel,
 but try to check it on nightly channel to make sure the project is future
 proof.
 
@@ -48,14 +57,6 @@ $ git clone git@github.com:$USER/vkrs.git
 $ cd vkrs
 $ git remote add upstream https://github.com/kstep/vkrs
 ```
-
-Also, the project has `.editorconfig` file with basic coding style definitions
-readable by most IDEs and editors. Please look at [editorconfig.org][ec] for
-details and find a plugin for your editor of choice in
-[the download section][ec-dl]. If you install this plugin into your IDE/editor,
-it will setup indentation, end-of-lines and other basic text formatting options
-to conform the coding conventions described above. It will save you from many
-(mis)formatting problems and help keep code clean and tidy.
 
 OK, you are all set now!
 
