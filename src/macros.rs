@@ -110,7 +110,7 @@ macro_rules! request_trait_impl {
     ) => {
         type Response = $response_type;
         fn method_name() -> &'static str { $method_name }
-        fn permissions() -> ::auth::Permissions { ::auth::Permissions::from($(::auth::Permission::$permission as i32 +)* 0) }
+        fn permissions() -> ::auth::Permissions { ::auth::Permissions::new($(::auth::Permission::$permission as i32 |)* 0) }
         fn to_query_string(&self) -> String {
             qs![
                 $($param_alias => expand_value_expr!(self; $param_name; $($value)*),)*

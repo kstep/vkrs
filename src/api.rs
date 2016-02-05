@@ -112,7 +112,7 @@ pub trait Request {
     fn to_query_string(&self) -> String;
 
     fn permissions() -> Permissions {
-        Permissions::from(0)
+        Permissions::new(0)
     }
 
     fn to_url(&self) -> Url {

@@ -210,8 +210,8 @@ impl Permission {
 #[derive(Debug, PartialEq, Eq, Copy, Clone, Default)]
 pub struct Permissions(i32);
 
-impl From<i32> for Permissions {
-    fn from(n: i32) -> Permissions {
+impl Permissions {
+    pub fn new(n: i32) -> Permissions {
         Permissions(n & Permission::mask_all())
     }
 }
@@ -222,21 +222,27 @@ impl From<Permission> for Permissions {
     }
 }
 
-impl<'a> From<&'a [Permission]> for Permissions {
-    fn from(vec: &[Permission]) -> Permissions {
-        vec.into_iter().map(|&mask| mask as i32).fold(0, BitOr::bitor).into()
+impl<'a, T: IntoIterator<Item = &'a Permission>> From<T> for Permissions {
+    fn from(iter: T) -> Permissions {
+        iter.into_iter().collect()
     }
 }
 
 impl FromIterator<i32> for Permissions {
     fn from_iter<T: IntoIterator<Item = i32>>(iter: T) -> Permissions {
-        iter.into_iter().fold(0, BitOr::bitor).into()
+        Permissions(iter.into_iter().fold(0, BitOr::bitor))
     }
 }
 
 impl FromIterator<Permission> for Permissions {
     fn from_iter<T: IntoIterator<Item = Permission>>(iter: T) -> Permissions {
-        iter.into_iter().map(|perm| perm as i32).fold(0, BitOr::bitor).into()
+        Permissions(iter.into_iter().map(|perm| perm as i32).fold(0, BitOr::bitor))
+    }
+}
+
+impl<'a> FromIterator<&'a Permission> for Permissions {
+    fn from_iter<T: IntoIterator<Item = &'a Permission>>(iter: T) -> Permissions {
+        Permissions(iter.into_iter().map(|&perm| perm as i32).fold(0, BitOr::bitor))
     }
 }
 
