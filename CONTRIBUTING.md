@@ -153,7 +153,7 @@ Request bodies are always www-form-urlencoded strings, responses are always JSON
 encoded (they may be XML encoded by client request, but this feature is never
 used in the client implementation).
 
-Request bodies stricly define response structure, so once request is known, we
+Request bodies strictly define response structure, so once request is known, we
 can expect some definite JSON structure in response.
 
 The VK API is also versioned, API version is passed in a `v` argument in any
@@ -226,7 +226,7 @@ So main layout is simple:
 
 You may notice, that modules come in pairs: `*.rs` and `*.rs.in` files. The
 `*.rs.in` files are processed with [serde_codegen] code generator during build
-process, so all response types go to `*.rs.in` files, so serde_codgen can
+process, so all response types go to `*.rs.in` files, so serde_codegen can
 generate `Deserialize` trait for them.
 
 Request types and all helper types which doesn't come with response (and don't
@@ -248,7 +248,7 @@ Use your actual `*.rs` file name instead of `filename.rs`.
 Now to the naming conventions:
 
 - API parts are put into modules with the names matching API part name
-  (`audio`, `photos`, `market`, etc).
+  (`audio`, `photos`, `market`, etc.).
 - Request types are named after API method names without API part name
   prefix (`audio.get` → `Get`, `utils.getServerTime` → `GetServerTime`, etc.).
 - Response types are named after return object names (`User`, `Photo`, `Audio`).
@@ -317,7 +317,7 @@ As mentioned above you will need to do the following to implement VK API method:
 - implement `serde::de::Deserialize` trait for the response type (will be done
   automagically with code generation framework).
 
-#### Standard library traits sidenote
+#### Standard library traits side note
 
 Just one more thing before we continue.
 
@@ -415,7 +415,7 @@ would write `[Audio, Video]` here. This block can be empty or omitted
 altogether for public methods which doesn't require authorization and/or
 special permissions, like `utils.getServerTime`.
 
-Now we go to the fields definition block wrapped in the curly braces `{}` as a
+Now we go to the field definition block wrapped in the curly braces `{}` as a
 simple struct type. Let's ignore `sized {}` and `unsized {}` blocks for now and
 go straight to field definitions.
 
@@ -495,7 +495,7 @@ request! {
 (Try to read this DSL as a home work, it shouldn't be difficult after you have
 gone through all the words above.)
 
-As block names say, they define sized and unsized request fields. The fields
+As block names say, they define sized and unsized request fields. The field
 declaration syntax in them are the same, except for one small but important
 detail: in `unsized {}` block all field types *can* (but *don't have to*) have
 unsized types, like `str` or `[T]`. The macro will prepend these types with
@@ -560,13 +560,13 @@ request_ref! {
 
 This sixteen lines have just generated the following things for us:
 
-1. the `struct Search<'a> { ... }` with 8 fields (it would take 11 lines of
-   code including derive attribute),
-2. the `Struct::new()` constructor which set all fields to sensible defaults we
-   just provided in the DSL (another ~12 lines of code),
-3. a setter method for *each* field (at least 3 lines of code per field, which
-   amounts to 24 lines),
-4. and `Request` trait implementation (~7 lines + at least 1 line per field,
+1. The `struct Search<'a> { ... }` with 8 fields (it would take 11 lines of
+   code including derive attribute).
+2. The `Struct::new()` constructor which set all fields to sensible defaults we
+   just provided in the DSL (another ~12 lines of code).
+3. A setter method for *each* field (at least 3 lines of code per field, which
+   amounts to 24 lines).
+4. And `Request` trait implementation (~7 lines + at least 1 line per field,
    that is about 15 lines of code, if you write short methods in one line, and
    more if you format them nicely).
 
