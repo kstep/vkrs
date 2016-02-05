@@ -172,6 +172,14 @@ request! {
     // user the freedom to change response format here.
 }
 
+request! {
+    struct SetInfo for ["account.setInfo"](v => 5.44) -> Bool {
+        intro: u32 = () => {},
+        own_posts_default: bool = () => {bool},
+        no_wall_replies: bool = () => {bool},
+    }
+}
+
 enum_str! { Service {
     Email = "email",
     Phone = "phone",
