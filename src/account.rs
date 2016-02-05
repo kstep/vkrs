@@ -1,5 +1,5 @@
 use auth::Permissions;
-use api::{Bool, Id};
+use api::{Bool, Id, Duration};
 use users::{User, UserOptionField};
 use serde_json::value::Value;
 use serde_json::ser::to_string as json_to_string;
@@ -88,6 +88,21 @@ request_ref! {
     struct UnregisterDevice for ["account.unregisterDevice"](v => 5.44) -> Bool [Messages] {
         sized {
             sandbox: bool = () => {bool},
+        }
+        unsized {
+            device_id: str = ("") => {=},
+        }
+    }
+}
+
+request_ref! {
+    #[derive(Eq, Copy)]
+    struct SetSilenceMode for ["account.setSilenceMode"](v => 5.44) -> Bool [Messages] {
+        sized {
+            time: Duration = () => {},
+            chat_id: Id = () => {},
+            user_id: Id = () => {},
+            sound: Id = () => {}, // what's this?
         }
         unsized {
             device_id: str = ("") => {=},
