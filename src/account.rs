@@ -83,6 +83,18 @@ request_ref! {
     }
 }
 
+request_ref! {
+    #[derive(Eq, Copy)]
+    struct UnregisterDevice for ["account.unregisterDevice"](v => 5.44) -> Bool [Messages] {
+        sized {
+            sandbox: bool = () => {bool},
+        }
+        unsized {
+            device_id: str = ("") => {=},
+        }
+    }
+}
+
 enum_str! { Service {
     Email = "email",
     Phone = "phone",
