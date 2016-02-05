@@ -18,11 +18,13 @@ pub enum GiftPrivacy {
 impl de::Deserialize for GiftPrivacy {
     fn deserialize<D: de::Deserializer>(d: &mut D) -> Result<GiftPrivacy, D::Error> {
         use self::GiftPrivacy::*;
-        de::Deserialize::deserialize(d).and_then(|v: u32| match v {
-            0 => Ok(Pubclic),
-            1 => Ok(SenderNameOnly),
-            2 => Ok(Private),
-            _ => unreachable!(),
+        de::Deserialize::deserialize(d).and_then(|v: u32| {
+            match v {
+                0 => Ok(Pubclic),
+                1 => Ok(SenderNameOnly),
+                2 => Ok(Private),
+                _ => unreachable!(),
+            }
         })
     }
 }

@@ -1,4 +1,4 @@
-use api::{Id, Bool};
+use api::{Bool, Id};
 
 request_ref! {
     #[derive(Eq, Copy)]

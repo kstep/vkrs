@@ -146,12 +146,25 @@ pub enum Permission {
     NoHttps = -1,
 }
 
-static PERMISSIONS: &'static [Permission] = &[
-    Permission::Notify, Permission::Friends, Permission::Photos, Permission::Audio,
-    Permission::Video, Permission::Docs, Permission::Notes, Permission::Pages, Permission::Menu,
-    Permission::Status, Permission::Offers, Permission::Questions, Permission::Wall,
-    Permission::Groups, Permission::Messages, Permission::Email, Permission::Notifications,
-    Permission::Stats, Permission::Ads];
+static PERMISSIONS: &'static [Permission] = &[Permission::Notify,
+                                              Permission::Friends,
+                                              Permission::Photos,
+                                              Permission::Audio,
+                                              Permission::Video,
+                                              Permission::Docs,
+                                              Permission::Notes,
+                                              Permission::Pages,
+                                              Permission::Menu,
+                                              Permission::Status,
+                                              Permission::Offers,
+                                              Permission::Questions,
+                                              Permission::Wall,
+                                              Permission::Groups,
+                                              Permission::Messages,
+                                              Permission::Email,
+                                              Permission::Notifications,
+                                              Permission::Stats,
+                                              Permission::Ads];
 
 impl Permission {
     pub fn variants() -> &'static [Permission] {
@@ -216,13 +229,13 @@ impl<'a> From<&'a [Permission]> for Permissions {
 }
 
 impl FromIterator<i32> for Permissions {
-    fn from_iter<T: IntoIterator<Item=i32>>(iter: T) -> Permissions {
+    fn from_iter<T: IntoIterator<Item = i32>>(iter: T) -> Permissions {
         iter.into_iter().fold(0, BitOr::bitor).into()
     }
 }
 
 impl FromIterator<Permission> for Permissions {
-    fn from_iter<T: IntoIterator<Item=Permission>>(iter: T) -> Permissions {
+    fn from_iter<T: IntoIterator<Item = Permission>>(iter: T) -> Permissions {
         iter.into_iter().map(|perm| perm as i32).fold(0, BitOr::bitor).into()
     }
 }
@@ -248,9 +261,9 @@ impl Into<Vec<&'static str>> for Permissions {
     fn into(self) -> Vec<&'static str> {
         let Permissions(n) = self;
         Permission::variants()
-             .iter()
-             .filter(|&&mask| mask as i32 & n != 0)
-             .map(Permission::to_str)
-             .collect()
+            .iter()
+            .filter(|&&mask| mask as i32 & n != 0)
+            .map(Permission::to_str)
+            .collect()
     }
 }
