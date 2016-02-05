@@ -251,6 +251,12 @@ impl Permissions {
     }
 }
 
+impl de::Deserialize for Permissions {
+    fn deserialize<D: de::Deserializer>(d: &mut D) -> Result<Permissions, D::Error> {
+        de::Deserialize::deserialize(d).map(Permissions::new)
+    }
+}
+
 impl FromStr for Permissions {
     type Err = ();
     fn from_str(s: &str) -> Result<Permissions, ()> {
