@@ -164,6 +164,14 @@ request! {
     }
 }
 
+request! {
+    struct GetInfo for ["account.getInfo"](v => 5.44) -> Info;
+    // This method actually accepts `fields` argument with
+    // fields list to return, but I will have to set make all
+    // fields in Info optional. I don't see any sense to give
+    // user the freedom to change response format here.
+}
+
 enum_str! { Service {
     Email = "email",
     Phone = "phone",

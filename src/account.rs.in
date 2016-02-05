@@ -52,5 +52,14 @@ pub struct Offer {
     pub img: String,
     pub tag: String,
     pub price: u32,
+}
 
+#[derive(Debug, PartialEq, Eq, Deserialize, Clone)]
+pub struct Info {
+    pub country: String,
+    pub https_required: Bool,
+    pub own_posts_default: Bool,
+    pub no_wall_replies: Bool,
+    pub intro: u32, // TODO: limits unknown
+    pub lang: u16,
 }
