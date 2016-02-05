@@ -69,3 +69,36 @@ pub struct ChangedToken {
     pub token: String,
     pub secret: Option<String>,
 }
+
+#[derive(Debug, PartialEq, Eq, Deserialize, Clone)]
+pub struct ProfileInfo {
+    pub first_name: String,
+    pub last_name: String,
+    pub maiden_name: String,
+    pub sex: Sex,
+    pub relation: Relation,
+    pub relation_partner: User,
+    pub relation_pending: Bool,
+    pub relation_requests: Vec<User>,
+    pub bdate: String,
+    pub bdate_visibility: BirthdateVisibility,
+    pub home_town: String,
+    pub country: GeoInfo,
+    pub city: GeoInfo,
+    pub name_request: Option<NameChangeRequest>,
+}
+
+
+#[derive(Debug, PartialEq, Eq, Deserialize, Clone)]
+pub struct GeoInfo {
+    pub id: Id,
+    pub title: String,
+}
+
+#[derive(Debug, PartialEq, Eq, Deserialize, Clone)]
+pub struct NameChangeRequest {
+    id: Id,
+    status: NameChangeStatus,
+    first_name: String,
+    last_name: String,
+}

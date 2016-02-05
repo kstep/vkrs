@@ -1,8 +1,9 @@
 use auth::Permissions;
 use api::{Bool, Id, Duration, Timestamp, Collection, Profile};
-use users::{User, UserOptionField};
+use users::{User, UserOptionField, Sex, Status as Relation};
 use serde_json::value::Value;
 use serde_json::ser::to_string as json_to_string;
+use serde::de;
 
 #[cfg(feature = "unstable")]
 include!("account.rs.in");
@@ -189,6 +190,10 @@ request_ref! {
     }
 }
 
+request! {
+    struct GetProfileInfo for ["account.getProfileInfo"](v => 5.44) -> ProfileInfo;
+}
+
 enum_str! { Service {
     Email = "email",
     Phone = "phone",
@@ -210,3 +215,47 @@ enum_str! { Filter {
     Groups = "groups",
     Sdk = "sdk",
 }}
+
+enum_str! { NameChangeStatus {
+    Processing = "processing",
+    Declined = "declined",
+}}
+
+impl de::Deserialize for NameChangeStatus {
+    fn deserialize<D: de::Deserializer>(d: &mut D) -> Result<NameChangeStatus, D::Error> {
+        de::Deserialize::deserialize(d).and_then(|value: String| match &*value {
+            "processing" => Ok(NameChangeStatus::Processing),
+            "declined" => Ok(NameChangeStatus::Declined),
+            _ => Err(de::Error::syntax("processing or declined expected"))
+        })
+    }
+}
+
+#[derive(Debug, Clone, Copy, Eq, PartialEq)]
+pub enum BirthdateVisibility {
+    Hide = 0,
+    ShowYMD = 1,
+    ShowMD = 2,
+}
+
+impl de::Deserialize for BirthdateVisibility {
+    fn deserialize<D: de::Deserializer>(d: &mut D) -> Result<BirthdateVisibility, D::Error> {
+        use self::BirthdateVisibility::*;
+        de::Deserialize::deserialize(d).and_then(|value: u8| match value {
+            0 => Ok(Hide),
+            1 => Ok(ShowYMD),
+            2 => Ok(ShowMD),
+            _ => Err(de::Error::syntax("integer value in range 0...2 expected"))
+        })
+    }
+}
+
+impl AsRef<str> for BirthdateVisibility {
+    fn as_ref(&self) -> &str {
+        match *self {
+            BirthdateVisibility::Hide => "0",
+            BirthdateVisibility::ShowYMD => "1",
+            BirthdateVisibility::ShowMD => "2",
+        }
+    }
+}
