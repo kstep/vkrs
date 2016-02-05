@@ -116,6 +116,24 @@ request_ref! {
     }
 }
 
+request_ref! {
+    struct SetPushSettings for ["account.setPushSettings"](v => 5.44) -> Bool [Messages] {
+        sized {
+            settings: Option<Value> = () => { |value|
+                match value.as_ref().map(json_to_string) {
+                    Some(Ok(ref value)) => &**value,
+                    _ => "",
+                }
+            }
+        }
+        unsized {
+            key: str = ("") => {=},
+            value: str = ("") => {=},
+            device_id: str = ("") => {=},
+        }
+    }
+}
+
 enum_str! { Service {
     Email = "email",
     Phone = "phone",
