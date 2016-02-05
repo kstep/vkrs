@@ -40,6 +40,10 @@ request! {
     }
 }
 
+request! {
+    struct SetOffline for ["account.setOffline"](v => 5.44) -> Bool;
+}
+
 enum_str! { Filter {
     Friends = "friends",
     Messages = "messages",
