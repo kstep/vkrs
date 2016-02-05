@@ -180,6 +180,15 @@ request! {
     }
 }
 
+request_ref! {
+    struct ChangePassword for ["account.changePassword"](v => 5.44) -> ChangedToken {
+        restore_sid: str = ("") => {=},
+        change_password_hash: str = ("") => {=},
+        old_password: str = ("") => {=},
+        new_password: str = ("") => {=},
+    }
+}
+
 enum_str! { Service {
     Email = "email",
     Phone = "phone",

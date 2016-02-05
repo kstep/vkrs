@@ -63,3 +63,9 @@ pub struct Info {
     pub intro: u32, // TODO: limits unknown
     pub lang: u16,
 }
+
+#[derive(Debug, PartialEq, Eq, Deserialize, Clone)]
+pub struct ChangedToken {
+    pub token: String,
+    pub secret: Option<String>,
+}
