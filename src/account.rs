@@ -1,6 +1,8 @@
 use auth::Permissions;
-use api::{Id, Bool};
+use api::{Bool, Id};
 use users::{User, UserOptionField};
+use serde_json::value::Value;
+use serde_json::ser::to_string as json_to_string;
 
 #[cfg(feature = "unstable")]
 include!("account.rs.in");
@@ -56,6 +58,27 @@ request_ref! {
             contacts: str = ("") =>  {=},
             mycontact: str = ("") => {=},
             fields: [UserOptionField] = (&[][..]) => {AsRef<Vec>},
+        }
+    }
+}
+
+request_ref! {
+    struct RegisterDevice for ["account.registerDevice"](v => 5.44) -> Bool [Messages] {
+        sized {
+            device_year: u16 = () => {},
+            settings: Option<Value> = () => { |value|
+                match value.as_ref().map(json_to_string) {
+                    Some(Ok(ref value)) => &value,
+                    _ => "",
+                }
+            },
+            sandbox: bool = () => {bool},
+        }
+        unsized {
+            token: str = ("") => {=},
+            device_model: str = ("") => {=},
+            device_id: str = ("") => {=},
+            system_version: str = ("") => {=},
         }
     }
 }
