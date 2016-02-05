@@ -33,6 +33,13 @@ request_ref! {
     }
 }
 
+request! {
+    #[derive(Eq, Copy)]
+    struct SetOnline for ["account.setOnline"](v => 5.44) -> Bool {
+        voip: bool = () => {bool},
+    }
+}
+
 enum_str! { Filter {
     Friends = "friends",
     Messages = "messages",
