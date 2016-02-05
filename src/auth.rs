@@ -166,7 +166,9 @@ static PERMISSIONS: &'static [Permission] = &[Permission::Notify,
                                               Permission::Email,
                                               Permission::Notifications,
                                               Permission::Stats,
-                                              Permission::Ads];
+                                              Permission::Ads,
+                                              Permission::Offline,
+                                              Permission::NoHttps];
 
 impl Permission {
     pub fn variants() -> &'static [Permission] {
