@@ -47,22 +47,9 @@ request_ref! {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub enum Filter {
-    YouTube,
-    Vimeo,
-    Short,
-    Long,
-}
-
-impl AsRef<str> for Filter {
-    fn as_ref(&self) -> &str {
-        use self::Filter::*;
-        match *self {
-            YouTube => "youtube",
-            Vimeo => "vimeo",
-            Short => "short",
-            Long => "long",
-        }
-    }
-}
+enum_str! { Filter {
+    YouTube = "youtube",
+    Vimeo = "vimeo",
+    Short = "short",
+    Long = "long",
+}}

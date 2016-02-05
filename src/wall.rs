@@ -42,22 +42,9 @@ request_ref! {
     }
 }
 
-#[derive(Copy, Clone, PartialEq, Eq, Debug)]
-pub enum Filter {
-    Owner,
-    Others,
-    All,
-    Suggests,
-}
-
-impl AsRef<str> for Filter {
-    fn as_ref(&self) -> &str {
-        use self::Filter::*;
-        match *self {
-            Owner => "owner",
-            Others => "others",
-            All => "all",
-            Suggests => "suggests",
-        }
-    }
-}
+enum_str! { Filter {
+    Owner = "owner",
+    Others = "others",
+    All = "all",
+    Suggests = "suggests",
+}}

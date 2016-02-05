@@ -8,145 +8,69 @@ include!("users.rs.in");
 #[cfg(not(feature = "unstable"))]
 include!(concat!(env!("OUT_DIR"), "/users.rs"));
 
-#[derive(Debug, Eq, PartialEq, Copy, Clone)]
-pub enum NameCase {
-    Nominative,
-    Genetive,
-    Dative,
-    Accusative,
-    Instrumental,
-    Ablative,
-}
+enum_str! { NameCase {
+    Nominative = "nom",
+    Genetive = "gen",
+    Dative = "dat",
+    Accusative = "acc",
+    Instrumental = "ins",
+    Ablative = "abl",
+}}
 
-impl AsRef<str> for NameCase {
-    fn as_ref(&self) -> &str {
-        use self::NameCase::*;
-        match *self {
-            Nominative => "nom",
-            Genetive => "gen",
-            Dative => "dat",
-            Accusative => "acc",
-            Instrumental => "ins",
-            Ablative => "abl",
-        }
-    }
-}
+enum_str! { UserOptionField {
+    Verified = "verified",
+    Blacklisted = "blacklisted",
+    Sex = "sex",
+    Birthdate = "bdate",
+    City = "city",
+    Country = "country",
+    HomeTown = "home_town",
+    Photo50 = "photo_50",
+    Photo100 = "photo_100",
+    Photo200Orig = "photo_200_orig",
+    Photo200 = "photo_200",
+    Photo400Orig = "photo_400_orig",
+    PhotoMax = "photo_max",
+    PhotoMaxOrig = "photo_max_orig",
+    Online = "online",
+    Lists = "lists",
+    Domain = "domain",
+    HasMobile = "has_mobile",
+    Contacts = "contacts",
+    Site = "site",
+    Education = "education",
+    Universities = "universities",
+    Schools = "schools",
+    Status = "status",
+    LastSeen = "last_seen",
+    FollowersCount = "followers_count",
+    CommonCount = "common_count",
+    Counters = "counters",
+    Occupation = "occupation",
 
-#[derive(Debug, Eq, PartialEq, Copy, Clone)]
-pub enum UserOptionField {
-    Verified,
-    Blacklisted,
-    Sex,
-    Birthdate,
-    City,
-    Country,
-    HomeTown,
-    Photo50,
-    Photo100,
-    Photo200Orig,
-    Photo200,
-    Photo400Orig,
-    PhotoMax,
-    PhotoMaxOrig,
-    Online,
-    Lists,
-    Domain,
-    HasMobile,
-    Contacts,
-    Site,
-    Education,
-    Universities,
-    Schools,
-    Status,
-    LastSeen,
-    FollowersCount,
-    CommonCount,
-    Counters,
-    Occupation,
-
-    Nickname,
-    Relatives,
-    Relation,
-    Personal,
-    Connections,
-    Exports,
-    WallComments,
-    Activities,
-    Interests,
-    Music,
-    Movies,
-    TvShows,
-    Books,
-    Games,
-    About,
-    Quotes,
-    CanPost,
-    CanSeeAllPosts,
-    CanSeeAudio,
-    CanWritePrivateMessage,
-    Timezone,
-    ScreenName,
-}
-
-impl AsRef<str> for UserOptionField {
-    fn as_ref(&self) -> &str {
-        use self::UserOptionField::*;
-        match *self {
-            Verified => "verified",
-            Blacklisted => "blacklisted",
-            Sex => "sex",
-            Birthdate => "bdate",
-            City => "city",
-            Country => "country",
-            HomeTown => "home_town",
-            Photo50 => "photo_50",
-            Photo100 => "photo_100",
-            Photo200Orig => "photo_200_orig",
-            Photo200 => "photo_200",
-            Photo400Orig => "photo_400_orig",
-            PhotoMax => "photoMax",
-            PhotoMaxOrig => "photo_max_orig",
-            Online => "online",
-            Lists => "lists",
-            Domain => "domain",
-            HasMobile => "has_mobile",
-            Contacts => "contacts",
-            Site => "site",
-            Education => "education",
-            Universities => "universities",
-            Schools => "schools",
-            Status => "status",
-            LastSeen => "last_seen",
-            FollowersCount => "followers_count",
-            CommonCount => "common_count",
-            Counters => "counters",
-            Occupation => "occupation",
-
-            Nickname => "nickname",
-            Relatives => "relatives",
-            Relation => "relation",
-            Personal => "personal",
-            Connections => "connections",
-            Exports => "exports",
-            WallComments => "wall_comments",
-            Activities => "activities",
-            Interests => "interests",
-            Music => "music",
-            Movies => "movies",
-            TvShows => "tv",
-            Books => "books",
-            Games => "games",
-            About => "about",
-            Quotes => "quotes",
-            CanPost => "can_post",
-            CanSeeAllPosts => "can_see_all_posts",
-            CanSeeAudio => "can_see_audio",
-            CanWritePrivateMessage => "can_write_private_message",
-            Timezone => "timezone",
-            ScreenName => "screen_name",
-        }
-    }
-}
+    Nickname = "nickname",
+    Relatives = "relatives",
+    Relation = "relation",
+    Personal = "personal",
+    Connections = "connections",
+    Exports = "exports",
+    WallComments = "wall_comments",
+    Activities = "activities",
+    Interests = "interests",
+    Music = "music",
+    Movies = "movies",
+    TvShows = "tv",
+    Books = "books",
+    Games = "games",
+    About = "about",
+    Quotes = "quotes",
+    CanPost = "canPost",
+    CanSeeAllPosts = "can_see_all_posts",
+    CanSeeAudio = "can_see_audio",
+    CanWritePrivateMessage = "can_write_private_message",
+    Timezone = "timezone",
+    ScreenName = "screen_name",
+}}
 
 request_ref! {
     struct Get for ["users.get"](v => 5.44) -> Vec<User> {
@@ -364,23 +288,9 @@ impl AsRef<str> for Status {
     }
 }
 
-#[derive(Debug, Eq, PartialEq, Copy, Clone)]
-pub enum ReportKind {
-    Porn,
-    Spam,
-    Insult,
-    Ads,
-}
-
-
-impl AsRef<str> for ReportKind {
-    fn as_ref(&self) -> &str {
-        use self::ReportKind::*;
-        match *self {
-            Porn => "porn",
-            Spam => "spam",
-            Insult => "insult",
-            Ads => "advertisment",
-        }
-    }
-}
+enum_str! { ReportKind {
+    Porn = "porn",
+    Spam = "spam",
+    Insult = "insult",
+    Ads = "advertisment",
+}}
