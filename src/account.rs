@@ -149,6 +149,13 @@ request! {
     }
 }
 
+request! {
+    #[derive(Eq, Copy)]
+    struct UnbanUser for ["account.unbanUser"](v => 5.44) -> Bool {
+        user_id: Id = () => {},
+    }
+}
+
 enum_str! { Service {
     Email = "email",
     Phone = "phone",
