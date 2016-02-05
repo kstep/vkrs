@@ -1,5 +1,6 @@
 use auth::Permissions;
 use api::{Id, Bool};
+use users::{User, UserOptionField};
 
 #[cfg(feature = "unstable")]
 include!("account.rs.in");
@@ -43,6 +44,31 @@ request! {
 request! {
     struct SetOffline for ["account.setOffline"](v => 5.44) -> Bool;
 }
+
+request_ref! {
+    #[derive(Eq, Copy)]
+    struct LookupContacts for ["account.lookupContacts"](v => 5.44) -> Contacts [Friends] {
+        sized {
+            service: Service = (Service::Email) => {AsRef},
+            return_all: bool = () => {bool},
+        }
+        unsized {
+            contacts: str = ("") =>  {=},
+            mycontact: str = ("") => {=},
+            fields: [UserOptionField] = (&[][..]) => {AsRef<Vec>},
+        }
+    }
+}
+
+enum_str! { Service {
+    Email = "email",
+    Phone = "phone",
+    Twitter = "twitter",
+    Facebook = "facebook",
+    Odnoklassniki = "odnoklassniki",
+    Instagram = "instagram",
+    Google = "google",
+}}
 
 enum_str! { Filter {
     Friends = "friends",

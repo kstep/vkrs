@@ -21,3 +21,14 @@ pub struct Counters {
     pub sdk: usize,
 }
 
+#[derive(Debug, PartialEq, Eq, Deserialize, Clone)]
+pub struct Contacts {
+    pub found: Vec<User>,
+    pub other: Vec<Contact>,
+}
+
+#[derive(Debug, PartialEq, Eq, Deserialize, Clone)]
+pub struct Contact {
+    pub contact: String,
+    pub common_count: usize,
+}
