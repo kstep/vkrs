@@ -1,4 +1,4 @@
-use api::{Date, Id};
+use api::{Timestamp, Id};
 
 #[cfg(feature = "unstable")]
 include!("utils.rs.in");
@@ -21,5 +21,5 @@ request_ref! {
 }
 
 request! {
-    struct GetServerTime for ["utils.getServerTime"](v => 5.44) -> Date;
+    struct GetServerTime for ["utils.getServerTime"](v => 5.44) -> Timestamp;
 }

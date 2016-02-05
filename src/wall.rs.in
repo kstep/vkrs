@@ -4,7 +4,7 @@ pub struct WallPost {
     id: Id,
     owner_id: OwnerId,
     from_id: OwnerId,
-    date: Date,
+    date: Timestamp,
     text: String,
     reply_owner_id: OwnerId,
     reply_post_id: Id,

@@ -24,7 +24,7 @@ include!(concat!(env!("OUT_DIR"), "/api.rs"));
 pub type OwnerId = i64;
 pub type Id = u64;
 pub type FullId = (OwnerId, Id);
-pub type Date = u64;
+pub type Timestamp = u64;
 pub type Duration = u32;
 pub type Bool = u8;
 

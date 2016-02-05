@@ -5,7 +5,7 @@ pub struct Audio {
     pub owner_id: OwnerId,
     pub artist: String,
     pub title: String,
-    pub date: Date,
+    pub date: Timestamp,
     pub url: String, // Url !!!
     pub lyrics_id: Option<Id>,
     pub album_id: Option<Id>,
