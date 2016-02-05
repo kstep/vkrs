@@ -1,5 +1,3 @@
-use std::convert::AsRef;
-
 use hyper::client::Client as HttpClient;
 use oauth2::provider::Provider;
 use oauth2::client::response::{FromResponse, ParseError};
@@ -8,6 +6,8 @@ use chrono::{DateTime, Duration, NaiveDateTime, UTC};
 use rustc_serialize::json::Json;
 use serde::{de, ser};
 use super::api::{Id, Request};
+use std::ops::BitOr;
+use std::iter::FromIterator;
 
 pub use oauth2::ClientError as OAuthError;
 
@@ -146,92 +146,27 @@ pub enum Permission {
     NoHttps = -1,
 }
 
-#[derive(Debug, PartialEq, Eq, Copy, Clone, Default)]
-pub struct Permissions(i32);
-impl From<i32> for Permissions {
-    fn from(n: i32) -> Permissions {
-        Permissions(n & 0x5ebdff)
-    }
-}
+static PERMISSIONS: &'static [Permission] = &[
+    Permission::Notify, Permission::Friends, Permission::Photos, Permission::Audio,
+    Permission::Video, Permission::Docs, Permission::Notes, Permission::Pages, Permission::Menu,
+    Permission::Status, Permission::Offers, Permission::Questions, Permission::Wall,
+    Permission::Groups, Permission::Messages, Permission::Email, Permission::Notifications,
+    Permission::Stats, Permission::Ads];
 
-impl Into<String> for Permissions {
-    fn into(self) -> String {
-        use self::Permission::*;
-        let Permissions(n) = self;
-        [Notify,
-         Friends,
-         Photos,
-         Audio,
-         Video,
-         Docs,
-         Notes,
-         Pages,
-         Menu,
-         Status,
-         Offers,
-         Questions,
-         Wall,
-         Groups,
-         Messages,
-         Email,
-         Notifications,
-         Stats,
-         Ads]
-            .iter()
-            .map(|&mask| mask)
-            .filter(|&mask| mask as i32 & n != 0)
-            .map(|mask| mask.as_ref().to_owned())
-            .collect::<Vec<_>>()
-            .join(",")
+impl Permission {
+    pub fn variants() -> &'static [Permission] {
+        PERMISSIONS
     }
-}
 
-impl From<Permission> for Permissions {
-    fn from(perm: Permission) -> Permissions {
-        Permissions(perm as i32)
+    pub fn mask(&self) -> i32 {
+        *self as i32
     }
-}
 
-impl<'a> From<&'a [Permission]> for Permissions {
-    fn from(vec: &[Permission]) -> Permissions {
-        Permissions(vec.into_iter()
-                       .map(|&mask| mask as i32)
-                       .fold(0, |a, x| a + x))
+    pub fn mask_all() -> i32 {
+        0x5ebdff
     }
-}
 
-impl Into<Vec<Permission>> for Permissions {
-    fn into(self) -> Vec<Permission> {
-        use self::Permission::*;
-        let Permissions(n) = self;
-        [Notify,
-         Friends,
-         Photos,
-         Audio,
-         Video,
-         Docs,
-         Notes,
-         Pages,
-         Menu,
-         Status,
-         Offers,
-         Questions,
-         Wall,
-         Groups,
-         Messages,
-         Email,
-         Notifications,
-         Stats,
-         Ads]
-            .iter()
-            .map(|&mask| mask)
-            .filter(|&mask| mask as i32 & n != 0)
-            .collect()
-    }
-}
-
-impl AsRef<str> for Permission {
-    fn as_ref(&self) -> &str {
+    pub fn to_str(&self) -> &'static str {
         use self::Permission::*;
         match *self {
             Notify => "notify",
@@ -256,5 +191,66 @@ impl AsRef<str> for Permission {
             Offline => "offline",
             NoHttps => "nohttps",
         }
+    }
+}
+
+#[derive(Debug, PartialEq, Eq, Copy, Clone, Default)]
+pub struct Permissions(i32);
+
+impl From<i32> for Permissions {
+    fn from(n: i32) -> Permissions {
+        Permissions(n & Permission::mask_all())
+    }
+}
+
+impl From<Permission> for Permissions {
+    fn from(perm: Permission) -> Permissions {
+        Permissions(perm as i32)
+    }
+}
+
+impl<'a> From<&'a [Permission]> for Permissions {
+    fn from(vec: &[Permission]) -> Permissions {
+        vec.into_iter().map(|&mask| mask as i32).fold(0, BitOr::bitor).into()
+    }
+}
+
+impl FromIterator<i32> for Permissions {
+    fn from_iter<T: IntoIterator<Item=i32>>(iter: T) -> Permissions {
+        iter.into_iter().fold(0, BitOr::bitor).into()
+    }
+}
+
+impl FromIterator<Permission> for Permissions {
+    fn from_iter<T: IntoIterator<Item=Permission>>(iter: T) -> Permissions {
+        iter.into_iter().map(|perm| perm as i32).fold(0, BitOr::bitor).into()
+    }
+}
+
+impl Into<String> for Permissions {
+    fn into(self) -> String {
+        Into::<Vec<&'static str>>::into(self).join(",")
+    }
+}
+
+impl Into<Vec<Permission>> for Permissions {
+    fn into(self) -> Vec<Permission> {
+        let Permissions(n) = self;
+        Permission::variants()
+            .iter()
+            .map(|&mask| mask)
+            .filter(|&mask| mask as i32 & n != 0)
+            .collect()
+    }
+}
+
+impl Into<Vec<&'static str>> for Permissions {
+    fn into(self) -> Vec<&'static str> {
+        let Permissions(n) = self;
+        Permission::variants()
+             .iter()
+             .filter(|&&mask| mask as i32 & n != 0)
+             .map(Permission::to_str)
+             .collect()
     }
 }
