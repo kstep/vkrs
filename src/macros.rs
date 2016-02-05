@@ -501,3 +501,27 @@ macro_rules! request_ref {
         }
     };
 }
+
+macro_rules! enum_str {
+    (
+        $(#[$attr:meta])*
+        $name:ident {
+            $($variant:ident = $value:expr),+
+            $(,)*
+        }
+    ) => {
+        #[derive(Copy, Clone, PartialEq, Eq, Debug)]
+        $(#[$attr])*
+        pub enum $name {
+            $($variant),+
+        }
+
+        impl AsRef<str> for $name {
+            fn as_ref(&self) -> &str {
+                match *self {
+                    $($name::$variant => $value),+
+                }
+            }
+        }
+    };
+}

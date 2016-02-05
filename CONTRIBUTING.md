@@ -691,6 +691,29 @@ Here's the full list:
 - `api::Result` — a convenience alias to `Result<T, Error>`, the main return
   type from the request. For library users, so just know it exists.
 
+There's also one helpful macro you may use: `enum_str!`. It's a common pattern
+throughout the library to define an enum type of possible field values, and
+then implement `AsRef<str>` on it to convert it to string for API interaction.
+To avoid code duplication and boilerplate you may use `enum_str!` to do both of
+the things in one run:
+
+```rust
+enum_str! { Service {
+    Email = "email",
+    Phone = "phone",
+    Twitter = "twitter",
+    Facebook = "facebook",
+    Odnoklassniki = "odnoklassniki",
+    Instagram = "instagram",
+    Google = "google",
+}}
+```
+
+This will create a `pub enum Service` with a bunch of common derived traits
+(`Debug`, `Clone`, `Copy`, `PartialEq` and `Eq`) and an `AsRef<str>`
+implementation, so you can use this type with `{AsRef}` converter in `request!`
+macros.
+
 #### New error codes definition
 
 The `enum api::ErrorCode` type described above contains a full list of VK API
