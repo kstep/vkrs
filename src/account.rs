@@ -1,5 +1,5 @@
 use auth::Permissions;
-use api::{Bool, Id, Duration, Timestamp};
+use api::{Bool, Id, Duration, Timestamp, Collection};
 use users::{User, UserOptionField};
 use serde_json::value::Value;
 use serde_json::ser::to_string as json_to_string;
@@ -131,6 +131,14 @@ request_ref! {
             value: str = ("") => {=},
             device_id: str = ("") => {=},
         }
+    }
+}
+
+request! {
+    #[derive(Eq, Copy)]
+    struct GetActiveOffers for ["account.getActiveOffers"](v => 5.44) -> Collection<Offer> {
+        offset: usize = (0) => {},
+        count: usize = (100) => {},
     }
 }
 
