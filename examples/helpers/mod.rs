@@ -12,7 +12,7 @@ pub fn fetch_access_token(api: &Client) -> Result<AccessToken, OAuthError> {
         env::var("VK_APP_ID").unwrap(),
         env::var("VK_APP_SECRET").unwrap());
 
-    let auth_uri = oauth.auth_uri(Permission::Audio).unwrap();
+    let auth_uri = oauth.auth_uri(&[Permission::Audio, Permission::Video]).unwrap();
     println!("Go to {} and enter code below...", auth_uri);
 
     let inp = stdin();
