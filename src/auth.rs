@@ -14,19 +14,19 @@ pub use oauth2::ClientError as OAuthError;
 
 #[derive(Debug, PartialEq, Eq)]
 pub struct AccessTokenLifetime {
-    expires: DateTime<UTC>,
+    expires: Option<DateTime<UTC>>,
 }
 
 impl de::Deserialize for AccessTokenLifetime {
     fn deserialize<D: de::Deserializer>(d: &mut D) -> Result<AccessTokenLifetime, D::Error> {
         de::Deserialize::deserialize(d)
-            .map(|ts| AccessTokenLifetime { expires: DateTime::from_utc(NaiveDateTime::from_timestamp(ts, 0), UTC) })
+            .map(|ts: Option<u64>| AccessTokenLifetime { expires: ts.map(|ts| DateTime::from_utc(NaiveDateTime::from_timestamp(ts as i64, 0), UTC)) })
     }
 }
 
 impl ser::Serialize for AccessTokenLifetime {
     fn serialize<S: ser::Serializer>(&self, s: &mut S) -> Result<(), S::Error> {
-        ser::Serialize::serialize(&self.expires.timestamp(), s)
+        ser::Serialize::serialize(&self.expires.map(|ts| ts.timestamp()), s)
     }
 }
 
@@ -40,7 +40,7 @@ impl FromResponse for AccessTokenLifetime {
     fn from_response(json: &Json) -> Result<AccessTokenLifetime, ParseError> {
         json.find("expires_in")
             .and_then(Json::as_i64)
-            .map(|expires_in| AccessTokenLifetime { expires: UTC::now() + Duration::seconds(expires_in) })
+            .map(|expires_in| AccessTokenLifetime { expires: if expires_in > 0 { Some(UTC::now() + Duration::seconds(expires_in)) } else { None } })
             .ok_or(ParseError::ExpectedFieldType("expires_in", "i64"))
     }
 }
@@ -63,7 +63,7 @@ impl FromResponse for AccessToken {
 
 impl Lifetime for AccessTokenLifetime {
     fn expired(&self) -> bool {
-        self.expires <= UTC::now()
+        self.expires.map(|e| e <= UTC::now()).unwrap_or(false)
     }
 }
 
