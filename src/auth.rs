@@ -8,6 +8,7 @@ use serde::{de, ser};
 use super::api::{Id, Request};
 use std::ops::BitOr;
 use std::iter::FromIterator;
+use std::str::FromStr;
 
 pub use oauth2::ClientError as OAuthError;
 
@@ -207,12 +208,50 @@ impl Permission {
     }
 }
 
+impl FromStr for Permission {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Permission, ()> {
+        use self::Permission::*;
+        Ok(match s {
+            "notify" => Notify,
+            "friends" => Friends,
+            "photos" => Photos,
+            "audio" => Audio,
+            "video" => Video,
+            "docs" => Docs,
+            "notes" => Notes,
+            "pages" => Pages,
+            "menu" => Menu,
+            "status" => Status,
+            "offers" => Offers,
+            "questions" => Questions,
+            "wall" => Wall,
+            "groups" => Groups,
+            "messages" => Messages,
+            "email" => Email,
+            "notifications" => Notifications,
+            "stats" => Stats,
+            "ads" => Ads,
+            "offline" => Offline,
+            "nohttps" => NoHttps,
+            _ => return Err(()),
+        })
+    }
+}
+
 #[derive(Debug, PartialEq, Eq, Copy, Clone, Default)]
 pub struct Permissions(i32);
 
 impl Permissions {
     pub fn new(n: i32) -> Permissions {
         Permissions(n & Permission::mask_all())
+    }
+}
+
+impl FromStr for Permissions {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Permissions, ()> {
+        s.split(",").map(str::trim).map(Permission::from_str).collect()
     }
 }
 
