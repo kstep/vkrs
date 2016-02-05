@@ -122,6 +122,7 @@ impl Provider for Auth {
 pub static OAUTH_DEFAULT_REDIRECT_URI: &'static str = "https://oauth.vk.com/blank.html";
 
 #[derive(Debug, PartialEq, Eq, Copy, Clone)]
+#[allow(overflowing_literals)]
 #[repr(i32)]
 pub enum Permission {
     Notify = 1,
@@ -143,8 +144,8 @@ pub enum Permission {
     Notifications = 524288,
     Stats = 1048576,
     Ads = 32768,
-    Offline = 0,
-    NoHttps = -1,
+    Offline = 0x4000_0000 as i32, // unofficial
+    NoHttps = 0x8000_0000 as i32, // unofficial
 }
 
 static PERMISSIONS: &'static [Permission] = &[Permission::Notify,
