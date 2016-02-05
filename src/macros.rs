@@ -366,7 +366,7 @@ macro_rules! request_ref {
             $(#[$attr])*
             struct $struct_name for [$method_name]
             ($($const_param_name => $const_param_value),*) ->
-            $response_type [$($permission:ident),*]
+            $response_type [$($permission),*]
             {
                 sized {
                 }
