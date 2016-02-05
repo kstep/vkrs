@@ -1,4 +1,4 @@
-use api::{Timestamp, Id};
+use api::{Id, Timestamp};
 
 #[cfg(feature = "unstable")]
 include!("utils.rs.in");

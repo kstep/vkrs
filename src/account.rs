@@ -1,7 +1,7 @@
 use auth::Permissions;
 use std::borrow::Borrow;
-use api::{Bool, Id, Duration, Timestamp, Collection, Profile};
-use users::{User, UserOptionField, Sex, Status as Relation};
+use api::{Bool, Collection, Duration, Id, Profile, Timestamp};
+use users::{Sex, Status as Relation, User, UserOptionField};
 use serde_json::value::Value;
 use serde_json::ser::to_string as json_to_string;
 use serde::de;
@@ -247,10 +247,12 @@ enum_str! { NameChangeStatus {
 
 impl de::Deserialize for NameChangeStatus {
     fn deserialize<D: de::Deserializer>(d: &mut D) -> Result<NameChangeStatus, D::Error> {
-        de::Deserialize::deserialize(d).and_then(|value: String| match &*value {
-            "processing" => Ok(NameChangeStatus::Processing),
-            "declined" => Ok(NameChangeStatus::Declined),
-            _ => Err(de::Error::syntax("processing or declined expected"))
+        de::Deserialize::deserialize(d).and_then(|value: String| {
+            match &*value {
+                "processing" => Ok(NameChangeStatus::Processing),
+                "declined" => Ok(NameChangeStatus::Declined),
+                _ => Err(de::Error::syntax("processing or declined expected")),
+            }
         })
     }
 }
@@ -265,11 +267,13 @@ pub enum BirthdateVisibility {
 impl de::Deserialize for BirthdateVisibility {
     fn deserialize<D: de::Deserializer>(d: &mut D) -> Result<BirthdateVisibility, D::Error> {
         use self::BirthdateVisibility::*;
-        de::Deserialize::deserialize(d).and_then(|value: u8| match value {
-            0 => Ok(Hide),
-            1 => Ok(ShowYMD),
-            2 => Ok(ShowMD),
-            _ => Err(de::Error::syntax("integer value in range 0...2 expected"))
+        de::Deserialize::deserialize(d).and_then(|value: u8| {
+            match value {
+                0 => Ok(Hide),
+                1 => Ok(ShowYMD),
+                2 => Ok(ShowMD),
+                _ => Err(de::Error::syntax("integer value in range 0...2 expected")),
+            }
         })
     }
 }

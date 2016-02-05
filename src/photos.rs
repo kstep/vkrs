@@ -1,4 +1,4 @@
-use api::{Collection, Timestamp, Id, OwnerId};
+use api::{Collection, Id, OwnerId, Timestamp};
 
 request_ref! {
     struct Search for ["photos.search"](v => 5.37) -> Collection<Photo> {

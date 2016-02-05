@@ -265,11 +265,13 @@ impl AsRef<str> for Sex {
 impl de::Deserialize for Sex {
     fn deserialize<D: de::Deserializer>(d: &mut D) -> Result<Sex, D::Error> {
         use self::Sex::*;
-        de::Deserialize::deserialize(d).and_then(|value: u8| match value {
-            0 => Ok(Any),
-            1 => Ok(Female),
-            2 => Ok(Male),
-            _ => Err(de::Error::syntax("integer value in range 0...2 expected"))
+        de::Deserialize::deserialize(d).and_then(|value: u8| {
+            match value {
+                0 => Ok(Any),
+                1 => Ok(Female),
+                2 => Ok(Male),
+                _ => Err(de::Error::syntax("integer value in range 0...2 expected")),
+            }
         })
     }
 }
@@ -306,16 +308,18 @@ impl AsRef<str> for Status {
 impl de::Deserialize for Status {
     fn deserialize<D: de::Deserializer>(d: &mut D) -> Result<Status, D::Error> {
         use self::Status::*;
-        de::Deserialize::deserialize(d).and_then(|value: u8| match value {
-            0 => Ok(Unspecified),
-            1 => Ok(NotMarried),
-            2 => Ok(InRelationship),
-            3 => Ok(Engaged),
-            4 => Ok(Married),
-            5 => Ok(ItsComplicated),
-            6 => Ok(ActiveSearch),
-            7 => Ok(InLove),
-            _ => Err(de::Error::syntax("integer value in range 0...7 expected"))
+        de::Deserialize::deserialize(d).and_then(|value: u8| {
+            match value {
+                0 => Ok(Unspecified),
+                1 => Ok(NotMarried),
+                2 => Ok(InRelationship),
+                3 => Ok(Engaged),
+                4 => Ok(Married),
+                5 => Ok(ItsComplicated),
+                6 => Ok(ActiveSearch),
+                7 => Ok(InLove),
+                _ => Err(de::Error::syntax("integer value in range 0...7 expected")),
+            }
         })
     }
 }

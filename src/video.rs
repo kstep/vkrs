@@ -2,7 +2,7 @@ use std::borrow::Borrow;
 use std::convert::AsRef;
 use std::string::ToString;
 use std::error::Error;
-use api::{Bool, Collection, Timestamp, Duration, FullId, Id, LikesCount, OwnerId, Sort};
+use api::{Bool, Collection, Duration, FullId, Id, LikesCount, OwnerId, Sort, Timestamp};
 
 #[cfg(feature = "unstable")]
 include!("video.rs.in");

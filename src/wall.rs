@@ -1,5 +1,5 @@
 use users::UserOptionField;
-use api::{Bool, Collection, Timestamp, Id, LikesCount, OwnerId};
+use api::{Bool, Collection, Id, LikesCount, OwnerId, Timestamp};
 
 #[cfg(feature = "unstable")]
 include!("wall.rs.in");
