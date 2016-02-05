@@ -1,4 +1,5 @@
 use auth::Permissions;
+use std::borrow::Borrow;
 use api::{Bool, Id, Duration, Timestamp, Collection, Profile};
 use users::{User, UserOptionField, Sex, Status as Relation};
 use serde_json::value::Value;
@@ -192,6 +193,29 @@ request_ref! {
 
 request! {
     struct GetProfileInfo for ["account.getProfileInfo"](v => 5.44) -> ProfileInfo;
+}
+
+request_ref! {
+    struct SetProfileInfo for ["account.setProfileInfo"](v => 5.44) -> ChangedProfileInfo {
+        sized {
+            cancel_request_id: Option<Id> = () => {Option},
+            sex: Option<Sex> = () => {AsRef<Option>},
+            relation: Option<Relation> = () => {AsRef<Option>},
+            relation_partner_id: Option<Id> = () => {Option},
+            bdate_visibility: Option<BirthdateVisibility> = () => {AsRef<Option>},
+            country_id: Option<Id> = () => {Option},
+            city_id: Option<Id> = () => {Option},
+        }
+        unsized {
+            first_name: str = ("") => {=},
+            last_name: str = ("") => {=},
+            maiden_name: str = ("") => {=},
+            screen_name: str = ("") => {=},
+            bdate: str = ("") => {=},
+            home_town: str = ("") => {=},
+            status: str = ("") => {=},
+        }
+    }
 }
 
 enum_str! { Service {

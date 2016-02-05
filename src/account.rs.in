@@ -88,6 +88,12 @@ pub struct ProfileInfo {
     pub name_request: Option<NameChangeRequest>,
 }
 
+#[derive(Debug, PartialEq, Eq, Deserialize, Clone)]
+pub struct ChangedProfileInfo {
+    pub changed: Bool,
+    pub name_request: Option<NameChangeRequest>,
+}
+
 
 #[derive(Debug, PartialEq, Eq, Deserialize, Clone)]
 pub struct GeoInfo {
