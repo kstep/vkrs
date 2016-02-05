@@ -1,4 +1,4 @@
-use super::api::{Date, Id};
+use api::{Date, Id};
 
 #[cfg(feature = "unstable")]
 include!("utils.rs.in");

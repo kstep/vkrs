@@ -10,7 +10,7 @@ use hyper::Error as HttpError;
 use url::{self, ParseError as UrlError, Url};
 use oauth2::token::Token;
 
-use super::auth::{AccessToken, OAuth, Permissions};
+use auth::{AccessToken, OAuth, Permissions};
 
 pub const VK_DOMAIN: &'static str = "api.vk.com";
 pub const VK_PATH: &'static str = "method";

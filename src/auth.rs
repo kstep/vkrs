@@ -5,7 +5,7 @@ use oauth2::token::{Lifetime, Token};
 use chrono::{DateTime, Duration, NaiveDateTime, UTC};
 use rustc_serialize::json::Json;
 use serde::{de, ser};
-use super::api::{Id, Request};
+use api::{Id, Request};
 use std::ops::BitOr;
 use std::iter::FromIterator;
 use std::str::FromStr;

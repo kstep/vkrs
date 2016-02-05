@@ -1,6 +1,6 @@
 use std::borrow::Borrow;
 use std::convert::AsRef;
-use super::api::{Bool, Collection, Id};
+use api::{Bool, Collection, Id};
 
 #[cfg(feature = "unstable")]
 include!("users.rs.in");

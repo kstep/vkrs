@@ -1,6 +1,6 @@
 use std::borrow::Borrow;
-use super::audio::Audio;
-use super::api::Bool;
+use audio::Audio;
+use api::Bool;
 
 #[cfg(feature = "unstable")]
 include!("status.rs.in");
