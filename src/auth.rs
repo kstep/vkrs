@@ -7,7 +7,7 @@ use oauth2::token::{Lifetime, Token};
 use chrono::{DateTime, Duration, NaiveDateTime, UTC};
 use rustc_serialize::json::Json;
 use serde::{de, ser};
-use super::api::Id;
+use super::api::{Id, Request};
 
 pub use oauth2::ClientError as OAuthError;
 
@@ -93,6 +93,10 @@ impl<'a> OAuth<'a> {
     pub fn auth_uri<T: Into<Permissions>>(&self, scope: T) -> Result<String, OAuthError> {
         let scope: String = scope.into().into();
         self.0.auth_uri(Some(&scope), None)
+    }
+    pub fn auth_uri_for<T: Request>(&self) -> Result<String, OAuthError> {
+        let scope = <T as Request>::permissions();
+        self.auth_uri(scope)
     }
     pub fn request_token(&self, code: &str) -> Result<AccessToken, OAuthError> {
         self.0.request_token(self.1, code)

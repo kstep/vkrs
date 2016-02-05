@@ -1,4 +1,5 @@
 # vkrs
+
 Vkontakte API Rust client library
 
 [![Join the chat at https://gitter.im/kstep/vkrs](https://badges.gitter.im/kstep/vkrs.svg)](https://gitter.im/kstep/vkrs)
@@ -36,6 +37,8 @@ fn main() {
         env::var("VK_APP_SECRET").unwrap());
 
     let auth_uri = oauth.auth_uri(auth::Permission::Audio).unwrap();
+    // Or if you want to get permissions for specific request:
+    // let auth_uri = oauth.auth_uri_for::<audio::Search>();
     println!("Go to {} and enter code below...", auth_uri);
 
     let inp = io::stdin();
