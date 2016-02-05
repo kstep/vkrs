@@ -1,5 +1,5 @@
 use auth::Permissions;
-use api::{Bool, Id, Duration};
+use api::{Bool, Id, Duration, Date};
 use users::{User, UserOptionField};
 use serde_json::value::Value;
 use serde_json::ser::to_string as json_to_string;
@@ -107,6 +107,12 @@ request_ref! {
         unsized {
             device_id: str = ("") => {=},
         }
+    }
+}
+
+request_ref! {
+    struct GetPushSettings for ["account.getPushSettings"](v => 5.44) -> PushSettings [Messages] {
+        device_id: str = ("") => {=},
     }
 }
 
