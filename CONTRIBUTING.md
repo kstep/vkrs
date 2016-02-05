@@ -439,7 +439,7 @@ keywords, which define some common mapping pattern:
 
 - `{}` (empty braces) — the same as `{ToString}`.
 - `{ToString}` — convert value into a string with `String::to_string()` method.
-  Not very efficient so not recommended to string fields, but works well for
+  Not very efficient, so not recommended for string fields, but works well for
   numeric fields.
 - `{Borrow}` — convert value into a `&str` with a `Borrow::borrow()` method.
   The field type must implement `Borrow<str>` trait. Very efficient for
