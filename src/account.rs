@@ -1,5 +1,5 @@
 use auth::Permissions;
-use api::Id;
+use api::{Id, Bool};
 
 #[cfg(feature = "unstable")]
 include!("account.rs.in");
@@ -18,6 +18,18 @@ request_ref! {
     #[derive(Eq, Copy)]
     struct GetCounters for ["account.getCounters"](v => 5.44) -> Counters {
         filter: [Filter] = (&[][..]) => {AsRef<Vec>},
+    }
+}
+
+request_ref! {
+    #[derive(Eq, Copy)]
+    struct SetNameInMenu for ["account.setNameInMenu"](v => 5.44) -> Bool {
+        sized {
+            user_id: Id = () => {},
+        }
+        unsized {
+            name: str = ("") => {=},
+        }
     }
 }
 

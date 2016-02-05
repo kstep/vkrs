@@ -213,6 +213,7 @@ pub enum ErrorCode {
     GoodsNotFound, // 20
     GoodsUnvailable, // 21
     UserNotFound, // 22
+    UserMenuAccessDenied, // 148
     AccessDenied, // 204
     PostAddAccessDenied, // 214
     AdsPostWasRecentlyAdded, // 219,
@@ -239,6 +240,7 @@ impl From<u32> for ErrorCode {
             20 => GoodsNotFound,
             21 => GoodsUnvailable,
             22 => UserNotFound,
+            148 => UserMenuAccessDenied,
             204 => AccessDenied,
             214 => PostAddAccessDenied,
             219 => AdsPostWasRecentlyAdded,
@@ -266,6 +268,7 @@ impl Into<u32> for ErrorCode {
             GoodsNotFound => 20,
             GoodsUnvailable => 21,
             UserNotFound => 22,
+            UserMenuAccessDenied => 148,
             AccessDenied => 204,
             PostAddAccessDenied => 214,
             AdsPostWasRecentlyAdded => 219,
@@ -294,6 +297,7 @@ impl fmt::Display for ErrorCode {
             GoodsNotFound => f.write_str("goods not found"),
             GoodsUnvailable => f.write_str("goods unavailable"),
             UserNotFound => f.write_str("user not found"),
+            UserMenuAccessDenied => f.write_str("access to the menu of the user denied"),
             AccessDenied => f.write_str("access denied"),
             PostAddAccessDenied => f.write_str("access to adding post denied"),
             AdsPostWasRecentlyAdded => f.write_str("ads post was recently added"),
