@@ -39,3 +39,18 @@ pub struct PushSettings {
     pub disabled_until: Timestamp,
     pub conversations: u8, // TODO: actual structure unknown from docs
 }
+
+
+#[derive(Debug, PartialEq, Eq, Deserialize, Clone)]
+pub struct Offer {
+    pub id: String,
+    pub title: String,
+    pub instruction: String,
+    pub instruction_html: String,
+    pub short_description: String,
+    pub description: String,
+    pub img: String,
+    pub tag: String,
+    pub price: u32,
+
+}
