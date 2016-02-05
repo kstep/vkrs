@@ -1,0 +1,23 @@
+
+#[derive(Debug, PartialEq, Eq, Deserialize, Clone, Copy)]
+pub struct Counters {
+    #[serde(default)]
+    pub friends: usize,
+    #[serde(default)]
+    pub messages: usize,
+    #[serde(default)]
+    pub photos: usize,
+    #[serde(default)]
+    pub videos: usize,
+    #[serde(default)]
+    pub notes: usize,
+    #[serde(default)]
+    pub gifts: usize,
+    #[serde(default)]
+    pub events: usize,
+    #[serde(default)]
+    pub groups: usize,
+    #[serde(default)]
+    pub sdk: usize,
+}
+
