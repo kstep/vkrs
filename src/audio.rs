@@ -3,7 +3,7 @@ use std::convert::AsRef;
 use std::string::ToString;
 use std::error::Error;
 use serde::de;
-use super::api::{Bool, Collection, Date, Duration, FullId, Id, OwnerId, Sort};
+use super::api::{Bool, Collection, Timestamp, Duration, FullId, Id, OwnerId, Sort};
 use std::fmt;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]

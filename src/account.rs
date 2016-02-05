@@ -1,5 +1,5 @@
 use auth::Permissions;
-use api::{Bool, Id, Duration, Date};
+use api::{Bool, Id, Duration, Timestamp};
 use users::{User, UserOptionField};
 use serde_json::value::Value;
 use serde_json::ser::to_string as json_to_string;

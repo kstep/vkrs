@@ -677,7 +677,7 @@ Here's the full list:
   `*_id` fields should have `Id` type (a.k.a. `u64`). The `FullId` type is
   usually used in requests and represents a combination of owner id and object
   id, that is it's just an alias to `(OwnerId, Id)` tuple for now.
-- `api::Date` — a date-time fields type.
+- `api::Timestamp` — a date-time fields type.
 - `api::Duration` — a duration type.
 - `api::Bool` — a boolean type, for use in responses only. It's just an alias
   to `u8` now, as VK returns 1/0 instead of true/false. Maybe it will be
