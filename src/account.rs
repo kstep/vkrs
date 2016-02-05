@@ -1,5 +1,5 @@
 use auth::Permissions;
-use api::{Bool, Id, Duration, Timestamp, Collection};
+use api::{Bool, Id, Duration, Timestamp, Collection, Profile};
 use users::{User, UserOptionField};
 use serde_json::value::Value;
 use serde_json::ser::to_string as json_to_string;
@@ -153,6 +153,14 @@ request! {
     #[derive(Eq, Copy)]
     struct UnbanUser for ["account.unbanUser"](v => 5.44) -> Bool {
         user_id: Id = () => {},
+    }
+}
+
+request! {
+    #[derive(Eq, Copy)]
+    struct GetBanned for ["account.getBanned"](v => 5.44) -> Collection<Profile> {
+        offset: usize = (0) => {},
+        count: usize = (100) => {},
     }
 }
 
