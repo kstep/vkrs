@@ -175,6 +175,16 @@ request! {
     }
 }
 
+request! {
+    #[derive(Eq, Copy)]
+    struct ReorderAlbums for ["video.reorderAlbums"](v => 5.44) -> Bool [Video] {
+        group_id: Option<Id> = () => {Option},
+        album_id: Id = () => {},
+        before: Option<Id> = () => {Option},
+        after: Option<Id> = () => {Option},
+    }
+}
+
 #[derive(Eq, PartialEq, Copy, Clone, Debug)]
 pub enum Privacy {
     All = 0,
