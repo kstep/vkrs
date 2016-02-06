@@ -185,6 +185,22 @@ request! {
     }
 }
 
+request! {
+    #[derive(Eq, Copy)]
+    struct ReorderVideos for ["video.reorderVideos"](v => 5.44) -> Bool [Video] {
+        target_id: Option<OwnerId> = () => {Option},
+        album_id: Option<Id> = () => {Option},
+
+        owner_id: OwnerId = () => {},
+        video_id: Id = () => {},
+
+        before_owner_id: Option<OwnerId> = () => {Option},
+        before_video_id: Option<Id> = () => {Option},
+        after_owner_id: Option<OwnerId> = () => {Option},
+        after_video_id: Option<Id> = () => {Option},
+    }
+}
+
 #[derive(Eq, PartialEq, Copy, Clone, Debug)]
 pub enum Privacy {
     All = 0,
