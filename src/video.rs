@@ -341,6 +341,13 @@ request! {
     }
 }
 
+request! {
+    #[derive(Eq, Copy)]
+    struct HideCatalogSection for ["video.hideCatalogSection"](v => 5.44) -> Bool {
+        section_id: Id = () => {},
+    }
+}
+
 enum_str! { AttachmentKind {
     Photo = "photo",
     Video = "video",
