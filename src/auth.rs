@@ -19,8 +19,9 @@ pub struct AccessTokenLifetime {
 
 impl de::Deserialize for AccessTokenLifetime {
     fn deserialize<D: de::Deserializer>(d: &mut D) -> Result<AccessTokenLifetime, D::Error> {
-        de::Deserialize::deserialize(d)
-            .map(|ts: Option<u64>| AccessTokenLifetime { expires: ts.map(|ts| DateTime::from_utc(NaiveDateTime::from_timestamp(ts as i64, 0), UTC)) })
+        de::Deserialize::deserialize(d).map(|ts: Option<u64>| {
+            AccessTokenLifetime { expires: ts.map(|ts| DateTime::from_utc(NaiveDateTime::from_timestamp(ts as i64, 0), UTC)) }
+        })
     }
 }
 
@@ -40,7 +41,9 @@ impl FromResponse for AccessTokenLifetime {
     fn from_response(json: &Json) -> Result<AccessTokenLifetime, ParseError> {
         json.find("expires_in")
             .and_then(Json::as_i64)
-            .map(|expires_in| AccessTokenLifetime { expires: if expires_in > 0 { Some(UTC::now() + Duration::seconds(expires_in)) } else { None } })
+            .map(|expires_in| {
+                AccessTokenLifetime { expires: if expires_in > 0 { Some(UTC::now() + Duration::seconds(expires_in)) } else { None } }
+            })
             .ok_or(ParseError::ExpectedFieldType("expires_in", "i64"))
     }
 }

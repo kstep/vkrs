@@ -1,12 +1,12 @@
-use api::{Collection, Date, Id, OwnerId};
+use api::{Collection, Id, OwnerId, Timestamp};
 
 request_ref! {
     struct Search for ["photos.search"](v => 5.37) -> Collection<Photo> {
         sized {
             lat: f32 = () => {},
             long: f32 = () => {},
-            start_time: Date = () => {},
-            end_time: Date = () => {},
+            start_time: Timestamp = () => {},
+            end_time: Timestamp = () => {},
             sort: Sort = (Sort::Popularity) => {AsRef},
             offset: usize = (0) => {},
             count: usize = (30) => {},

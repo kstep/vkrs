@@ -1,5 +1,6 @@
 use std::borrow::Borrow;
 use std::convert::AsRef;
+use serde::de;
 use api::{Bool, Collection, Id};
 
 #[cfg(feature = "unstable")]
@@ -99,7 +100,7 @@ request_ref! {
             university_year: Option<u16> = () => {Option},
 
             sex: Sex = (Sex::Any) => {AsRef},
-            status: Status = (Status::Unknown) => {AsRef},
+            status: Status = (Status::Unspecified) => {AsRef},
 
             age_from: Option<u16> = () => {Option},
             age_to: Option<u16> = () => {Option},
@@ -244,6 +245,7 @@ impl AsRef<str> for Sort {
 }
 
 #[derive(Debug, Eq, PartialEq, Copy, Clone)]
+#[repr(u8)]
 pub enum Sex {
     Any = 0,
     Female = 1,
@@ -260,9 +262,24 @@ impl AsRef<str> for Sex {
     }
 }
 
+impl de::Deserialize for Sex {
+    fn deserialize<D: de::Deserializer>(d: &mut D) -> Result<Sex, D::Error> {
+        use self::Sex::*;
+        de::Deserialize::deserialize(d).and_then(|value: u8| {
+            match value {
+                0 => Ok(Any),
+                1 => Ok(Female),
+                2 => Ok(Male),
+                _ => Err(de::Error::syntax("integer value in range 0...2 expected")),
+            }
+        })
+    }
+}
+
 #[derive(Debug, Eq, PartialEq, Copy, Clone)]
+#[repr(u8)]
 pub enum Status {
-    Unknown = 0,
+    Unspecified = 0,
     NotMarried = 1,
     InRelationship = 2,
     Engaged = 3,
@@ -276,7 +293,7 @@ impl AsRef<str> for Status {
     fn as_ref(&self) -> &str {
         use self::Status::*;
         match *self {
-            Unknown => "0",
+            Unspecified => "0",
             NotMarried => "1",
             InRelationship => "2",
             Engaged => "3",
@@ -285,6 +302,25 @@ impl AsRef<str> for Status {
             ActiveSearch => "6",
             InLove => "7",
         }
+    }
+}
+
+impl de::Deserialize for Status {
+    fn deserialize<D: de::Deserializer>(d: &mut D) -> Result<Status, D::Error> {
+        use self::Status::*;
+        de::Deserialize::deserialize(d).and_then(|value: u8| {
+            match value {
+                0 => Ok(Unspecified),
+                1 => Ok(NotMarried),
+                2 => Ok(InRelationship),
+                3 => Ok(Engaged),
+                4 => Ok(Married),
+                5 => Ok(ItsComplicated),
+                6 => Ok(ActiveSearch),
+                7 => Ok(InLove),
+                _ => Err(de::Error::syntax("integer value in range 0...7 expected")),
+            }
+        })
     }
 }
 

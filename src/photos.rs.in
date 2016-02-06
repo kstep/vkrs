@@ -11,6 +11,6 @@ pub struct Photo {
     pub width: u16,
     pub height: u16,
     pub text: String,
-    pub date: Date,
+    pub date: Timestamp,
 }
 

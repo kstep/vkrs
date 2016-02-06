@@ -1,5 +1,5 @@
 use users::UserOptionField;
-use api::{Bool, Collection, Date, Id, LikesCount, OwnerId};
+use api::{Bool, Collection, Id, LikesCount, OwnerId, Timestamp};
 
 #[cfg(feature = "unstable")]
 include!("wall.rs.in");
@@ -29,7 +29,7 @@ request_ref! {
             friend_only: bool = (true) => {bool},
             from_group: bool = (false) => {bool},
             signed: bool = (false) => {bool},
-            publish_date: Date = (0) => {},
+            publish_date: Timestamp = (0) => {},
             lat: f32 = () => {},
             long: f32 = () => {},
             place_id: Id = () => {},

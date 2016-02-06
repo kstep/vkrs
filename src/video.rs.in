@@ -8,14 +8,14 @@ pub struct Video {
     pub title: String,
     pub duration: Duration,
     pub description: String,
-    pub date: Date,
+    pub date: Timestamp,
     pub views: u32,
     pub comments: u32,
     pub photo_130: String, // URL
     pub photo_320: String, // URL
     pub photo_640: Option<String>, // URL
     pub photo_800: Option<String>, // URL
-    pub adding_date: Option<Date>,
+    pub adding_date: Option<Timestamp>,
     pub player: String, // URL
     pub can_add: Bool, // bool
     #[serde(default)]
