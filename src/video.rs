@@ -140,6 +140,39 @@ request! {
     }
 }
 
+request_ref! {
+    #[derive(Eq, Copy)]
+    struct AddAlbum for ["video.addAlbum"](v => 5.44) -> AlbumId [Video] {
+        sized {
+            group_id: Option<Id> = () => {Option},
+            privacy: Privacy = (Privacy::OnlyMe) => {AsRef},
+        }
+        unsized {
+            title: str = ("") => {=},
+        }
+    }
+}
+
+#[derive(Eq, PartialEq, Copy, Clone, Debug)]
+pub enum Privacy {
+    All = 0,
+    Friends = 1,
+    FriendsOfFriends = 2,
+    OnlyMe = 3,
+}
+
+impl AsRef<str> for Privacy {
+    fn as_ref(&self) -> &str {
+        use self::Privacy::*;
+        match *self {
+            All => "0",
+            Friends => "1",
+            FriendsOfFriends => "2",
+            OnlyMe => "3",
+        }
+    }
+}
+
 enum_str! { Filter {
     YouTube = "youtube",
     Vimeo = "vimeo",

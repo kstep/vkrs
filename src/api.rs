@@ -220,6 +220,7 @@ pub enum ErrorCode {
     TooManyRecipients, // 220,
     HyperlinksForbidden, // 222
     UserDisabledTrackBroadcast, // 221
+    AlbumsNumberLimitReached, // 302
     VideoAlreadyAdded, // 800
     App(u32), // 100-999
     Unknown(u32), // other
@@ -248,6 +249,7 @@ impl From<u32> for ErrorCode {
             220 => TooManyRecipients,
             222 => HyperlinksForbidden,
             221 => UserDisabledTrackBroadcast,
+            302 => AlbumsNumberLimitReached,
             800 => VideoAlreadyAdded,
             v @ 100...999 => App(v),
             v @ _ => Unknown(v),
@@ -277,6 +279,7 @@ impl Into<u32> for ErrorCode {
             TooManyRecipients => 220,
             HyperlinksForbidden => 222,
             UserDisabledTrackBroadcast => 221,
+            AlbumsNumberLimitReached => 302,
             VideoAlreadyAdded => 800,
             App(v) => v,
             Unknown(v) => v,
@@ -307,6 +310,7 @@ impl fmt::Display for ErrorCode {
             TooManyRecipients => f.write_str("too many recipients"),
             HyperlinksForbidden => f.write_str("hyperlinks are forbidden"),
             UserDisabledTrackBroadcast => f.write_str("user disabled track name broadcast"),
+            AlbumsNumberLimitReached => f.write_str("albums number limit is reached"),
             VideoAlreadyAdded => f.write_str("video is already added"),
             App(v) => write!(f, "application error #{}", v),
             Unknown(v) => write!(f, "unknown error #{}", v),

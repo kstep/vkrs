@@ -72,3 +72,8 @@ pub struct Album {
     #[serde(default)]
     pub can_repost: Bool,
 }
+
+#[derive(Debug, Clone, PartialEq, Eq, Copy, Deserialize)]
+pub struct AlbumId {
+    pub album_id: Id,
+}
