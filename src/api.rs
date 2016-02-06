@@ -223,6 +223,7 @@ pub enum ErrorCode {
     UserDisabledTrackBroadcast, // 221
     AlbumsNumberLimitReached, // 302
     VideoAlreadyAdded, // 800
+    VideoCommentsClosed, // 801
     App(u32), // 100-999
     Unknown(u32), // other
 }
@@ -253,6 +254,7 @@ impl From<u32> for ErrorCode {
             221 => UserDisabledTrackBroadcast,
             302 => AlbumsNumberLimitReached,
             800 => VideoAlreadyAdded,
+            801 => VideoCommentsClosed,
             v @ 100...999 => App(v),
             v @ _ => Unknown(v),
         }
@@ -284,6 +286,7 @@ impl Into<u32> for ErrorCode {
             UserDisabledTrackBroadcast => 221,
             AlbumsNumberLimitReached => 302,
             VideoAlreadyAdded => 800,
+            VideoCommentsClosed => 801,
             App(v) => v,
             Unknown(v) => v,
         }
@@ -316,6 +319,7 @@ impl fmt::Display for ErrorCode {
             UserDisabledTrackBroadcast => f.write_str("user disabled track name broadcast"),
             AlbumsNumberLimitReached => f.write_str("albums number limit is reached"),
             VideoAlreadyAdded => f.write_str("video is already added"),
+            VideoCommentsClosed => f.write_str("comments for this video are closed"),
             App(v) => write!(f, "application error #{}", v),
             Unknown(v) => write!(f, "unknown error #{}", v),
         }

@@ -241,6 +241,24 @@ request! {
     }
 }
 
+request! {
+    #[derive(Eq, Copy)]
+    struct GetComments for ["video.getComments"](v => 5.44, extended => 0) -> Collection<Comment> [Video] {
+        owner_id: Option<OwnerId> = () => {Option},
+        video_id: Id = () => {},
+        need_likes: bool = () => {bool},
+        start_comment_id: Option<Id> = () => {Option},
+        sort: SortOrder = (SortOrder::Asc) => {AsRef},
+        offset: usize = (0) => {},
+        count: usize = (20) => {},
+    }
+}
+
+enum_str! { SortOrder {
+    Asc = "asc",
+    Desc = "desc"
+}}
+
 #[derive(Eq, PartialEq, Copy, Clone, Debug)]
 pub enum Privacy {
     All = 0,
