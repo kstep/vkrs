@@ -30,6 +30,10 @@ pub struct Video {
     pub repeat: Bool, // bool
     pub files: Option<VideoFiles>,
     pub likes: Option<LikesCount>,
+
+    pub placer_id: Option<Id>,
+    pub tag_created: Option<Timestamp>,
+    pub tag_id: Option<Id>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]

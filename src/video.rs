@@ -333,6 +333,14 @@ request! {
     }
 }
 
+request! {
+    #[derive(Eq, Copy)]
+    struct GetNewTags for ["video.getNewTags"](v => 5.44) -> Collection<Video> [Video] {
+        offset: usize = (0) => {},
+        count: usize = (20) => {},
+    }
+}
+
 enum_str! { AttachmentKind {
     Photo = "photo",
     Video = "video",
