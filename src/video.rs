@@ -231,6 +231,16 @@ request_ref! {
     }
 }
 
+request! {
+    #[derive(Eq, Copy)]
+    struct GetAlbumsByVideo for ["video.getAlbumsByVideo"](v => 5.44) -> Collection<Album> [Video] {
+        target_id: Option<OwnerId> = () => {Option},
+        owner_id: OwnerId = () => {},
+        video_id: Id = () => {},
+        extended: bool = (true) => {bool},
+    }
+}
+
 #[derive(Eq, PartialEq, Copy, Clone, Debug)]
 pub enum Privacy {
     All = 0,
