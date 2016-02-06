@@ -121,6 +121,17 @@ request! {
     }
 }
 
+request! {
+    #[derive(Eq, Copy)]
+    struct GetAlbums for ["video.getAlbums"](v => 5.44) -> Collection<Album> [Video] {
+        owner_id: Option<OwnerId> = () => {Option},
+        offset: usize = (0) => {},
+        count: usize = (30) => {},
+        need_system: bool = () => {bool},
+        extended: bool = (true) => {bool},
+    }
+}
+
 enum_str! { Filter {
     YouTube = "youtube",
     Vimeo = "vimeo",

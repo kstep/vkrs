@@ -51,3 +51,24 @@ pub struct SavedVideo {
     pub access_key: Option<String>,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+pub struct Album {
+    pub id: Id,
+    pub owner_id: OwnerId,
+    pub title: String,
+    pub count: usize,
+    pub updated_time: Timestamp,
+
+    pub photo_130: Option<String>, // URL
+    pub photo_160: Option<String>, // URL
+    pub photo_320: Option<String>, // URL
+    pub photo_640: Option<String>, // URL
+    pub photo_800: Option<String>, // URL
+
+    #[serde(default)]
+    pub is_system: Bool,
+    #[serde(default)]
+    pub can_comment: Bool,
+    #[serde(default)]
+    pub can_repost: Bool,
+}
