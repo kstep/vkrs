@@ -132,6 +132,14 @@ request! {
     }
 }
 
+request! {
+    #[derive(Eq, Copy)]
+    struct GetAlbumById for ["video.getAlbumById"](v => 5.44) -> Album [Video] {
+        owner_id: Option<OwnerId> = () => {Option},
+        album_id: Id = () => {},
+    }
+}
+
 enum_str! { Filter {
     YouTube = "youtube",
     Vimeo = "vimeo",
