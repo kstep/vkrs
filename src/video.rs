@@ -216,6 +216,21 @@ request_ref! {
     }
 }
 
+request_ref! {
+    #[derive(Eq, Copy)]
+    struct RemoveFromAlbum for ["video.removeFromAlbum"](v => 5.44) -> Bool [Video] {
+        sized {
+            target_id: Option<OwnerId> = () => {Option},
+            album_id: Option<Id> = () => {Option},
+            owner_id: OwnerId = () => {},
+            video_id: Id = () => {},
+        }
+        unsized {
+            album_ids: [Id] = (&[][..]) => {Vec},
+        }
+    }
+}
+
 #[derive(Eq, PartialEq, Copy, Clone, Debug)]
 pub enum Privacy {
     All = 0,
