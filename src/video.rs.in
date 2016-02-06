@@ -87,3 +87,13 @@ pub struct Comment {
     pub likes: Option<LikesCount>,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+pub struct Tag {
+    user_id: Id,
+    tag_id: Id,
+    placer_id: Id,
+    tagged_name: String,
+    date: Timestamp,
+    viewed: Bool,
+}
+

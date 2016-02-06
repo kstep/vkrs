@@ -302,6 +302,14 @@ request_ref! {
     }
 }
 
+request! {
+    #[derive(Eq, Copy)]
+    struct GetTags for ["video.getTags"](v => 5.44) -> Vec<Tag> [Video] {
+        owner_id: Option<OwnerId> = () => {Option},
+        video_id: Id = () => {},
+    }
+}
+
 enum_str! { AttachmentKind {
     Photo = "photo",
     Video = "video",
