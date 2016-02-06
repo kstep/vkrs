@@ -153,6 +153,20 @@ request_ref! {
     }
 }
 
+request_ref! {
+    #[derive(Eq, Copy)]
+    struct EditAlbum for ["video.editAlbum"](v => 5.44) -> Bool [Video] {
+        sized {
+            group_id: Option<Id> = () => {Option},
+            album_id: Id = () => {},
+            privacy: Option<Privacy> = () => {AsRef<Option>},
+        }
+        unsized {
+            title: str = ("") => {=},
+        }
+    }
+}
+
 #[derive(Eq, PartialEq, Copy, Clone, Debug)]
 pub enum Privacy {
     All = 0,
