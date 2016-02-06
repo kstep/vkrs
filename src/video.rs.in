@@ -101,3 +101,65 @@ pub struct Tag {
     viewed: Bool,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+pub struct Page<T: Deserialize> {
+    items: Vec<T>,
+    next: Option<String>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+pub struct CatalogBlock {
+    name: String,
+    id: Id,
+    items: Vec<CatalogItem>,
+    next: Option<String>,
+    view: String, // TODO: make enum, known variant: "vertical"
+    can_hide: Bool,
+    #[serde(rename="type")]
+    kind: CatalogBlockKind,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+pub struct CatalogItem {
+    id: Id,
+    owner_id: OwnerId,
+    title: String,
+    #[serde(rename="type")]
+    kind: CatalogItemKind,
+
+    // kind=Video
+    #[serde(default)]
+    duration: Duration,
+    description: Option<String>,
+    #[serde(default)]
+    date: Timestamp,
+    #[serde(default)]
+    views: u32,
+    #[serde(default)]
+    comments: u32,
+    photo_130: Option<String>,
+    photo_160: Option<String>,
+    photo_320: Option<String>,
+    photo_640: Option<String>,
+    photo_800: Option<String>,
+    #[serde(default)]
+    can_add: Bool,
+    #[serde(default)]
+    can_edit: Bool,
+
+    // kind=Album
+    #[serde(default)]
+    count: u32,
+    #[serde(default)]
+    updated_time: Timestamp,
+}
+
+enum_str! { CatalogBlockKind {
+    Channel = "channel",
+    Category = "category",
+}}
+
+enum_str! { CatalogItemKind {
+    Video = "video",
+    Album = "album",
+}}
