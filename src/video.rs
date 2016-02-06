@@ -281,6 +281,14 @@ request! {
     }
 }
 
+request! {
+    #[derive(Eq, Copy)]
+    struct RestoreComment for ["video.restoreComment"](v => 5.44) -> Bool [Video] {
+        owner_id: Option<OwnerId> = () => {Option},
+        comment_id: Id = () => {},
+    }
+}
+
 enum_str! { AttachmentKind {
     Photo = "photo",
     Video = "video",
