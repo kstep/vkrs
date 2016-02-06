@@ -2,6 +2,7 @@ use std::borrow::Borrow;
 use std::convert::AsRef;
 use std::string::ToString;
 use std::error::Error;
+use std::fmt;
 use api::{Bool, Collection, Duration, FullId, Id, LikesCount, OwnerId, Sort, Timestamp};
 
 #[cfg(feature = "unstable")]
@@ -251,6 +252,43 @@ request! {
         sort: SortOrder = (SortOrder::Asc) => {AsRef},
         offset: usize = (0) => {},
         count: usize = (20) => {},
+    }
+}
+
+request_ref! {
+    #[derive(Eq, Copy)]
+    struct CreateComment for ["video.createComment"](v => 5.44) -> Id [Video] {
+        sized {
+            owner_id: Option<OwnerId> = () => {Option},
+            video_id: Id = () => {},
+            from_group: bool = () => {bool},
+            reply_to_comment: Option<Id> = () => {Option},
+            sticker_id: Option<Id> = () => {Option},
+        }
+        unsized {
+            message: str = ("") => {=},
+            attachments: [Attachment] = (&[][..]) => {Vec},
+        }
+    }
+}
+
+enum_str! { AttachmentKind {
+    Photo = "photo",
+    Video = "video",
+    Audio = "audio",
+    Document = "doc",
+}}
+
+#[derive(Eq, Copy, Clone, PartialEq, Debug)]
+pub struct Attachment {
+    pub kind: AttachmentKind,
+    pub owner_id: OwnerId,
+    pub media_id: Id,
+}
+
+impl fmt::Display for Attachment {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}{}_{}", self.kind.as_ref(), self.owner_id, self.media_id)
     }
 }
 
