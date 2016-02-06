@@ -167,6 +167,14 @@ request_ref! {
     }
 }
 
+request! {
+    #[derive(Eq, Copy)]
+    struct DeleteAlbum for ["video.deleteAlbum"](v => 5.44) -> Bool [Video] {
+        group_id: Option<Id> = () => {Option},
+        album_id: Id = () => {},
+    }
+}
+
 #[derive(Eq, PartialEq, Copy, Clone, Debug)]
 pub enum Privacy {
     All = 0,
