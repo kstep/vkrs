@@ -310,6 +310,20 @@ request! {
     }
 }
 
+request_ref! {
+    #[derive(Eq, Copy)]
+    struct PutTag for ["video.putTag"](v => 5.44) -> Id [Video] {
+        sized {
+            owner_id: Option<OwnerId> = () => {Option},
+            user_id: Id = () => {},
+            video_id: Id = () => {},
+        }
+        unsized {
+            tagged_name: str = ("") => {=},
+        }
+    }
+}
+
 enum_str! { AttachmentKind {
     Photo = "photo",
     Video = "video",
