@@ -24,7 +24,6 @@ version = "0.26.0"
 clap = "^1.5.4"
 
 [dependencies]
-chrono = "0.2.18"
 hyper = "^0.7.1"
 inth-oauth2 = "0.7.0"
 rustc-serialize = "0.3.16"
@@ -35,6 +34,10 @@ url = "^0.5.2"
 [dependencies.serde_macros]
 optional = true
 version = "^0.6.5"
+
+[dependencies.chrono]
+version = "0.2.18"
+features = ["serde"]
 
 [features]
 default = ["serde_codegen", "syntex"]
