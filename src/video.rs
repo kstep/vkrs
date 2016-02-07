@@ -357,6 +357,15 @@ request_ref! {
     }
 }
 
+request! {
+    #[derive(Copy, Eq)]
+    struct ReportComment for ["video.reportComment"](v => 5.44) -> Bool [Video] {
+        owner_id: OwnerId = () => {},
+        comment_id: Id = () => {},
+        reason: ReportReason = (ReportReason::Spam) => {AsRef},
+    }
+}
+
 request_ref! {
     #[derive(Eq, Copy)]
     struct GetCatalog for ["video.getCatalog"](v => 5.44, extended => 0) -> Page<CatalogBlock> {
