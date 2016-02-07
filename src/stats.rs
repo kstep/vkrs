@@ -22,4 +22,6 @@ request! {
     }
 }
 
-
+request! {
+    struct TrackVisitor for ["stats.trackVisitor"](v => 5.44) -> Bool;
+}
