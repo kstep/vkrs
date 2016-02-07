@@ -245,18 +245,6 @@ enum_str! { NameChangeStatus {
     Declined = "declined",
 }}
 
-impl de::Deserialize for NameChangeStatus {
-    fn deserialize<D: de::Deserializer>(d: &mut D) -> Result<NameChangeStatus, D::Error> {
-        de::Deserialize::deserialize(d).and_then(|value: String| {
-            match &*value {
-                "processing" => Ok(NameChangeStatus::Processing),
-                "declined" => Ok(NameChangeStatus::Declined),
-                _ => Err(de::Error::syntax("processing or declined expected")),
-            }
-        })
-    }
-}
-
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
 pub enum BirthdateVisibility {
     Hide = 0,
