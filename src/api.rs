@@ -213,6 +213,7 @@ pub enum ErrorCode {
     GoodsNotFound, // 20
     GoodsUnvailable, // 21
     UserNotFound, // 22
+    RequiredParameterMissing, // 100
     UserMenuAccessDenied, // 148
     AccessDenied, // 204
     PostAddAccessDenied, // 214
@@ -220,6 +221,9 @@ pub enum ErrorCode {
     TooManyRecipients, // 220,
     HyperlinksForbidden, // 222
     UserDisabledTrackBroadcast, // 221
+    AlbumsNumberLimitReached, // 302
+    VideoAlreadyAdded, // 800
+    VideoCommentsClosed, // 801
     App(u32), // 100-999
     Unknown(u32), // other
 }
@@ -240,6 +244,7 @@ impl From<u32> for ErrorCode {
             20 => GoodsNotFound,
             21 => GoodsUnvailable,
             22 => UserNotFound,
+            100 => RequiredParameterMissing,
             148 => UserMenuAccessDenied,
             204 => AccessDenied,
             214 => PostAddAccessDenied,
@@ -247,6 +252,9 @@ impl From<u32> for ErrorCode {
             220 => TooManyRecipients,
             222 => HyperlinksForbidden,
             221 => UserDisabledTrackBroadcast,
+            302 => AlbumsNumberLimitReached,
+            800 => VideoAlreadyAdded,
+            801 => VideoCommentsClosed,
             v @ 100...999 => App(v),
             v @ _ => Unknown(v),
         }
@@ -268,6 +276,7 @@ impl Into<u32> for ErrorCode {
             GoodsNotFound => 20,
             GoodsUnvailable => 21,
             UserNotFound => 22,
+            RequiredParameterMissing => 100,
             UserMenuAccessDenied => 148,
             AccessDenied => 204,
             PostAddAccessDenied => 214,
@@ -275,6 +284,9 @@ impl Into<u32> for ErrorCode {
             TooManyRecipients => 220,
             HyperlinksForbidden => 222,
             UserDisabledTrackBroadcast => 221,
+            AlbumsNumberLimitReached => 302,
+            VideoAlreadyAdded => 800,
+            VideoCommentsClosed => 801,
             App(v) => v,
             Unknown(v) => v,
         }
@@ -297,6 +309,7 @@ impl fmt::Display for ErrorCode {
             GoodsNotFound => f.write_str("goods not found"),
             GoodsUnvailable => f.write_str("goods unavailable"),
             UserNotFound => f.write_str("user not found"),
+            RequiredParameterMissing => f.write_str("one of required parameters is missing"),
             UserMenuAccessDenied => f.write_str("access to the menu of the user denied"),
             AccessDenied => f.write_str("access denied"),
             PostAddAccessDenied => f.write_str("access to adding post denied"),
@@ -304,6 +317,9 @@ impl fmt::Display for ErrorCode {
             TooManyRecipients => f.write_str("too many recipients"),
             HyperlinksForbidden => f.write_str("hyperlinks are forbidden"),
             UserDisabledTrackBroadcast => f.write_str("user disabled track name broadcast"),
+            AlbumsNumberLimitReached => f.write_str("albums number limit is reached"),
+            VideoAlreadyAdded => f.write_str("video is already added"),
+            VideoCommentsClosed => f.write_str("comments for this video are closed"),
             App(v) => write!(f, "application error #{}", v),
             Unknown(v) => write!(f, "unknown error #{}", v),
         }
@@ -356,6 +372,33 @@ impl AsRef<str> for Sort {
             DateAdded => "0",
             Length => "1",
             Popularity => "2",
+        }
+    }
+}
+
+#[derive(Copy, Clone, Eq, PartialEq, Debug)]
+#[repr(u8)]
+pub enum ReportReason {
+    Spam = 0,
+    ChildPorn = 1,
+    Extremism = 2,
+    Violence = 3,
+    Drugs = 4,
+    AdultOnly = 5,
+    Offence = 6,
+}
+
+impl AsRef<str> for ReportReason {
+    fn as_ref(&self) -> &str {
+        use self::ReportReason::*;
+        match *self {
+            Spam => "0",
+            ChildPorn => "1",
+            Extremism => "2",
+            Violence => "3",
+            Drugs => "4",
+            AdultOnly => "5",
+            Offence => "6",
         }
     }
 }
