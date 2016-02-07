@@ -1,5 +1,5 @@
 [package]
-authors = ["Konstantin Stepanov <me@kstep.me>"]
+authors = ["Konstantin Stepanov <me@kstep.me>", "Alexander Kuvaev <alexander@kuvaev.me>"]
 build = "build.rs"
 description = "Vkontakte API Rust client library"
 documentation = "http://kstep.me/vkrs/vkrs/index.html"
