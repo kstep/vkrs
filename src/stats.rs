@@ -25,3 +25,11 @@ request! {
 request! {
     struct TrackVisitor for ["stats.trackVisitor"](v => 5.44) -> Bool;
 }
+
+request! {
+    #[derive(Copy, Eq)]
+    struct GetPostReach for ["stats.getPostReach"](v => 5.44) -> PostReach {
+        owner_id: OwnerId = () => {},
+        post_id: Id = () => {},
+    }
+}

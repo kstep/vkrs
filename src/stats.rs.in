@@ -87,3 +87,15 @@ pub struct Country {
     pub code: String,
     pub name: String,
 }
+
+#[derive(Debug, PartialEq, Eq, Deserialize, Clone)]
+pub struct PostReach {
+    pub reach_subscribers: u32,
+    pub reach_total: u32,
+    pub links: u32,
+    pub to_group: u32,
+    pub join_group: u32,
+    pub report: u32,
+    pub hide: u32,
+    pub unsubscribe: u32,
+}
