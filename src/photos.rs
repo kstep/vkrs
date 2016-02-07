@@ -40,13 +40,3 @@ impl AsRef<str> for Sort {
         }
     }
 }
-
-pub enum ReportReason {
-    Spam = 0,
-    ChildPorn = 1,
-    Extremism = 2,
-    Violence = 3,
-    Drugs = 4,
-    AdultOnly = 5,
-    Offence = 6,
-}

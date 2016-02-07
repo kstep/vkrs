@@ -3,7 +3,7 @@ use std::convert::AsRef;
 use std::string::ToString;
 use std::error::Error;
 use std::fmt;
-use api::{Bool, Collection, Duration, FullId, Id, LikesCount, OwnerId, Sort, Timestamp};
+use api::{Bool, Collection, Duration, FullId, Id, LikesCount, OwnerId, Sort, Timestamp, ReportReason};
 use serde::de::Deserialize;
 
 #[cfg(feature = "unstable")]
@@ -339,6 +339,21 @@ request! {
     struct GetNewTags for ["video.getNewTags"](v => 5.44) -> Collection<Video> [Video] {
         offset: usize = (0) => {},
         count: usize = (20) => {},
+    }
+}
+
+request_ref! {
+    #[derive(Copy, Eq)]
+    struct Report for ["video.report"](v => 5.44) -> Bool [Video] {
+        sized {
+            owner_id: OwnerId = () => {},
+            video_id: Id = () => {},
+            reason: ReportReason = (ReportReason::Spam) => {AsRef},
+        }
+        unsized {
+            comment: str = ("") => {=},
+            search_query: str = ("") => {=},
+        }
     }
 }
 

@@ -375,3 +375,30 @@ impl AsRef<str> for Sort {
         }
     }
 }
+
+#[derive(Copy, Clone, Eq, PartialEq, Debug)]
+#[repr(u8)]
+pub enum ReportReason {
+    Spam = 0,
+    ChildPorn = 1,
+    Extremism = 2,
+    Violence = 3,
+    Drugs = 4,
+    AdultOnly = 5,
+    Offence = 6,
+}
+
+impl AsRef<str> for ReportReason {
+    fn as_ref(&self) -> &str {
+        use self::ReportReason::*;
+        match *self {
+            Spam => "0",
+            ChildPorn => "1",
+            Extremism => "2",
+            Violence => "3",
+            Drugs => "4",
+            AdultOnly => "5",
+            Offence => "6",
+        }
+    }
+}
