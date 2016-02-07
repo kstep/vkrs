@@ -356,6 +356,20 @@ request_ref! {
     }
 }
 
+request_ref! {
+    #[derive(Eq, Copy)]
+    // TODO: not sure about return type
+    struct GetCatalogSection for ["video.getCatalogSection"](v => 5.44, extended => 0) -> Page<CatalogItem> {
+        sized {
+            section_id: Id = () => {},
+            count: usize = (10) => {},
+        }
+        unsized {
+            from: str = ("") => {=},
+        }
+    }
+}
+
 request! {
     #[derive(Eq, Copy)]
     struct HideCatalogSection for ["video.hideCatalogSection"](v => 5.44) -> Bool {
