@@ -6,6 +6,98 @@ use serde::de;
 use api::{Bool, Collection, Duration, FullId, Id, OwnerId, Sort, Timestamp};
 use std::fmt;
 
+#[cfg(feature = "unstable")]
+include!("audio.rs.in");
+
+#[cfg(not(feature = "unstable"))]
+include!(concat!(env!("OUT_DIR"), "/audio.rs"));
+
+request! {
+    #[derive(Eq)]
+    struct Get for ["audio.get"](v => 5.37, need_user => 0) -> Collection<Audio> {
+        owner_id: OwnerId = () => {},
+        album_id: Option<Id> = () => { |value| value.as_ref().map(ToString::to_string).as_ref().map(Borrow::borrow).unwrap_or("") },
+        audio_ids: Vec<Id> = () => { Vec },
+        offset: usize = (0) => {},
+        count: usize = (100) => {},
+    }
+}
+
+request_ref! {
+    #[derive(Eq, Copy)]
+    struct Search for ["audio.search"](v => 5.44) -> Collection<Audio> {
+        sized {
+            auto_complete: bool = () => {bool},
+            lyrics: bool = () => {bool},
+            performer_only: bool = () => {bool},
+            sort: Sort = (Sort::Popularity) => {AsRef},
+            search_own: bool = () => {bool},
+            offset: usize = (0) => {},
+            count: usize = (30) => {},
+        }
+        unsized {
+            q: str = ("") => {=},
+        }
+    }
+}
+
+request_ref! {
+    #[derive(Copy, Eq)]
+    struct GetById for ["audio.getById"](v => 5.44) -> Collection<Audio> {
+        audios: [FullId] = (&[][..]) => {|value|
+            &*value.iter().map(|&(o, id)| format!("{}_{}", o, id)).collect::<Vec<_>>().join(",")
+        }
+    }
+}
+
+request! {
+    #[derive(Copy, Eq)]
+    struct GetLyrics for ["audio.getLyrics"](v => 5.44) -> Lyrics {
+        lyrics_id: Id = () => {}
+    }
+}
+
+request! {
+    #[derive(Copy, Eq)]
+    struct GetCount for ["audio.getCount"](v => 5.44) -> u64 {
+        owner_id: OwnerId = () => {}
+    }
+}
+
+request! {
+    #[derive(Copy, Eq)]
+    struct GetAlbums for ["audio.getAlbums"](v => 5.44) -> Collection<Album> {
+        owner_id: OwnerId = () => {},
+        offset: usize = (0) => {},
+        count: usize = (30) => {},
+    }
+}
+
+request! {
+    #[derive(Eq, Copy)]
+    struct GetPopular for ["audio.getPopular"](v => 5.44) -> Vec<Audio> {
+        only_eng: bool = () => {bool},
+        genre_id: Option<Genre> = (None) => {
+            |value| value.map(Into::<u32>::into).as_ref().map(ToString::to_string).as_ref().map(Borrow::borrow).unwrap_or("")
+        },
+        offset: usize = (0) => {},
+        count: usize = (30) => {},
+    }
+}
+
+request! {
+    #[derive(Eq, Copy)]
+    struct GetRecommendations for ["audio.getRecommendations"](v => 5.44) -> Collection<Audio> {
+        target_audio: Option<FullId> = (None) => { |value|
+            value.map(|(x, y)| format!("{}_{}", x, y)).as_ref().map(Borrow::borrow).unwrap_or("")
+        },
+        user_id: Option<Id> = () => {Option},
+        offset: usize = (0) => {},
+        count: usize = (30) => {},
+        shuffle: bool = () => {bool},
+    }
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Genre {
     Rock, // 1
@@ -124,94 +216,3 @@ impl Into<u32> for Genre {
     }
 }
 
-request! {
-    #[derive(Eq)]
-    struct Get for ["audio.get"](v => 5.37, need_user => 0) -> Collection<Audio> {
-        owner_id: OwnerId = () => {},
-        album_id: Option<Id> = () => { |value| value.as_ref().map(ToString::to_string).as_ref().map(Borrow::borrow).unwrap_or("") },
-        audio_ids: Vec<Id> = () => { Vec },
-        offset: usize = (0) => {},
-        count: usize = (100) => {},
-    }
-}
-
-request_ref! {
-    #[derive(Eq, Copy)]
-    struct Search for ["audio.search"](v => 5.44) -> Collection<Audio> {
-        sized {
-            auto_complete: bool = () => {bool},
-            lyrics: bool = () => {bool},
-            performer_only: bool = () => {bool},
-            sort: Sort = (Sort::Popularity) => {AsRef},
-            search_own: bool = () => {bool},
-            offset: usize = (0) => {},
-            count: usize = (30) => {},
-        }
-        unsized {
-            q: str = ("") => {=},
-        }
-    }
-}
-
-#[cfg(feature = "unstable")]
-include!("audio.rs.in");
-
-#[cfg(not(feature = "unstable"))]
-include!(concat!(env!("OUT_DIR"), "/audio.rs"));
-
-request_ref! {
-    #[derive(Copy, Eq)]
-    struct GetById for ["audio.getById"](v => 5.44) -> Collection<Audio> {
-        audios: [FullId] = (&[][..]) => {|value|
-            &*value.iter().map(|&(o, id)| format!("{}_{}", o, id)).collect::<Vec<_>>().join(",")
-        }
-    }
-}
-
-request! {
-    #[derive(Copy, Eq)]
-    struct GetLyrics for ["audio.getLyrics"](v => 5.44) -> Lyrics {
-        lyrics_id: Id = () => {}
-    }
-}
-
-request! {
-    #[derive(Copy, Eq)]
-    struct GetCount for ["audio.getCount"](v => 5.44) -> u64 {
-        owner_id: OwnerId = () => {}
-    }
-}
-
-request! {
-    #[derive(Copy, Eq)]
-    struct GetAlbums for ["audio.getAlbums"](v => 5.44) -> Collection<Album> {
-        owner_id: OwnerId = () => {},
-        offset: usize = (0) => {},
-        count: usize = (30) => {},
-    }
-}
-
-request! {
-    #[derive(Eq, Copy)]
-    struct GetPopular for ["audio.getPopular"](v => 5.44) -> Vec<Audio> {
-        only_eng: bool = () => {bool},
-        genre_id: Option<Genre> = (None) => {
-            |value| value.map(Into::<u32>::into).as_ref().map(ToString::to_string).as_ref().map(Borrow::borrow).unwrap_or("")
-        },
-        offset: usize = (0) => {},
-        count: usize = (30) => {},
-    }
-}
-
-request! {
-    #[derive(Eq, Copy)]
-    struct GetRecommendations for ["audio.getRecommendations"](v => 5.44) -> Collection<Audio> {
-        target_audio: Option<FullId> = (None) => { |value|
-            value.map(|(x, y)| format!("{}_{}", x, y)).as_ref().map(Borrow::borrow).unwrap_or("")
-        },
-        user_id: Option<Id> = () => {Option},
-        offset: usize = (0) => {},
-        count: usize = (30) => {},
-        shuffle: bool = () => {bool},
-    }
-}
