@@ -41,6 +41,10 @@ request_ref! {
     }
 }
 
+request! {
+    struct GetUploadServer for ["audio.getUploadServer"](v => 5.44) -> UploadUrl [Audio];
+}
+
 request_ref! {
     #[derive(Copy, Eq)]
     struct GetById for ["audio.getById"](v => 5.44) -> Collection<Audio> {

@@ -27,3 +27,8 @@ pub struct Album {
     pub owner_id: OwnerId,
     pub title: String,
 }
+
+#[derive(Debug, PartialEq, Eq, Deserialize, Clone)]
+pub struct UploadUrl {
+    pub upload_url: String,
+}
