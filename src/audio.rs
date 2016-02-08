@@ -46,6 +46,20 @@ request! {
 }
 
 request_ref! {
+    struct Save for ["audio.save"](v => 5.44) -> Vec<Audio> [Audio] {
+        sized {
+            server: Id = () => {},
+        }
+        unsized {
+            audio: str = ("") => {=},
+            hash: str = ("") => {=},
+            artist: str = ("") => {=},
+            title: str = ("") => {=},
+        }
+    }
+}
+
+request_ref! {
     #[derive(Copy, Eq)]
     struct GetById for ["audio.getById"](v => 5.44) -> Collection<Audio> [Audio] {
         audios: [FullId] = (&[][..]) => {|value|
