@@ -68,6 +68,13 @@ request! {
     }
 }
 
+request! {
+    struct Delete for ["audio.delete"](v => 5.44) -> Bool [Audio] {
+        audio_id: Id = () => {},
+        owner_id: OwnerId = () => {},
+    }
+}
+
 request_ref! {
     #[derive(Copy, Eq)]
     struct GetById for ["audio.getById"](v => 5.44) -> Collection<Audio> [Audio] {
