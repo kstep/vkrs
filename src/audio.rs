@@ -59,6 +59,15 @@ request_ref! {
     }
 }
 
+request! {
+    struct Add for ["audio.add"](v => 5.44) -> Id [Audio] {
+        audio_id: Id = () => {},
+        owner_id: OwnerId = () => {},
+        group_id: Option<Id> = () => {Option},
+        album_id: Option<Id> = () => {Option},
+    }
+}
+
 request_ref! {
     #[derive(Copy, Eq)]
     struct GetById for ["audio.getById"](v => 5.44) -> Collection<Audio> [Audio] {
