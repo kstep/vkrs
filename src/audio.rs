@@ -75,6 +75,13 @@ request! {
     }
 }
 
+request! {
+    struct Restore for ["audio.restore"](v => 5.44) -> Audio [Audio] {
+        audio_id: Id = () => {},
+        owner_id: Option<OwnerId> = () => {Option},
+    }
+}
+
 request_ref! {
     #[derive(Copy, Eq)]
     struct GetById for ["audio.getById"](v => 5.44) -> Collection<Audio> [Audio] {
