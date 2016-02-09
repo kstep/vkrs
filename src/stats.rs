@@ -3,8 +3,8 @@ use api::{Id, Collection, Bool, OwnerId};
 use serde::de;
 use std::fmt::Debug;
 use std::str::FromStr;
-use chrono::naive::date::NaiveDate;
 use chrono::offset::local::Local;
+pub use chrono::naive::date::NaiveDate;
 
 #[cfg(feature = "unstable")]
 include!("stats.rs.in");
