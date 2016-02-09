@@ -216,6 +216,7 @@ pub enum ErrorCode {
     RequiredParameterMissing, // 100
     UserMenuAccessDenied, // 148
     AccessDenied, // 204
+    AccessToWallPostDenied, // 210
     PostAddAccessDenied, // 214
     AdsPostWasRecentlyAdded, // 219,
     TooManyRecipients, // 220,
@@ -247,6 +248,7 @@ impl From<u32> for ErrorCode {
             100 => RequiredParameterMissing,
             148 => UserMenuAccessDenied,
             204 => AccessDenied,
+            210 => AccessToWallPostDenied,
             214 => PostAddAccessDenied,
             219 => AdsPostWasRecentlyAdded,
             220 => TooManyRecipients,
@@ -279,6 +281,7 @@ impl Into<u32> for ErrorCode {
             RequiredParameterMissing => 100,
             UserMenuAccessDenied => 148,
             AccessDenied => 204,
+            AccessToWallPostDenied => 210,
             PostAddAccessDenied => 214,
             AdsPostWasRecentlyAdded => 219,
             TooManyRecipients => 220,
@@ -312,6 +315,7 @@ impl fmt::Display for ErrorCode {
             RequiredParameterMissing => f.write_str("one of required parameters is missing"),
             UserMenuAccessDenied => f.write_str("access to the menu of the user denied"),
             AccessDenied => f.write_str("access denied"),
+            AccessToWallPostDenied => f.write_str("access to wall's post denied"),
             PostAddAccessDenied => f.write_str("access to adding post denied"),
             AdsPostWasRecentlyAdded => f.write_str("ads post was recently added"),
             TooManyRecipients => f.write_str("too many recipients"),
