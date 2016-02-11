@@ -3,7 +3,7 @@ use std::convert::AsRef;
 use std::string::ToString;
 use std::error::Error;
 use std::fmt;
-use api::{Bool, Collection, Duration, FullId, Id, LikesCount, OwnerId, Sort, Timestamp, ReportReason};
+use api::{Bool, Collection, Duration, FullId, Id, LikesCount, OwnerId, Sort, Timestamp, ReportReason, AlbumId};
 use serde::de::Deserialize;
 
 #[cfg(feature = "unstable")]

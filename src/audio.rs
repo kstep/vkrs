@@ -3,7 +3,7 @@ use std::convert::AsRef;
 use std::string::ToString;
 use std::error::Error;
 use serde::de;
-use api::{Bool, Collection, Duration, FullId, Id, OwnerId, Sort, Timestamp};
+use api::{Bool, Collection, Duration, FullId, Id, OwnerId, Sort, Timestamp, AlbumId};
 use std::fmt;
 
 #[cfg(feature = "unstable")]
@@ -140,6 +140,18 @@ request! {
         owner_id: OwnerId = () => {},
         offset: usize = (0) => {},
         count: usize = (30) => {},
+    }
+}
+
+request_ref! {
+    #[derive(Eq, Copy)]
+    struct AddAlbum for ["audio.addAlbum"](v => 5.44) -> AlbumId [Audio] {
+        sized {
+            group_id: Option<Id> = () => {Option},
+        }
+        unsized {
+            title: str = ("") => {=},
+        }
     }
 }
 

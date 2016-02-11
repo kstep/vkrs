@@ -77,11 +77,6 @@ pub struct Album {
     pub can_repost: Bool,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Copy, Deserialize)]
-pub struct AlbumId {
-    pub album_id: Id,
-}
-
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 pub struct Comment {
     pub id: Id,

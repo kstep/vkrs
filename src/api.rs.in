@@ -63,3 +63,9 @@ pub struct Group {
     photo_100: String, // URL
     photo_200: String, // URL
 }
+
+#[derive(Debug, Clone, PartialEq, Eq, Copy, Deserialize)]
+pub struct AlbumId {
+    pub album_id: Id,
+}
+
