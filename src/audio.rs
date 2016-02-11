@@ -76,7 +76,7 @@ request! {
 }
 
 request_ref! {
-    struct Edit for ["audio.edit"](v => 5.44) -> Id {
+    struct Edit for ["audio.edit"](v => 5.44) -> Id [Audio] {
         sized {
             owner_id: OwnerId = () => {},
             audio_id: Id = () => {},
@@ -88,6 +88,16 @@ request_ref! {
             title: str = ("") => {=},
             text: str = ("") => {=},
         }
+    }
+}
+
+
+request! {
+    struct Reorder for ["audio.reorder"](v => 5.44) -> Bool [Audio] {
+        audio_id: Id = () => {},
+        owner_id: Option<OwnerId> = () => {Option},
+        before: Option<Id> = () => {Option},
+        after: Option<Id> = () => {Option},
     }
 }
 
