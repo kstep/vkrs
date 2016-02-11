@@ -1,3 +1,5 @@
+use audio::Audio;
+
 #[derive(Debug, PartialEq, Eq, Deserialize)]
 pub struct Collection<T: de::Deserialize> {
     pub count: u32,
@@ -47,6 +49,8 @@ pub struct Profile {
     last_name: String,
 }
 
+// TODO: maybe move to groups?
+// TODO: must be much more fields
 #[derive(Debug, PartialEq, Eq, Deserialize, Clone)]
 pub struct Group {
     id: i64,
@@ -62,6 +66,7 @@ pub struct Group {
     photo_50: String, // URL
     photo_100: String, // URL
     photo_200: String, // URL
+    status_audio: Option<Audio>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Copy, Deserialize)]

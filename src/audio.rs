@@ -3,7 +3,8 @@ use std::convert::AsRef;
 use std::string::ToString;
 use std::error::Error;
 use serde::de;
-use api::{Bool, Collection, Duration, FullId, Id, OwnerId, Sort, Timestamp, AlbumId};
+use api::{Bool, Collection, Duration, FullId, Id, OwnerId, Sort, Timestamp, AlbumId, Group};
+use users::User;
 use std::fmt;
 
 #[cfg(feature = "unstable")]
@@ -199,6 +200,23 @@ request_ref! {
     }
 }
 
+// TODO: join up into a single request with Vec<enum { User, Group }> type?
+/// Unstable: may be joined into `GetBroadcastList` with `GetGroupsBroadcastList`
+request! {
+    #[derive(Eq, Copy)]
+    struct GetFriendsBroadcastList for ["audio.getBroadcastList"](v => 5.44, filter => "friends") -> Vec<User> {
+        active: bool = () => {bool}
+    }
+}
+
+/// Unstable: may be joined into `GetBroadcastList` with `GetFriendsBroadcastList`
+request! {
+    #[derive(Eq, Copy)]
+    struct GetGroupsBroadcastList for ["audio.getBroadcastList"](v => 5.44, filter => "groups") -> Vec<Group> {
+        active: bool = () => {bool}
+    }
+}
+
 request! {
     #[derive(Eq, Copy)]
     struct GetPopular for ["audio.getPopular"](v => 5.44) -> Vec<Audio> [Audio] {
@@ -340,3 +358,8 @@ impl Into<u32> for Genre {
     }
 }
 
+enum_str! { Filter {
+    All = "all",
+    Friends = "friends",
+    Groups = "groups",
+}}
