@@ -46,6 +46,7 @@ request! {
 }
 
 request_ref! {
+    #[derive(Eq, Copy)]
     struct Save for ["audio.save"](v => 5.44) -> Vec<Audio> [Audio] {
         sized {
             server: Id = () => {},
@@ -60,6 +61,7 @@ request_ref! {
 }
 
 request! {
+    #[derive(Eq, Copy)]
     struct Add for ["audio.add"](v => 5.44) -> Id [Audio] {
         audio_id: Id = () => {},
         owner_id: OwnerId = () => {},
@@ -69,6 +71,7 @@ request! {
 }
 
 request! {
+    #[derive(Eq, Copy)]
     struct Delete for ["audio.delete"](v => 5.44) -> Bool [Audio] {
         audio_id: Id = () => {},
         owner_id: OwnerId = () => {},
