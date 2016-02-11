@@ -1,5 +1,5 @@
 use std::borrow::Borrow;
-use api::{Id, Collection, Bool, OwnerId};
+use api::{Bool, Collection, Id, OwnerId};
 use serde::de;
 use std::fmt::Debug;
 use std::str::FromStr;

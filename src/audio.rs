@@ -3,7 +3,7 @@ use std::convert::AsRef;
 use std::string::ToString;
 use std::error::Error;
 use serde::de;
-use api::{Bool, Collection, Duration, FullId, Id, OwnerId, Sort, Timestamp, AlbumId, Group};
+use api::{AlbumId, Bool, Collection, Duration, FullId, Group, Id, OwnerId, Sort, Timestamp};
 use users::User;
 use std::fmt;
 
