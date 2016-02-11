@@ -75,6 +75,22 @@ request! {
     }
 }
 
+request_ref! {
+    struct Edit for ["audio.edit"](v => 5.44) -> Id {
+        sized {
+            owner_id: OwnerId = () => {},
+            audio_id: Id = () => {},
+            genre_id: Option<Genre> = () => {Option},
+            no_search: bool = () => {bool},
+        }
+        unsized {
+            artist: str = ("") => {=},
+            title: str = ("") => {=},
+            text: str = ("") => {=},
+        }
+    }
+}
+
 request! {
     struct Restore for ["audio.restore"](v => 5.44) -> Audio [Audio] {
         audio_id: Id = () => {},
