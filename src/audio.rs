@@ -187,6 +187,18 @@ request_ref! {
     }
 }
 
+request_ref! {
+    #[derive(Eq, Copy)]
+    struct SetBroadcast for ["audio.setBroadcast"](v => 5.44) -> Vec<Id> [Status] {
+        sized {
+            audio: FullId = () => {},
+        }
+        unsized {
+            target_ids: [OwnerId] = (&[][..]) => {Vec},
+        }
+    }
+}
+
 request! {
     #[derive(Eq, Copy)]
     struct GetPopular for ["audio.getPopular"](v => 5.44) -> Vec<Audio> [Audio] {
