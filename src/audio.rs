@@ -170,6 +170,14 @@ request_ref! {
 
 request! {
     #[derive(Eq, Copy)]
+    struct DeleteAlbum for ["audio.deleteAlbum"](v => 5.44) -> Bool [Audio] {
+        group_id: Option<Id> = () => {Option},
+        album_id: Id = () => {},
+    }
+}
+
+request! {
+    #[derive(Eq, Copy)]
     struct GetPopular for ["audio.getPopular"](v => 5.44) -> Vec<Audio> [Audio] {
         only_eng: bool = () => {bool},
         genre_id: Option<Genre> = (None) => {
