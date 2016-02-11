@@ -176,6 +176,19 @@ request! {
     }
 }
 
+request_ref! {
+    #[derive(Eq, Copy)]
+    struct MoveToAlbum for ["audio.moveToAlbum"](v => 5.44) -> Bool [Audio] {
+        sized {
+            group_id: Option<Id> = () => {Option},
+            album_id: Id = () => {},
+        }
+        unsized {
+            audio_ids: [Id] = (&[][..]) => {Vec},
+        }
+    }
+}
+
 request! {
     #[derive(Eq, Copy)]
     struct GetPopular for ["audio.getPopular"](v => 5.44) -> Vec<Audio> [Audio] {
