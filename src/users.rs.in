@@ -1,9 +1,13 @@
+use audio::Audio;
 
+// TODO: maybe move to api?
+// TODO: must be much more fields
 #[derive(Debug, PartialEq, Eq, Deserialize, Clone)]
 pub struct User {
     pub id: i64, // String
     pub photo: String,
     pub name: String,
     pub name_gen: String,
+    pub status_audio: Option<Audio>,
 }
 

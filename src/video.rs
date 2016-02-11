@@ -3,7 +3,7 @@ use std::convert::AsRef;
 use std::string::ToString;
 use std::error::Error;
 use std::fmt;
-use api::{Bool, Collection, Duration, FullId, Id, LikesCount, OwnerId, Sort, Timestamp, ReportReason};
+use api::{Bool, Collection, Duration, FullId, Id, LikesCount, OwnerId, Sort, Timestamp, ReportReason, AlbumId};
 use serde::de::Deserialize;
 
 #[cfg(feature = "unstable")]
@@ -22,9 +22,7 @@ request_ref! {
             count: usize = (30) => {},
         }
         unsized {
-            videos: [FullId] = (&[][..]) => { |value|
-                &*value.iter().map(|&(o, id)| format!("{}_{}", o, id)).collect::<Vec<_>>().join(",")
-            }
+            videos: [FullId] = (&[][..]) => {Vec},
         }
     }
 }

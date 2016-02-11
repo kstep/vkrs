@@ -23,10 +23,30 @@ include!(concat!(env!("OUT_DIR"), "/api.rs"));
 
 pub type OwnerId = i64;
 pub type Id = u64;
-pub type FullId = (OwnerId, Id);
 pub type Timestamp = u64;
 pub type Duration = u32;
 pub type Bool = u8;
+
+#[derive(Copy, Eq, Clone, PartialEq, Debug, Default)]
+pub struct FullId(pub OwnerId, pub Id);
+
+impl fmt::Display for FullId {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}_{}", self.0, self.1)
+    }
+}
+
+impl From<(OwnerId, Id)> for FullId {
+    fn from(pair: (OwnerId, Id)) -> FullId {
+        FullId(pair.0, pair.1)
+    }
+}
+
+impl Into<(OwnerId, Id)> for FullId {
+    fn into(self) -> (OwnerId, Id) {
+        (self.0, self.1)
+    }
+}
 
 pub struct Client {
     client: HttpClient,
@@ -214,6 +234,8 @@ pub enum ErrorCode {
     GoodsUnvailable, // 21
     UserNotFound, // 22
     RequiredParameterMissing, // 100
+    InvalidHash, // 121
+    InvalidAudio, // 123
     UserMenuAccessDenied, // 148
     AccessDenied, // 204
     AccessToWallPostDenied, // 210
@@ -222,7 +244,9 @@ pub enum ErrorCode {
     TooManyRecipients, // 220,
     HyperlinksForbidden, // 222
     UserDisabledTrackBroadcast, // 221
-    AlbumsNumberLimitReached, // 302
+    CopyrightedObjectRemoved, // 270
+    InvalidFilename, // 301
+    SizeLimitReached, // 302
     VideoAlreadyAdded, // 800
     VideoCommentsClosed, // 801
     App(u32), // 100-999
@@ -246,6 +270,8 @@ impl From<u32> for ErrorCode {
             21 => GoodsUnvailable,
             22 => UserNotFound,
             100 => RequiredParameterMissing,
+            121 => InvalidHash,
+            123 => InvalidAudio,
             148 => UserMenuAccessDenied,
             204 => AccessDenied,
             210 => AccessToWallPostDenied,
@@ -254,7 +280,9 @@ impl From<u32> for ErrorCode {
             220 => TooManyRecipients,
             222 => HyperlinksForbidden,
             221 => UserDisabledTrackBroadcast,
-            302 => AlbumsNumberLimitReached,
+            270 => CopyrightedObjectRemoved,
+            301 => InvalidFilename,
+            302 => SizeLimitReached,
             800 => VideoAlreadyAdded,
             801 => VideoCommentsClosed,
             v @ 100...999 => App(v),
@@ -279,6 +307,8 @@ impl Into<u32> for ErrorCode {
             GoodsUnvailable => 21,
             UserNotFound => 22,
             RequiredParameterMissing => 100,
+            InvalidHash => 121,
+            InvalidAudio => 123,
             UserMenuAccessDenied => 148,
             AccessDenied => 204,
             AccessToWallPostDenied => 210,
@@ -287,7 +317,9 @@ impl Into<u32> for ErrorCode {
             TooManyRecipients => 220,
             HyperlinksForbidden => 222,
             UserDisabledTrackBroadcast => 221,
-            AlbumsNumberLimitReached => 302,
+            CopyrightedObjectRemoved => 270,
+            InvalidFilename => 301,
+            SizeLimitReached => 302,
             VideoAlreadyAdded => 800,
             VideoCommentsClosed => 801,
             App(v) => v,
@@ -313,6 +345,8 @@ impl fmt::Display for ErrorCode {
             GoodsUnvailable => f.write_str("goods unavailable"),
             UserNotFound => f.write_str("user not found"),
             RequiredParameterMissing => f.write_str("one of required parameters is missing"),
+            InvalidHash => f.write_str("invalid hash"),
+            InvalidAudio => f.write_str("invalid audio"),
             UserMenuAccessDenied => f.write_str("access to the menu of the user denied"),
             AccessDenied => f.write_str("access denied"),
             AccessToWallPostDenied => f.write_str("access to wall's post denied"),
@@ -321,7 +355,9 @@ impl fmt::Display for ErrorCode {
             TooManyRecipients => f.write_str("too many recipients"),
             HyperlinksForbidden => f.write_str("hyperlinks are forbidden"),
             UserDisabledTrackBroadcast => f.write_str("user disabled track name broadcast"),
-            AlbumsNumberLimitReached => f.write_str("albums number limit is reached"),
+            CopyrightedObjectRemoved => f.write_str("object was removed by copyright holder request"),
+            InvalidFilename => f.write_str("invalid filename"),
+            SizeLimitReached => f.write_str("object size limit is reached"),
             VideoAlreadyAdded => f.write_str("video is already added"),
             VideoCommentsClosed => f.write_str("comments for this video are closed"),
             App(v) => write!(f, "application error #{}", v),
