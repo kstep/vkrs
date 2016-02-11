@@ -23,10 +23,30 @@ include!(concat!(env!("OUT_DIR"), "/api.rs"));
 
 pub type OwnerId = i64;
 pub type Id = u64;
-pub type FullId = (OwnerId, Id);
 pub type Timestamp = u64;
 pub type Duration = u32;
 pub type Bool = u8;
+
+#[derive(Copy, Eq, Clone, PartialEq, Debug, Default)]
+pub struct FullId(pub OwnerId, pub Id);
+
+impl fmt::Display for FullId {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}_{}", self.0, self.1)
+    }
+}
+
+impl From<(OwnerId, Id)> for FullId {
+    fn from(pair: (OwnerId, Id)) -> FullId {
+        FullId(pair.0, pair.1)
+    }
+}
+
+impl Into<(OwnerId, Id)> for FullId {
+    fn into(self) -> (OwnerId, Id) {
+        (self.0, self.1)
+    }
+}
 
 pub struct Client {
     client: HttpClient,

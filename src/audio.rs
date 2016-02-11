@@ -114,9 +114,7 @@ request! {
 request_ref! {
     #[derive(Copy, Eq)]
     struct GetById for ["audio.getById"](v => 5.44) -> Collection<Audio> [Audio] {
-        audios: [FullId] = (&[][..]) => {|value|
-            &*value.iter().map(|&(o, id)| format!("{}_{}", o, id)).collect::<Vec<_>>().join(",")
-        }
+        audios: [FullId] = (&[][..]) => {Vec},
     }
 }
 
@@ -204,9 +202,7 @@ request! {
 request! {
     #[derive(Eq, Copy)]
     struct GetRecommendations for ["audio.getRecommendations"](v => 5.44) -> Collection<Audio> [Audio] {
-        target_audio: Option<FullId> = (None) => { |value|
-            value.map(|(x, y)| format!("{}_{}", x, y)).as_ref().map(Borrow::borrow).unwrap_or("")
-        },
+        target_audio: Option<FullId> = () => {Option},
         user_id: Option<Id> = () => {Option},
         offset: usize = (0) => {},
         count: usize = (30) => {},

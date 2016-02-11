@@ -22,9 +22,7 @@ request_ref! {
             count: usize = (30) => {},
         }
         unsized {
-            videos: [FullId] = (&[][..]) => { |value|
-                &*value.iter().map(|&(o, id)| format!("{}_{}", o, id)).collect::<Vec<_>>().join(",")
-            }
+            videos: [FullId] = (&[][..]) => {Vec},
         }
     }
 }
