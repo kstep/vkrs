@@ -8,6 +8,8 @@ Vkontakte API Rust client library
 [![Version](https://img.shields.io/crates/v/vkrs.png)](https://crates.io/crates/vkrs)
 [![License MIT/Apache-2.0](https://img.shields.io/crates/l/vkrs.png)](https://crates.io/crates/vkrs)
 [![Code coverage at Coveralls](https://img.shields.io/coveralls/kstep/vkrs.png)](https://coveralls.io/github/kstep/vkrs)
+[![Issue Stats](http://issuestats.com/github/kstep/vkrs/badge/pr)](http://issuestats.com/github/kstep/vkrs)
+[![Issue Stats](http://issuestats.com/github/kstep/vkrs/badge/issue)](http://issuestats.com/github/kstep/vkrs)
 
 [Documentation](http://kstep.me/vkrs/vkrs/index.html)
 
