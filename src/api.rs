@@ -234,6 +234,7 @@ pub enum ErrorCode {
     GoodsUnvailable, // 21
     UserNotFound, // 22
     RequiredParameterMissing, // 100
+    InvalidAlbumId, // 114
     InvalidHash, // 121
     InvalidAudio, // 123
     UserMenuAccessDenied, // 148
@@ -270,6 +271,7 @@ impl From<u32> for ErrorCode {
             21 => GoodsUnvailable,
             22 => UserNotFound,
             100 => RequiredParameterMissing,
+            114 => InvalidAlbumId,
             121 => InvalidHash,
             123 => InvalidAudio,
             148 => UserMenuAccessDenied,
@@ -307,6 +309,7 @@ impl Into<u32> for ErrorCode {
             GoodsUnvailable => 21,
             UserNotFound => 22,
             RequiredParameterMissing => 100,
+            InvalidAlbumId => 114,
             InvalidHash => 121,
             InvalidAudio => 123,
             UserMenuAccessDenied => 148,
@@ -345,6 +348,7 @@ impl fmt::Display for ErrorCode {
             GoodsUnvailable => f.write_str("goods unavailable"),
             UserNotFound => f.write_str("user not found"),
             RequiredParameterMissing => f.write_str("one of required parameters is missing"),
+            InvalidAlbumId => f.write_str("invalid album id"),
             InvalidHash => f.write_str("invalid hash"),
             InvalidAudio => f.write_str("invalid audio"),
             UserMenuAccessDenied => f.write_str("access to the menu of the user denied"),
