@@ -2,7 +2,7 @@ use std::borrow::Borrow;
 use api::{Collection, Id, OwnerId, Timestamp, Bool};
 
 request_ref! {
-    struct CreateAlbum for ["photos.createAlbum"](v => 5.45) -> Album {
+    struct CreateAlbum for ["photos.createAlbum"](v => 5.45) -> Album [Photos] {
         sized {
             group_id: Option<Id> = () => {Option},
             upload_by_admins_only: bool = () => {bool},
@@ -20,7 +20,7 @@ request_ref! {
 }
 
 request_ref! {
-    struct EditAlbum for ["photos.editAlbum"](v => 5.45) -> Bool {
+    struct EditAlbum for ["photos.editAlbum"](v => 5.45) -> Bool [Photos] {
         sized {
             album_id: Id = () => {},
             owner_id: Option<OwnerId> = () => {Option},
