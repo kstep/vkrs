@@ -72,6 +72,13 @@ request_ref! {
     }
 }
 
+request! {
+    struct GetAlbumsCount for ["photos.getAlbumsCount"](v => 5.45) -> u32 {
+        user_id: Option<Id> = () => {Option},
+        group_id: Option<Id> = () => {Option},
+    }
+}
+
 request_ref! {
     struct Search for ["photos.search"](v => 5.37) -> Collection<Photo> {
         sized {
