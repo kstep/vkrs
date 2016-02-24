@@ -55,6 +55,24 @@ request_ref! {
 }
 
 request_ref! {
+    struct Get for ["photos.get"](v => 5.45, photo_sizes => 1) -> Collection<Photo> {
+        sized {
+            owner_id: Option<OwnerId> = () => {Option},
+            album_id: Option<Id> = () => {Option}, // TODO: can be negative or string (wall, profile, saved)
+            rev: bool = () => {bool},
+            extended: bool = () => {bool},
+            feed: Option<Id> = () => {Option},
+            offset: usize = (0) => {},
+            count: usize = (100) => {},
+        }
+        unsized {
+            photo_ids: [Id] = (&[][..]) => {Vec},
+            feed_type: str = ("") => {=},
+        }
+    }
+}
+
+request_ref! {
     struct Search for ["photos.search"](v => 5.37) -> Collection<Photo> {
         sized {
             lat: f32 = () => {},
