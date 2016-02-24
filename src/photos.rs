@@ -39,6 +39,22 @@ request_ref! {
 }
 
 request_ref! {
+    struct GetAlbums for ["photos.getAlbums"](v => 5.45) -> Collection<Album> {
+        sized {
+            owner_id: Option<OwnerId> = () => {Option},
+            need_system: bool = () => {bool},
+            need_covers: bool = () => {bool},
+            photo_sizes: bool = () => {bool},
+            offset: usize = (0) => {},
+            count: usize = (100) => {},
+        }
+        unsized {
+            album_ids: [Id] = (&[][..]) => {Vec},
+        }
+    }
+}
+
+request_ref! {
     struct Search for ["photos.search"](v => 5.37) -> Collection<Photo> {
         sized {
             lat: f32 = () => {},
