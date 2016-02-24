@@ -20,6 +20,25 @@ request_ref! {
 }
 
 request_ref! {
+    struct EditAlbum for ["photos.editAlbum"](v => 5.45) -> Bool {
+        sized {
+            album_id: Id = () => {},
+            owner_id: Option<OwnerId> = () => {Option},
+            upload_by_admins_only: bool = () => {bool},
+            comments_disabled: bool = () => {bool},
+        }
+        unsized {
+            title: str = ("") => {=},
+            description: str = ("") => {=},
+
+            // TODO: better type (comma separated words)
+            privacy_view: str = ("") => {=},
+            privacy_comment: str = ("") => {=},
+        }
+    }
+}
+
+request_ref! {
     struct Search for ["photos.search"](v => 5.37) -> Collection<Photo> {
         sized {
             lat: f32 = () => {},
