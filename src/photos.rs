@@ -80,6 +80,17 @@ request! {
 }
 
 request_ref! {
+    struct GetById for ["photos.getById"](v => 5.45, photo_sizes => 1) -> Vec<Photo> {
+        sized {
+            extended: bool = () => {bool},
+        }
+        unsized {
+            photos: [FullId] = (&[][..]) => {Vec},
+        }
+    }
+}
+
+request_ref! {
     struct Search for ["photos.search"](v => 5.37) -> Collection<Photo> {
         sized {
             lat: f32 = () => {},
