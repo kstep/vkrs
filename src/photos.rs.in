@@ -14,3 +14,17 @@ pub struct Photo {
     pub date: Timestamp,
 }
 
+#[derive(Debug, PartialEq, Eq, Deserialize)]
+pub struct Album {
+    pub id: Id,
+    pub thumb_id: Id,
+    pub owner_id: OwnerId,
+    pub title: String,
+    pub description: String,
+    pub created: Timestamp,
+    pub updated: Timestamp,
+    pub privacy: u32, // TODO ???
+    pub comment_privacy: u32, // TODO ???
+    pub size: u32,
+    pub can_upload: Bool,
+}

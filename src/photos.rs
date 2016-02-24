@@ -1,4 +1,23 @@
-use api::{Collection, Id, OwnerId, Timestamp};
+use std::borrow::Borrow;
+use api::{Collection, Id, OwnerId, Timestamp, Bool};
+
+request_ref! {
+    struct CreateAlbum for ["photos.createAlbum"](v => 5.45) -> Album {
+        sized {
+            group_id: Option<Id> = () => {Option},
+            upload_by_admins_only: bool = () => {bool},
+            comments_disabled: bool = () => {bool},
+        }
+        unsized {
+            title: str = ("") => {=},
+            description: str = ("") => {=},
+
+            // TODO: better type (comma separated words)
+            privacy_view: str = ("") => {=},
+            privacy_comment: str = ("") => {=},
+        }
+    }
+}
 
 request_ref! {
     struct Search for ["photos.search"](v => 5.37) -> Collection<Photo> {
