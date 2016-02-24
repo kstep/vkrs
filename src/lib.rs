@@ -24,7 +24,7 @@
 //!
 //! Then authorize and use:
 //!
-//! ```rust
+//! ```rust,no_run
 //! extern crate vkrs;
 //!
 //! use std::{env, io};
