@@ -30,3 +30,7 @@
   color: "fbca04"
 - name: "t-question"
   color: "fbca04"
+- name: "s-wip"
+  color: '0052cc'
+- name: "s-ready to merge"
+  color: '0052cc'
