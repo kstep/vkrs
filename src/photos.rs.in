@@ -27,4 +27,55 @@ pub struct Album {
     pub comment_privacy: u32, // TODO ???
     pub size: u32,
     pub can_upload: Bool,
+    #[serde(default)]
+    pub sizes: Vec<AlbumSize>,
+    pub thumb_src: Option<String>,
+}
+
+#[derive(Debug, PartialEq, Eq, Deserialize)]
+pub struct AlbumSize {
+    pub src: String,
+    pub width: u16,
+    pub height: u16,
+    #[serde(rename="type")]
+    pub kind: AlbumSizeKind,
+}
+
+#[derive(Debug, PartialEq, Eq)]
+#[repr(u8)]
+pub enum AlbumSizeKind {
+    Prop75 = 's' as u8,
+    Prop130 = 'm' as u8,
+    Prop604 = 'x' as u8,
+    Adapt130 = 'o' as u8,
+    Adapt200 = 'p' as u8,
+    Adapt320 = 'q' as u8,
+    Prop807 = 'y' as u8,
+    Prop1280x1024 = 'z' as u8,
+    Prop2560x2048 = 'w' as u8,
+}
+
+impl ::serde::de::Deserialize for AlbumSizeKind {
+    fn deserialize<D: ::serde::de::Deserializer>(d: &mut D) -> Result<AlbumSizeKind, D::Error> {
+        struct Visitor;
+        impl ::serde::de::Visitor for Visitor {
+            type Value = AlbumSizeKind;
+            fn visit_str<E: ::serde::de::Error>(&mut self, v: &str) -> Result<AlbumSizeKind, E> {
+                use self::AlbumSizeKind::*;
+                Ok(match v {
+                    "s" => Prop75,
+                    "m" => Prop130,
+                    "x" => Prop604,
+                    "o" => Adapt130,
+                    "p" => Adapt200,
+                    "q" => Adapt320,
+                    "y" => Prop807,
+                    "z" => Prop1280x1024,
+                    "w" => Prop2560x2048,
+                    _ => return Err(::serde::de::Error::syntax("invalid album size type"))
+                })
+            }
+        }
+        d.visit(Visitor)
+    }
 }
