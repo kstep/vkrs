@@ -440,6 +440,10 @@ pub enum ReportReason {
     Offence = 6,
 }
 
+impl Default for ReportReason {
+    fn default() -> ReportReason { ReportReason::Spam }
+}
+
 impl AsRef<str> for ReportReason {
     fn as_ref(&self) -> &str {
         use self::ReportReason::*;
