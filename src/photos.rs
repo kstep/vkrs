@@ -232,6 +232,20 @@ request_ref! {
     }
 }
 
+request! {
+    struct Restore for ["photo.restore"](v => 5.44) -> Bool [Photos] {
+        owner_id: OwnerId = () => {},
+        photo_id: Id = () => {},
+    }
+}
+
+request! {
+    struct RestoreComment for ["photo.restoreComment"](v => 5.44) -> Bool [Photos] {
+        owner_id: OwnerId = () => {},
+        comment_id: Id = () => {},
+    }
+}
+
 #[cfg(feature = "unstable")]
 include!("photos.rs.in");
 
