@@ -1,5 +1,5 @@
 use std::borrow::Borrow;
-use api::{Collection, Id, OwnerId, Timestamp, Bool};
+use api::{Collection, Id, OwnerId, Timestamp, Bool, ReportReason, FullId};
 
 request_ref! {
     struct CreateAlbum for ["photos.createAlbum"](v => 5.45) -> Album [Photos] {
@@ -130,7 +130,7 @@ request! {
 
 request! {
     struct GetWallUploadServer for ["photos.getWallUploadServer"](v => 5.45) -> UploadServer [Photos] {
-        group_id: Option<Id> = () => {},
+        group_id: Option<Id> = () => {Option},
     }
 }
 
@@ -156,7 +156,7 @@ request_ref! {
 request_ref! {
     struct SaveMarketAlbumPhoto for ["photos.saveMarketAlbumPhoto"](v => 5.45) -> SavedPhoto [Market, Photos] { // TODO ???
         sized {
-            group_id: Id = () => {Option},
+            group_id: Id = () => {},
             server: Id = () => {},
         }
         unsized {
@@ -195,6 +195,22 @@ request_ref! {
 request_ref! {
     struct SaveMessagesPhoto for ["photos.saveMessagesPhoto"](v => 5.45) -> SavedPhoto [Photos] {
         photo: str = ("") => {=},
+    }
+}
+
+request! {
+    struct Report for ["photo.report"](v => 5.44) -> Bool [Photos] {
+        owner_id: OwnerId = () => {},
+        photo_id: Id = () => {},
+        reason: ReportReason = () => {AsRef},
+    }
+}
+
+request! {
+    struct ReportComment for ["photo.reportComment"](v => 5.44) -> Bool [Photos] {
+        owner_id: OwnerId = () => {},
+        comment_id: Id = () => {},
+        reason: ReportReason = () => {AsRef},
     }
 }
 
