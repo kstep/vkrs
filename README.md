@@ -3,7 +3,7 @@
 Vkontakte API Rust client library
 
 [![Join the chat at https://gitter.im/kstep/vkrs](https://badges.gitter.im/kstep/vkrs.svg)](https://gitter.im/kstep/vkrs)
-[![Travis CI build status](https://img.shields.io/travis/kstep/vkrs.png)](https://travis-ci.org/kstep/vkrs)
+[![Travis CI build status](https://travis-ci.org/kstep/vkrs.svg?branch=master)](https://travis-ci.org/kstep/vkrs)
 [![Downloads](https://img.shields.io/crates/d/vkrs.png)](https://crates.io/crates/vkrs)
 [![Version](https://img.shields.io/crates/v/vkrs.png)](https://crates.io/crates/vkrs)
 [![License MIT/Apache-2.0](https://img.shields.io/crates/l/vkrs.png)](https://crates.io/crates/vkrs)
