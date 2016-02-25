@@ -147,7 +147,8 @@ pub enum Permission {
     Notifications = 524288,
     Stats = 1048576,
     Ads = 32768,
-    Offline = 0x4000_0000 as i32, // unofficial
+    Market = 134217728,
+    Offline = 65536,
     NoHttps = 0x8000_0000 as i32, // unofficial
 }
 
@@ -170,6 +171,7 @@ static PERMISSIONS: &'static [Permission] = &[Permission::Notify,
                                               Permission::Notifications,
                                               Permission::Stats,
                                               Permission::Ads,
+                                              Permission::Market,
                                               Permission::Offline,
                                               Permission::NoHttps];
 
@@ -208,6 +210,7 @@ impl Permission {
             Notifications => "notifications",
             Stats => "stats",
             Ads => "ads",
+            Market => "market",
             Offline => "offline",
             NoHttps => "nohttps",
         }
@@ -238,6 +241,7 @@ impl FromStr for Permission {
             "notifications" => Notifications,
             "stats" => Stats,
             "ads" => Ads,
+            "market" => Market,
             "offline" => Offline,
             "nohttps" => NoHttps,
             _ => return Err(()),
