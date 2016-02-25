@@ -134,6 +134,70 @@ request! {
     }
 }
 
+request! {
+    struct GetMessagesUploadServer for ["photos.getMessagesUploadServer"](v => 5.45) -> UploadServer [Photos];
+}
+
+request_ref! {
+    struct SaveMarketPhoto for ["photos.saveMarketPhoto"](v => 5.45) -> SavedPhoto [Market, Photos] { // TODO ???
+        sized {
+            group_id: Option<Id> = () => {Option},
+            server: Id = () => {},
+        }
+        unsized {
+            photo: str = ("") => {=},
+            hash: str = ("") => {=},
+            crop_data: str = ("") => {=},
+            crop_hash: str = ("") => {=},
+        }
+    }
+}
+
+request_ref! {
+    struct SaveMarketAlbumPhoto for ["photos.saveMarketAlbumPhoto"](v => 5.45) -> SavedPhoto [Market, Photos] { // TODO ???
+        sized {
+            group_id: Id = () => {Option},
+            server: Id = () => {},
+        }
+        unsized {
+            photo: str = ("") => {=},
+            hash: str = ("") => {=},
+        }
+    }
+}
+
+request_ref! {
+    struct SaveOwnerPhoto for ["photos.saveOwnerPhoto"](v => 5.45) -> SavedPhoto { // TODO ???
+        sized {
+            server: Id = () => {}, // TODO string???
+        }
+        unsized {
+            photo: str = ("") => {=},
+            hash: str = ("") => {=},
+        }
+    }
+}
+
+request_ref! {
+    struct SaveWallPhoto for ["photos.saveWallPhoto"](v => 5.45) -> Vec<Photo> {
+        sized {
+            user_id: Id = () => {},
+            group_id: Id = () => {},
+            server: Id = () => {}, // TODO string???
+        }
+        unsized {
+            photo: str = ("") => {=},
+            hash: str = ("") => {=},
+        }
+    }
+}
+
+request_ref! {
+    struct SaveMessagesPhoto for ["photos.saveMessagesPhoto"](v => 5.45) -> SavedPhoto [Photos] {
+        photo: str = ("") => {=},
+    }
+}
+
 request_ref! {
     struct Search for ["photos.search"](v => 5.37) -> Collection<Photo> {
         sized {

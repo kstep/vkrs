@@ -236,8 +236,10 @@ pub enum ErrorCode {
     UserNotFound, // 22
     RequiredParameterMissing, // 100
     InvalidAlbumId, // 114
+    InvalidServer, // 118
     InvalidHash, // 121
     InvalidAudio, // 123
+    InvalidPhoto, // 129
     UserMenuAccessDenied, // 148
     AccessDenied, // 204
     AccessToWallPostDenied, // 210
@@ -273,8 +275,10 @@ impl From<u32> for ErrorCode {
             22 => UserNotFound,
             100 => RequiredParameterMissing,
             114 => InvalidAlbumId,
+            118 => InvalidServer,
             121 => InvalidHash,
             123 => InvalidAudio,
+            129 => InvalidPhoto,
             148 => UserMenuAccessDenied,
             204 => AccessDenied,
             210 => AccessToWallPostDenied,
@@ -311,8 +315,10 @@ impl Into<u32> for ErrorCode {
             UserNotFound => 22,
             RequiredParameterMissing => 100,
             InvalidAlbumId => 114,
+            InvalidServer => 118,
             InvalidHash => 121,
             InvalidAudio => 123,
+            InvalidPhoto => 129,
             UserMenuAccessDenied => 148,
             AccessDenied => 204,
             AccessToWallPostDenied => 210,
@@ -349,8 +355,10 @@ impl fmt::Display for ErrorCode {
             UserNotFound => f.write_str("user not found"),
             RequiredParameterMissing => f.write_str("one of required parameters is missing"),
             InvalidAlbumId => f.write_str("invalid album id"),
+            InvalidServer => f.write_str("invalid server"),
             InvalidHash => f.write_str("invalid hash"),
             InvalidAudio => f.write_str("invalid audio"),
+            InvalidPhoto => f.write_str("invalid photo"),
             UserMenuAccessDenied => f.write_str("access to the menu of the user denied"),
             AccessDenied => f.write_str("access denied"),
             AccessToWallPostDenied => f.write_str("access to wall's post denied"),

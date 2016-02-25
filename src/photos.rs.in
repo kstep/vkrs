@@ -95,3 +95,12 @@ pub struct UploadServer {
 pub struct UploadUrl {
     pub upload_url: String,
 }
+
+// TODO ???
+#[derive(Debug, PartialEq, Eq, Deserialize)]
+pub struct SavedPhoto {
+    pub hash: String,
+    pub src: String,
+    pub src_big: Option<String>,
+    pub src_small: Option<String>,
+}
