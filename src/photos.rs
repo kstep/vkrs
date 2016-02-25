@@ -90,6 +90,50 @@ request_ref! {
     }
 }
 
+request! {
+    struct GetUploadServer for ["photos.getUploadServer"](v => 5.45) -> UploadServer [Photos] {
+        album_id: Id = () => {},
+        group_id: Option<Id> = () => {Option},
+    }
+}
+
+request! {
+    struct GetOwnerPhotoUploadServer for ["photos.getOwnerPhotoUploadServer"](v => 5.45) -> UploadUrl {
+        owner_id: Option<OwnerId> = () => {Option},
+    }
+}
+
+request! {
+    struct GetChatUploadServer for ["photos.getChatUploadServer"](v => 5.45) -> UploadUrl [Messages] {
+        chat_id: Id = () => {},
+        crop_x: u32 = () => {},
+        crop_y: u32 = () => {},
+        crop_width: u32 = () => {},
+    }
+}
+
+request! {
+    struct GetMarketUploadServer for ["photos.getMarketUploadServer"](v => 5.45) -> UploadUrl [Market, Photos] {
+        group_id: Id = () => {},
+        main_photo: bool = () => {bool},
+        crop_x: u32 = () => {},
+        crop_y: u32 = () => {},
+        crop_width: u32 = () => {},
+    }
+}
+
+request! {
+    struct GetMarketAlbumUploadServer for ["photos.getMarketAlbumUploadServer"](v => 5.45) -> UploadUrl [Market, Photos] {
+        group_id: Id = () => {},
+    }
+}
+
+request! {
+    struct GetWallUploadServer for ["photos.getWallUploadServer"](v => 5.45) -> UploadServer [Photos] {
+        group_id: Option<Id> = () => {},
+    }
+}
+
 request_ref! {
     struct Search for ["photos.search"](v => 5.37) -> Collection<Photo> {
         sized {

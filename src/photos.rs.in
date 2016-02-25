@@ -83,3 +83,15 @@ impl ::serde::de::Deserialize for ThumbKind {
         d.visit(Visitor)
     }
 }
+
+#[derive(Debug, PartialEq, Eq, Deserialize)]
+pub struct UploadServer {
+    pub upload_url: String,
+    pub album_id: Id,
+    pub user_id: Id,
+}
+
+#[derive(Debug, PartialEq, Eq, Deserialize)]
+pub struct UploadUrl {
+    pub upload_url: String,
+}
