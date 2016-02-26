@@ -529,7 +529,7 @@ macro_rules! enum_str {
             fn from_str(s: &str) -> Result<$name, ()> {
                 match s {
                     $($value => Ok($name::$variant)),+,
-                    _ => return Err(()),
+                    _ => Err(()),
                 }
             }
         }

@@ -44,7 +44,7 @@ impl FromResponse for AccessTokenLifetime {
             .map(|expires_in| {
                 AccessTokenLifetime { expires: if expires_in > 0 { Some(UTC::now() + Duration::seconds(expires_in)) } else { None } }
             })
-            .ok_or(ParseError::ExpectedFieldType("expires_in", "i64"))
+            .ok_or_else(|| ParseError::ExpectedFieldType("expires_in", "i64"))
     }
 }
 
@@ -66,7 +66,7 @@ impl FromResponse for AccessToken {
 
 impl Lifetime for AccessTokenLifetime {
     fn expired(&self) -> bool {
-        self.expires.map(|e| e <= UTC::now()).unwrap_or(false)
+        self.expires.map_or(false, |e| e <= UTC::now())
     }
 }
 
@@ -263,7 +263,7 @@ impl de::Deserialize for Permissions {
 impl FromStr for Permissions {
     type Err = ();
     fn from_str(s: &str) -> Result<Permissions, ()> {
-        s.split(",").map(str::trim).map(Permission::from_str).collect()
+        s.split(',').map(str::trim).map(Permission::from_str).collect()
     }
 }
 
@@ -308,8 +308,8 @@ impl Into<Vec<Permission>> for Permissions {
         let Permissions(n) = self;
         Permission::variants()
             .iter()
-            .map(|&mask| mask)
-            .filter(|&mask| mask as i32 & n != 0)
+            .filter(|&&mask| mask as i32 & n != 0)
+            .cloned()
             .collect()
     }
 }

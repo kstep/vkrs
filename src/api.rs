@@ -193,6 +193,7 @@ impl<T: de::Deserialize> de::Deserialize for ApiResult<T> {
 
         impl<T: de::Deserialize> de::Visitor for ApiResultVisitor<T> {
             type Value = ApiResult<T>;
+            #[allow(option_map_unwrap_or_else)]
             fn visit_map<V: de::MapVisitor>(&mut self, mut v: V) -> StdResult<ApiResult<T>, V::Error> {
                 v.visit_key()
                  .and_then(|k| {
@@ -286,7 +287,7 @@ impl From<u32> for ErrorCode {
             800 => VideoAlreadyAdded,
             801 => VideoCommentsClosed,
             v @ 100...999 => App(v),
-            v @ _ => Unknown(v),
+            v => Unknown(v),
         }
     }
 }
@@ -322,8 +323,7 @@ impl Into<u32> for ErrorCode {
             SizeLimitReached => 302,
             VideoAlreadyAdded => 800,
             VideoCommentsClosed => 801,
-            App(v) => v,
-            Unknown(v) => v,
+            App(v) | Unknown(v) => v,
         }
     }
 }
