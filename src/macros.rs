@@ -160,8 +160,13 @@ macro_rules! request {
         ($($const_param_name:ident => $const_param_value:expr),*) ->
         $response_type:ty [$($permission:ident),*];
     ) => {
-        #[derive(Debug, PartialEq, Clone, Copy, Eq)]
+        #[doc = "The <a href=\"https://vk.com/dev/"]
+        #[doc = $method_name]
+        #[doc = "\">"]
+        #[doc = $method_name]
+        #[doc = "</a> API request."]
         $(#[$attr])*
+        #[derive(Debug, PartialEq, Clone, Copy, Eq)]
         pub struct $struct_name;
 
         impl ::api::Request for $struct_name {
@@ -250,8 +255,13 @@ macro_rules! request {
             $(,)*
         }
     ) => {
-        #[derive(Debug, PartialEq, Clone)]
+        #[doc = "The <a href=\"https://vk.com/dev/"]
+        #[doc = $method_name]
+        #[doc = "\">"]
+        #[doc = $method_name]
+        #[doc = "</a> API request."]
         $(#[$attr])*
+        #[derive(Debug, PartialEq, Clone)]
         pub struct $struct_name {
             $($param_name: $param_type,)*
         }
@@ -471,8 +481,13 @@ macro_rules! request_ref {
             }
         }
     ) => {
-        #[derive(Debug, PartialEq, Clone)]
+        #[doc = "The <a href=\"https://vk.com/dev/"]
+        #[doc = $method_name]
+        #[doc = "\">"]
+        #[doc = $method_name]
+        #[doc = "</a> API request."]
         $(#[$attr])*
+        #[derive(Debug, PartialEq, Clone)]
         pub struct $struct_name<'a> {
             $($param_name: $param_type,)*
             $($param_name_lt: &'a $param_type_lt,)*
