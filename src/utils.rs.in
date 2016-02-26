@@ -1,6 +1,6 @@
 #[derive(Debug, PartialEq, Eq, Deserialize, Clone)]
-pub struct LinkStatus {
-    pub status: String,
+pub struct LinkInfo {
+    pub status: LinkStatus,
     pub link: String, // URL
 }
 
@@ -10,3 +10,10 @@ pub struct ScreenNameInfo {
     pub kind: String,
     pub object_id: Id,
 }
+
+
+enum_str! { LinkStatus {
+    NotBanned = "not_banned",
+    Banned = "banned",
+    Processing = "processing"
+}}
