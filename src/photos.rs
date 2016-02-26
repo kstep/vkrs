@@ -1,5 +1,5 @@
 use std::borrow::Borrow;
-use api::{Collection, Id, OwnerId, Timestamp, Bool, ReportReason, FullId};
+use api::{Bool, Collection, FullId, Id, OwnerId, ReportReason, Timestamp};
 
 request_ref! {
     struct CreateAlbum for ["photos.createAlbum"](v => 5.45) -> Album [Photos] {

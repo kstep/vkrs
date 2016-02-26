@@ -441,7 +441,9 @@ pub enum ReportReason {
 }
 
 impl Default for ReportReason {
-    fn default() -> ReportReason { ReportReason::Spam }
+    fn default() -> ReportReason {
+        ReportReason::Spam
+    }
 }
 
 impl AsRef<str> for ReportReason {
