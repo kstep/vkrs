@@ -74,15 +74,15 @@ macro_rules! request_builder_impl {
                 $($param_name: expand_init_expr!($param_value),)*
             }
         }
-        $(request_builder_setter_impl!($param_name: $param_type $param_value);)*
+        $(request_builder_setter_impl!($param_name: $param_type = $param_value);)*
     }
 }
 
 macro_rules! request_builder_setter_impl {
-    ($param_name:ident: $param_type:ty {$param_value:expr}) => { request_builder_setter_impl!($param_name: $param_type {}); };
-    ($param_name:ident: $param_type:ty ($param_value:expr)) => { request_builder_setter_impl!($param_name: $param_type ()); };
+    ($param_name:ident: $param_type:ty = {$param_value:expr}) => { request_builder_setter_impl!($param_name: $param_type = {}); };
+    ($param_name:ident: $param_type:ty = ($param_value:expr)) => { request_builder_setter_impl!($param_name: $param_type = ()); };
     (
-        $param_name:ident: $param_type:ty {}
+        $param_name:ident: $param_type:ty = {}
     ) => {
         pub fn $param_name<T: Into<$param_type>>(&mut self, value: T) -> &mut Self {
             self.$param_name = value.into();
@@ -90,7 +90,7 @@ macro_rules! request_builder_setter_impl {
         }
     };
     (
-        $param_name:ident: $param_type:ty ()
+        $param_name:ident: $param_type:ty = ()
     ) => {
         pub fn $param_name(&mut self, value: $param_type) -> &mut Self {
             self.$param_name = value;
@@ -504,14 +504,13 @@ macro_rules! request_ref {
 
 macro_rules! enum_str {
     (
-        $(#[$attr:meta])*
         $name:ident {
             $($variant:ident = $value:expr),+
             $(,)*
         }
     ) => {
         #[derive(Copy, Clone, PartialEq, Eq, Debug)]
-        $(#[$attr])*
+        #[allow(non_camel_case_types)]
         pub enum $name {
             $($variant),+
         }
