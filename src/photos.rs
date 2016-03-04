@@ -342,6 +342,13 @@ request! {
 }
 
 request! {
+    struct Delete for ["photo.delete"](v => 5.44) -> Bool [Photos] {
+        photo_id: Id = () => {},
+        owner_id: Option<OwnerId> = () => {Option},
+    }
+}
+
+request! {
     struct Restore for ["photo.restore"](v => 5.44) -> Bool [Photos] {
         owner_id: OwnerId = () => {},
         photo_id: Id = () => {},
