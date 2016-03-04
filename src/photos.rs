@@ -313,6 +313,18 @@ request! {
 }
 
 request! {
+    struct GetAll for ["photos.getAll"](v => 5.45, photo_sizes => 1) -> Collection<Photo> [Photos] {
+        owner_id: Option<OwnerId> = () => {Option},
+        extended: bool = () => {bool},
+        offset: usize = (0) => {},
+        count: usize = (20) => {},
+        no_service_albums: bool = () => {bool},
+        need_hidden: bool = () => {bool},
+        skip_hidden: bool = () => {bool},
+    }
+}
+
+request! {
     struct Restore for ["photo.restore"](v => 5.44) -> Bool [Photos] {
         owner_id: OwnerId = () => {},
         photo_id: Id = () => {},
