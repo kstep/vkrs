@@ -193,7 +193,7 @@ impl<T: de::Deserialize> de::Deserialize for ApiResult<T> {
 
         impl<T: de::Deserialize> de::Visitor for ApiResultVisitor<T> {
             type Value = ApiResult<T>;
-            #[allow(option_map_unwrap_or_else)]
+            #[allow(unknown_lints, option_map_unwrap_or_else)]
             fn visit_map<V: de::MapVisitor>(&mut self, mut v: V) -> StdResult<ApiResult<T>, V::Error> {
                 v.visit_key()
                  .and_then(|k| {
