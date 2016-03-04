@@ -221,7 +221,7 @@ request_ref! {
             long: f32 = () => {},
             start_time: Timestamp = () => {},
             end_time: Timestamp = () => {},
-            sort: Sort = (Sort::Popularity) => {AsRef},
+            sort: Sort = () => {AsRef},
             offset: usize = (0) => {},
             count: usize = (30) => {},
             radius: u16 = (5000) => {},
@@ -325,6 +325,23 @@ request! {
 }
 
 request! {
+    struct GetUserPhotos for ["photos.getUserPhotos"](v => 5.45, photo_sizes => 1) -> Collection<Photo> {
+        user_id: Option<Id> = () => {Option},
+        extended: bool = () => {bool},
+        offset: usize = (0) => {},
+        count: usize = (20) => {},
+        sort: Sort = () => {AsRef},
+    }
+}
+
+request! {
+    struct DeleteAlbum for ["photo.deleteAlbum"](v => 5.44) -> Bool [Photos] {
+        album_id: Id = () => {},
+        group_id: Option<Id> = () => {Option},
+    }
+}
+
+request! {
     struct Restore for ["photo.restore"](v => 5.44) -> Bool [Photos] {
         owner_id: OwnerId = () => {},
         photo_id: Id = () => {},
@@ -349,6 +366,12 @@ include!(concat!(env!("OUT_DIR"), "/photos.rs"));
 pub enum Sort {
     DateAdded = 0,
     Popularity = 1,
+}
+
+impl Default for Sort {
+    fn default() -> Sort {
+        Sort::Popularity
+    }
 }
 
 impl AsRef<str> for Sort {
