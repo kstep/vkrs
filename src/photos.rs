@@ -232,6 +232,60 @@ request_ref! {
     }
 }
 
+request_ref! {
+    struct Save for ["photos.save"](v => 5.44) -> Vec<Photo> [Photos] {
+        sized {
+            server: Id = () => {},
+            album_id: Option<Id> = () => {Option},
+            group_id: Option<Id> = () => {Option},
+            latitude: f32 = () => {},
+            longitude: f32 = () => {},
+        }
+        unsized {
+            photos_list: str = ("") => {=},
+            hash: str = ("") => {=},
+            caption: str = ("") => {=},
+        }
+    }
+}
+
+request_ref! {
+    struct Copy for ["photos.copy"](v => 5.44) -> Id [Photos] {
+        sized {
+            owner_id: OwnerId = () => {},
+            photo_id: Id = () => {},
+        }
+        unsized {
+            access_key: str = ("") => {=},
+        }
+    }
+}
+
+request_ref! {
+    struct Edit for ["photos.edit"](v => 5.44) -> Bool [Photos] {
+        sized {
+            owner_id: Option<OwnerId> = () => {Option},
+            photo_id: Id = () => {},
+            latitude: f32 = () => {},
+            longitude: f32 = () => {},
+            delete_place: bool = () => {bool},
+        }
+        unsized {
+            caption: str = ("") => {=},
+            place_str: str = ("") => {=},
+            foursquare_id: str = ("") => {=},
+        }
+    }
+}
+
+request! {
+    struct Move for ["photos.move"](v => 5.44) -> Bool [Photos] {
+        owner_id: OwnerId = () => {},
+        photo_id: Id = () => {},
+        target_album_id: Id = () => {},
+    }
+}
+
 request! {
     struct Restore for ["photo.restore"](v => 5.44) -> Bool [Photos] {
         owner_id: OwnerId = () => {},
