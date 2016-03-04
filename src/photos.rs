@@ -304,6 +304,15 @@ request! {
 }
 
 request! {
+    struct ReorderPhotos for ["photos.reorderPhotos"](v => 5.44) -> Bool [Photos] {
+        owner_id: Option<OwnerId> = () => {Option},
+        photo_id: Id = () => {},
+        before: Option<Id> = () => {Option},
+        after: Option<Id> = () => {Option},
+    }
+}
+
+request! {
     struct Restore for ["photo.restore"](v => 5.44) -> Bool [Photos] {
         owner_id: OwnerId = () => {},
         photo_id: Id = () => {},
