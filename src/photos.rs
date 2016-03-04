@@ -290,7 +290,16 @@ request! {
     struct MakeCover for ["photos.makeCover"](v => 5.44) -> Bool [Photos] {
         owner_id: Option<OwnerId> = () => {Option},
         photo_id: Id = () => {},
-        album_id: Id = () => {Option},
+        album_id: Id = () => {},
+    }
+}
+
+request! {
+    struct ReorderAlbums for ["photos.reorderAlbums"](v => 5.44) -> Bool [Photos] {
+        owner_id: Option<OwnerId> = () => {Option},
+        album_id: Id = () => {},
+        before: Option<Id> = () => {Option},
+        after: Option<Id> = () => {Option},
     }
 }
 
