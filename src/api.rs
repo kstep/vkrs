@@ -238,6 +238,7 @@ pub enum ErrorCode {
     InvalidAlbumId, // 114
     InvalidServer, // 118
     InvalidHash, // 121
+    InvalidPhotoId, // 122
     InvalidAudio, // 123
     InvalidPhoto, // 129
     UserMenuAccessDenied, // 148
@@ -277,6 +278,7 @@ impl From<u32> for ErrorCode {
             114 => InvalidAlbumId,
             118 => InvalidServer,
             121 => InvalidHash,
+            122 => InvalidPhotoId,
             123 => InvalidAudio,
             129 => InvalidPhoto,
             148 => UserMenuAccessDenied,
@@ -317,6 +319,7 @@ impl Into<u32> for ErrorCode {
             InvalidAlbumId => 114,
             InvalidServer => 118,
             InvalidHash => 121,
+            InvalidPhotoId => 122,
             InvalidAudio => 123,
             InvalidPhoto => 129,
             UserMenuAccessDenied => 148,
@@ -357,6 +360,7 @@ impl fmt::Display for ErrorCode {
             InvalidAlbumId => f.write_str("invalid album id"),
             InvalidServer => f.write_str("invalid server"),
             InvalidHash => f.write_str("invalid hash"),
+            InvalidPhotoId => f.write_str("invalid photo id"),
             InvalidAudio => f.write_str("invalid audio"),
             InvalidPhoto => f.write_str("invalid photo"),
             UserMenuAccessDenied => f.write_str("access to the menu of the user denied"),
