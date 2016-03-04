@@ -287,6 +287,14 @@ request! {
 }
 
 request! {
+    struct MakeCover for ["photos.makeCover"](v => 5.44) -> Bool [Photos] {
+        owner_id: Option<OwnerId> = () => {Option},
+        photo_id: Id = () => {},
+        album_id: Id = () => {Option},
+    }
+}
+
+request! {
     struct Restore for ["photo.restore"](v => 5.44) -> Bool [Photos] {
         owner_id: OwnerId = () => {},
         photo_id: Id = () => {},
