@@ -199,7 +199,7 @@ request_ref! {
 }
 
 request! {
-    struct Report for ["photo.report"](v => 5.44) -> Bool [Photos] {
+    struct Report for ["photos.report"](v => 5.44) -> Bool [Photos] {
         owner_id: OwnerId = () => {},
         photo_id: Id = () => {},
         reason: ReportReason = () => {AsRef},
@@ -207,7 +207,7 @@ request! {
 }
 
 request! {
-    struct ReportComment for ["photo.reportComment"](v => 5.44) -> Bool [Photos] {
+    struct ReportComment for ["photos.reportComment"](v => 5.44) -> Bool [Photos] {
         owner_id: OwnerId = () => {},
         comment_id: Id = () => {},
         reason: ReportReason = () => {AsRef},
@@ -335,28 +335,36 @@ request! {
 }
 
 request! {
-    struct DeleteAlbum for ["photo.deleteAlbum"](v => 5.44) -> Bool [Photos] {
+    struct DeleteAlbum for ["photos.deleteAlbum"](v => 5.44) -> Bool [Photos] {
         album_id: Id = () => {},
         group_id: Option<Id> = () => {Option},
     }
 }
 
 request! {
-    struct Delete for ["photo.delete"](v => 5.44) -> Bool [Photos] {
+    struct Delete for ["photos.delete"](v => 5.44) -> Bool [Photos] {
         photo_id: Id = () => {},
         owner_id: Option<OwnerId> = () => {Option},
     }
 }
 
 request! {
-    struct Restore for ["photo.restore"](v => 5.44) -> Bool [Photos] {
+    struct ConfirmTag for ["photos.confirmTag"](v => 5.44) -> Bool [Photos] {
+        owner_id: Option<OwnerId> = () => {Option},
+        photo_id: Id = () => {},
+        tag_id: Id = () => {},
+    }
+}
+
+request! {
+    struct Restore for ["photos.restore"](v => 5.44) -> Bool [Photos] {
         owner_id: OwnerId = () => {},
         photo_id: Id = () => {},
     }
 }
 
 request! {
-    struct RestoreComment for ["photo.restoreComment"](v => 5.44) -> Bool [Photos] {
+    struct RestoreComment for ["photos.restoreComment"](v => 5.44) -> Bool [Photos] {
         owner_id: OwnerId = () => {},
         comment_id: Id = () => {},
     }
