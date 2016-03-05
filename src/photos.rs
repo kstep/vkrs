@@ -384,6 +384,25 @@ request! {
     }
 }
 
+request_ref! {
+    #[derive(Eq, Copy)]
+    struct CreateComment for ["photos.createComment"](v => 5.44) -> Id [Photos] {
+        sized {
+            owner_id: Option<OwnerId> = () => {Option},
+            photo_id: Id = () => {},
+            from_group: bool = () => {bool},
+            reply_to_comment: Option<Id> = () => {Option},
+            sticker_id: Option<Id> = () => {Option},
+            guid: Option<Id> = () => {Option},
+        }
+        unsized {
+            message: str = ("") => {=},
+            attachments: [Attachment] = (&[][..]) => {Vec},
+            access_key: str = ("") => {=},
+        }
+    }
+}
+
 request! {
     struct DeleteComment for ["photos.deleteComment"](v => 5.44) -> Bool [Photos] {
         owner_id: Option<OwnerId> = () => {Option},
