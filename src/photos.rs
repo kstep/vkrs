@@ -1,5 +1,5 @@
 use std::borrow::Borrow;
-use api::{Bool, Collection, FullId, Id, OwnerId, ReportReason, Timestamp};
+use api::{Bool, Collection, FullId, Id, OwnerId, ReportReason, Timestamp, SortOrder};
 
 request_ref! {
     struct CreateAlbum for ["photos.createAlbum"](v => 5.45) -> Album [Photos] {
@@ -353,6 +353,41 @@ request! {
         owner_id: Option<OwnerId> = () => {Option},
         photo_id: Id = () => {},
         tag_id: Id = () => {},
+    }
+}
+
+request_ref! {
+    struct GetComments for ["photos.getComments"](v => 5.44, extended => 0) -> Collection<Comment> [Photos] {
+        sized {
+            owner_id: Option<OwnerId> = () => {Option},
+            photo_id: Id = () => {},
+            need_likes: bool = () => {bool},
+            start_comment_id: Option<Id> = () => {Option},
+            offset: usize = (0) => {},
+            count: usize = (20) => {},
+            sort: SortOrder = () => {},
+        }
+        unsized {
+            access_key: str = ("") => {=},
+            //fields: [PhotoCommentField] = (&[][..]) => {Vec}, // TODO
+        }
+    }
+}
+
+request! {
+    struct GetAllComments for ["photos.getAllComments"](v => 5.44) -> Collection<Comment> [Photos] {
+        owner_id: Option<OwnerId> = () => {Option},
+        album_id: Option<Id> = () => {},
+        need_likes: bool = () => {bool},
+        offset: usize = (0) => {},
+        count: usize = (20) => {},
+    }
+}
+
+request! {
+    struct DeleteComment for ["photos.deleteComment"](v => 5.44) -> Bool [Photos] {
+        owner_id: Option<OwnerId> = () => {Option},
+        comment_id: Id = () => {},
     }
 }
 

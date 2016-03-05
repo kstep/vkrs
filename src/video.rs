@@ -3,7 +3,7 @@ use std::convert::AsRef;
 use std::string::ToString;
 use std::error::Error;
 use std::fmt;
-use api::{AlbumId, Bool, Collection, Duration, FullId, Id, LikesCount, OwnerId, ReportReason, Sort, Timestamp};
+use api::{AlbumId, Bool, Collection, Duration, FullId, Id, LikesCount, OwnerId, ReportReason, Sort, Timestamp, SortOrder};
 use serde::de::Deserialize;
 
 #[cfg(feature = "unstable")]
@@ -418,11 +418,6 @@ impl fmt::Display for Attachment {
         write!(f, "{}{}_{}", self.kind.as_ref(), self.owner_id, self.media_id)
     }
 }
-
-enum_str! { SortOrder {
-    Asc = "asc",
-    Desc = "desc"
-}}
 
 #[derive(Eq, PartialEq, Copy, Clone, Debug)]
 pub enum Privacy {

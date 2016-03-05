@@ -464,3 +464,13 @@ impl AsRef<str> for ReportReason {
         }
     }
 }
+
+enum_str! { SortOrder {
+    Asc = "asc",
+    Desc = "desc"
+}}
+
+
+impl Default for SortOrder {
+    fn default() -> SortOrder { SortOrder::Asc }
+}
