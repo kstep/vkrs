@@ -78,15 +78,6 @@ pub struct Album {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
-pub struct Comment {
-    pub id: Id,
-    pub from_id: Id,
-    pub date: Timestamp,
-    pub text: String,
-    pub likes: Option<LikesCount>,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 pub struct Tag {
     user_id: Id,
     tag_id: Id,

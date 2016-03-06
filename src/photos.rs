@@ -1,5 +1,5 @@
 use std::borrow::Borrow;
-use api::{Bool, Collection, FullId, Id, OwnerId, ReportReason, Timestamp, SortOrder};
+use api::{Bool, Collection, FullId, Id, OwnerId, ReportReason, Timestamp, SortOrder, Comment, Attachment};
 
 request_ref! {
     #[derive(Eq, Copy)]
@@ -253,7 +253,7 @@ request_ref! {
 }
 
 request_ref! {
-    #[derive(Eq, Copy)]
+    #[derive(Copy)]
     struct Save for ["photos.save"](v => 5.44) -> Vec<Photo> [Photos] {
         sized {
             server: Id = () => {},
@@ -284,7 +284,7 @@ request_ref! {
 }
 
 request_ref! {
-    #[derive(Eq, Copy)]
+    #[derive(Copy)]
     struct Edit for ["photos.edit"](v => 5.44) -> Bool [Photos] {
         sized {
             owner_id: Option<OwnerId> = () => {Option},
@@ -397,7 +397,7 @@ request_ref! {
             start_comment_id: Option<Id> = () => {Option},
             offset: usize = (0) => {},
             count: usize = (20) => {},
-            sort: SortOrder = () => {},
+            sort: SortOrder = () => {AsRef},
         }
         unsized {
             access_key: str = ("") => {=},
@@ -410,7 +410,7 @@ request! {
     #[derive(Eq, Copy)]
     struct GetAllComments for ["photos.getAllComments"](v => 5.44) -> Collection<Comment> [Photos] {
         owner_id: Option<OwnerId> = () => {Option},
-        album_id: Option<Id> = () => {},
+        album_id: Option<Id> = () => {Option},
         need_likes: bool = () => {bool},
         offset: usize = (0) => {},
         count: usize = (20) => {},

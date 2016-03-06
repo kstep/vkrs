@@ -540,7 +540,7 @@ macro_rules! enum_str {
 
         impl ::std::str::FromStr for $name {
             type Err = ();
-            fn from_str(s: &str) -> Result<$name, ()> {
+            fn from_str(s: &str) -> ::std::result::Result<$name, ()> {
                 match s {
                     $($value => Ok($name::$variant)),+,
                     _ => Err(()),
@@ -549,12 +549,12 @@ macro_rules! enum_str {
         }
 
         impl ::serde::de::Deserialize for $name {
-            fn deserialize<D: ::serde::de::Deserializer>(d: &mut D) -> Result<$name, D::Error> {
+            fn deserialize<D: ::serde::de::Deserializer>(d: &mut D) -> ::std::result::Result<$name, D::Error> {
                 struct TempVisitor;
 
                 impl ::serde::de::Visitor for TempVisitor {
                     type Value = $name;
-                    fn visit_str<E: ::serde::de::Error>(&mut self, value: &str) -> Result<$name, E> {
+                    fn visit_str<E: ::serde::de::Error>(&mut self, value: &str) -> ::std::result::Result<$name, E> {
                         match ::std::str::FromStr::from_str(value) {
                             Ok(temp_value) => Ok(temp_value),
                             _ => Err(::serde::de::Error::syntax("unexpected value")),

@@ -474,3 +474,24 @@ enum_str! { SortOrder {
 impl Default for SortOrder {
     fn default() -> SortOrder { SortOrder::Asc }
 }
+
+enum_str! { AttachmentKind {
+    Photo = "photo",
+    Video = "video",
+    Audio = "audio",
+    Document = "doc",
+}}
+
+#[derive(Eq, Copy, Clone, PartialEq, Debug)]
+pub struct Attachment {
+    pub kind: AttachmentKind,
+    pub owner_id: OwnerId,
+    pub media_id: Id,
+}
+
+impl fmt::Display for Attachment {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}{}_{}", self.kind.as_ref(), self.owner_id, self.media_id)
+    }
+}
+
