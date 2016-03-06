@@ -460,6 +460,20 @@ request! {
     }
 }
 
+request_ref! {
+    #[derive(Eq, Copy)]
+    struct EditComment for ["photos.editComment"](v => 5.44) -> Bool [Photos] {
+        sized {
+            owner_id: Option<OwnerId> = () => {Option},
+            comment_id: Id = () => {},
+        }
+        unsized {
+            message: str = ("") => {=},
+            attachments: [Attachment] = (&[][..]) => {Vec},
+        }
+    }
+}
+
 #[cfg(feature = "unstable")]
 include!("photos.rs.in");
 
