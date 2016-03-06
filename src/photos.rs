@@ -2,6 +2,7 @@ use std::borrow::Borrow;
 use api::{Bool, Collection, FullId, Id, OwnerId, ReportReason, Timestamp, SortOrder};
 
 request_ref! {
+    #[derive(Eq, Copy)]
     struct CreateAlbum for ["photos.createAlbum"](v => 5.45) -> Album [Photos] {
         sized {
             group_id: Option<Id> = () => {Option},
@@ -20,6 +21,7 @@ request_ref! {
 }
 
 request_ref! {
+    #[derive(Eq, Copy)]
     struct EditAlbum for ["photos.editAlbum"](v => 5.45) -> Bool [Photos] {
         sized {
             album_id: Id = () => {},
@@ -39,6 +41,7 @@ request_ref! {
 }
 
 request_ref! {
+    #[derive(Eq, Copy)]
     struct GetAlbums for ["photos.getAlbums"](v => 5.45) -> Collection<Album> {
         sized {
             owner_id: Option<OwnerId> = () => {Option},
@@ -55,6 +58,7 @@ request_ref! {
 }
 
 request_ref! {
+    #[derive(Eq, Copy)]
     struct Get for ["photos.get"](v => 5.45, photo_sizes => 1) -> Collection<Photo> {
         sized {
             owner_id: Option<OwnerId> = () => {Option},
@@ -73,6 +77,7 @@ request_ref! {
 }
 
 request! {
+    #[derive(Eq, Copy)]
     struct GetAlbumsCount for ["photos.getAlbumsCount"](v => 5.45) -> u32 {
         user_id: Option<Id> = () => {Option},
         group_id: Option<Id> = () => {Option},
@@ -80,6 +85,7 @@ request! {
 }
 
 request_ref! {
+    #[derive(Eq, Copy)]
     struct GetById for ["photos.getById"](v => 5.45, photo_sizes => 1) -> Vec<Photo> {
         sized {
             extended: bool = () => {bool},
@@ -91,6 +97,7 @@ request_ref! {
 }
 
 request! {
+    #[derive(Eq, Copy)]
     struct GetUploadServer for ["photos.getUploadServer"](v => 5.45) -> UploadServer [Photos] {
         album_id: Id = () => {},
         group_id: Option<Id> = () => {Option},
@@ -98,12 +105,14 @@ request! {
 }
 
 request! {
+    #[derive(Eq, Copy)]
     struct GetOwnerPhotoUploadServer for ["photos.getOwnerPhotoUploadServer"](v => 5.45) -> UploadUrl {
         owner_id: Option<OwnerId> = () => {Option},
     }
 }
 
 request! {
+    #[derive(Eq, Copy)]
     struct GetChatUploadServer for ["photos.getChatUploadServer"](v => 5.45) -> UploadUrl [Messages] {
         chat_id: Id = () => {},
         crop_x: u32 = () => {},
@@ -113,6 +122,7 @@ request! {
 }
 
 request! {
+    #[derive(Eq, Copy)]
     struct GetMarketUploadServer for ["photos.getMarketUploadServer"](v => 5.45) -> UploadUrl [Market, Photos] {
         group_id: Id = () => {},
         main_photo: bool = () => {bool},
@@ -123,12 +133,14 @@ request! {
 }
 
 request! {
+    #[derive(Eq, Copy)]
     struct GetMarketAlbumUploadServer for ["photos.getMarketAlbumUploadServer"](v => 5.45) -> UploadUrl [Market, Photos] {
         group_id: Id = () => {},
     }
 }
 
 request! {
+    #[derive(Eq, Copy)]
     struct GetWallUploadServer for ["photos.getWallUploadServer"](v => 5.45) -> UploadServer [Photos] {
         group_id: Option<Id> = () => {Option},
     }
@@ -139,6 +151,7 @@ request! {
 }
 
 request_ref! {
+    #[derive(Eq, Copy)]
     struct SaveMarketPhoto for ["photos.saveMarketPhoto"](v => 5.45) -> SavedPhoto [Market, Photos] { // TODO ???
         sized {
             group_id: Option<Id> = () => {Option},
@@ -154,6 +167,7 @@ request_ref! {
 }
 
 request_ref! {
+    #[derive(Eq, Copy)]
     struct SaveMarketAlbumPhoto for ["photos.saveMarketAlbumPhoto"](v => 5.45) -> SavedPhoto [Market, Photos] { // TODO ???
         sized {
             group_id: Id = () => {},
@@ -167,6 +181,7 @@ request_ref! {
 }
 
 request_ref! {
+    #[derive(Eq, Copy)]
     struct SaveOwnerPhoto for ["photos.saveOwnerPhoto"](v => 5.45) -> SavedPhoto { // TODO ???
         sized {
             server: Id = () => {}, // TODO string???
@@ -179,6 +194,7 @@ request_ref! {
 }
 
 request_ref! {
+    #[derive(Eq, Copy)]
     struct SaveWallPhoto for ["photos.saveWallPhoto"](v => 5.45) -> Vec<Photo> {
         sized {
             user_id: Id = () => {},
@@ -193,12 +209,14 @@ request_ref! {
 }
 
 request_ref! {
+    #[derive(Eq, Copy)]
     struct SaveMessagesPhoto for ["photos.saveMessagesPhoto"](v => 5.45) -> SavedPhoto [Photos] {
         photo: str = ("") => {=},
     }
 }
 
 request! {
+    #[derive(Eq, Copy)]
     struct Report for ["photos.report"](v => 5.44) -> Bool [Photos] {
         owner_id: OwnerId = () => {},
         photo_id: Id = () => {},
@@ -207,6 +225,7 @@ request! {
 }
 
 request! {
+    #[derive(Eq, Copy)]
     struct ReportComment for ["photos.reportComment"](v => 5.44) -> Bool [Photos] {
         owner_id: OwnerId = () => {},
         comment_id: Id = () => {},
@@ -215,6 +234,7 @@ request! {
 }
 
 request_ref! {
+    #[derive(Copy)]
     struct Search for ["photos.search"](v => 5.37) -> Collection<Photo> {
         sized {
             lat: f32 = () => {},
@@ -233,6 +253,7 @@ request_ref! {
 }
 
 request_ref! {
+    #[derive(Eq, Copy)]
     struct Save for ["photos.save"](v => 5.44) -> Vec<Photo> [Photos] {
         sized {
             server: Id = () => {},
@@ -250,6 +271,7 @@ request_ref! {
 }
 
 request_ref! {
+    #[derive(Eq, Copy)]
     struct Copy for ["photos.copy"](v => 5.44) -> Id [Photos] {
         sized {
             owner_id: OwnerId = () => {},
@@ -262,6 +284,7 @@ request_ref! {
 }
 
 request_ref! {
+    #[derive(Eq, Copy)]
     struct Edit for ["photos.edit"](v => 5.44) -> Bool [Photos] {
         sized {
             owner_id: Option<OwnerId> = () => {Option},
@@ -279,6 +302,7 @@ request_ref! {
 }
 
 request! {
+    #[derive(Eq, Copy)]
     struct Move for ["photos.move"](v => 5.44) -> Bool [Photos] {
         owner_id: OwnerId = () => {},
         photo_id: Id = () => {},
@@ -287,6 +311,7 @@ request! {
 }
 
 request! {
+    #[derive(Eq, Copy)]
     struct MakeCover for ["photos.makeCover"](v => 5.44) -> Bool [Photos] {
         owner_id: Option<OwnerId> = () => {Option},
         photo_id: Id = () => {},
@@ -304,6 +329,7 @@ request! {
 }
 
 request! {
+    #[derive(Eq, Copy)]
     struct ReorderPhotos for ["photos.reorderPhotos"](v => 5.44) -> Bool [Photos] {
         owner_id: Option<OwnerId> = () => {Option},
         photo_id: Id = () => {},
@@ -313,6 +339,7 @@ request! {
 }
 
 request! {
+    #[derive(Eq, Copy)]
     struct GetAll for ["photos.getAll"](v => 5.45, photo_sizes => 1) -> Collection<Photo> [Photos] {
         owner_id: Option<OwnerId> = () => {Option},
         extended: bool = () => {bool},
@@ -325,6 +352,7 @@ request! {
 }
 
 request! {
+    #[derive(Eq, Copy)]
     struct GetUserPhotos for ["photos.getUserPhotos"](v => 5.45, photo_sizes => 1) -> Collection<Photo> {
         user_id: Option<Id> = () => {Option},
         extended: bool = () => {bool},
@@ -335,6 +363,7 @@ request! {
 }
 
 request! {
+    #[derive(Eq, Copy)]
     struct DeleteAlbum for ["photos.deleteAlbum"](v => 5.44) -> Bool [Photos] {
         album_id: Id = () => {},
         group_id: Option<Id> = () => {Option},
@@ -342,6 +371,7 @@ request! {
 }
 
 request! {
+    #[derive(Eq, Copy)]
     struct Delete for ["photos.delete"](v => 5.44) -> Bool [Photos] {
         photo_id: Id = () => {},
         owner_id: Option<OwnerId> = () => {Option},
@@ -349,6 +379,7 @@ request! {
 }
 
 request! {
+    #[derive(Eq, Copy)]
     struct ConfirmTag for ["photos.confirmTag"](v => 5.44) -> Bool [Photos] {
         owner_id: Option<OwnerId> = () => {Option},
         photo_id: Id = () => {},
@@ -357,6 +388,7 @@ request! {
 }
 
 request_ref! {
+    #[derive(Eq, Copy)]
     struct GetComments for ["photos.getComments"](v => 5.44, extended => 0) -> Collection<Comment> [Photos] {
         sized {
             owner_id: Option<OwnerId> = () => {Option},
@@ -375,6 +407,7 @@ request_ref! {
 }
 
 request! {
+    #[derive(Eq, Copy)]
     struct GetAllComments for ["photos.getAllComments"](v => 5.44) -> Collection<Comment> [Photos] {
         owner_id: Option<OwnerId> = () => {Option},
         album_id: Option<Id> = () => {},
@@ -404,6 +437,7 @@ request_ref! {
 }
 
 request! {
+    #[derive(Eq, Copy)]
     struct DeleteComment for ["photos.deleteComment"](v => 5.44) -> Bool [Photos] {
         owner_id: Option<OwnerId> = () => {Option},
         comment_id: Id = () => {},
@@ -411,6 +445,7 @@ request! {
 }
 
 request! {
+    #[derive(Eq, Copy)]
     struct Restore for ["photos.restore"](v => 5.44) -> Bool [Photos] {
         owner_id: OwnerId = () => {},
         photo_id: Id = () => {},
@@ -418,6 +453,7 @@ request! {
 }
 
 request! {
+    #[derive(Eq, Copy)]
     struct RestoreComment for ["photos.restoreComment"](v => 5.44) -> Bool [Photos] {
         owner_id: OwnerId = () => {},
         comment_id: Id = () => {},
