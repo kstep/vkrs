@@ -325,7 +325,7 @@ request_ref! {
 
 request! {
     #[derive(Eq, Copy)]
-    struct RemoveTag for ["video.RemoveTag"](v => 5.44) -> Bool [Video] {
+    struct RemoveTag for ["video.removeTag"](v => 5.44) -> Bool [Video] {
         tag_id: Id = () => {},
         owner_id: Option<OwnerId> = () => {Option},
         video_id: Id = () => {},
