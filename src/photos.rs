@@ -1,5 +1,5 @@
 use std::borrow::Borrow;
-use api::{Bool, Collection, FullId, Id, OwnerId, ReportReason, Timestamp, SortOrder, Comment, Attachment};
+use api::{Attachment, Bool, Collection, Comment, FullId, Id, OwnerId, ReportReason, SortOrder, Timestamp};
 
 request_ref! {
     #[derive(Eq, Copy)]

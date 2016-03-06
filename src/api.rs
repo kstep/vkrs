@@ -472,7 +472,9 @@ enum_str! { SortOrder {
 
 
 impl Default for SortOrder {
-    fn default() -> SortOrder { SortOrder::Asc }
+    fn default() -> SortOrder {
+        SortOrder::Asc
+    }
 }
 
 enum_str! { AttachmentKind {
@@ -494,4 +496,3 @@ impl fmt::Display for Attachment {
         write!(f, "{}{}_{}", self.kind.as_ref(), self.owner_id, self.media_id)
     }
 }
-
