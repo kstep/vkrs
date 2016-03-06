@@ -178,12 +178,12 @@ impl de::Deserialize for ApiResultField {
                 match value {
                     "response" => Ok(ApiResultField::Response),
                     "error" => Ok(ApiResultField::Error),
-                    _ => Err(de::Error::syntax("expected response or error")),
+                    _ => Err(de::Error::unknown_field("expected response or error")),
                 }
             }
         }
 
-        d.visit(ApiResultFieldVisitor)
+        d.deserialize(ApiResultFieldVisitor)
     }
 }
 
@@ -210,7 +210,7 @@ impl<T: de::Deserialize> de::Deserialize for ApiResult<T> {
             }
         }
 
-        d.visit_map(ApiResultVisitor(PhantomData::<T>))
+        d.deserialize_map(ApiResultVisitor(PhantomData::<T>))
     }
 }
 

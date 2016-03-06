@@ -82,11 +82,11 @@ impl ::serde::de::Deserialize for ThumbKind {
                     "y" => Prop807,
                     "z" => Prop1280x1024,
                     "w" => Prop2560x2048,
-                    _ => return Err(::serde::de::Error::syntax("invalid album size type"))
+                    _ => return Err(::serde::de::Error::invalid_value("album size type"))
                 })
             }
         }
-        d.visit(Visitor)
+        d.deserialize(Visitor)
     }
 }
 

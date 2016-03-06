@@ -557,12 +557,12 @@ macro_rules! enum_str {
                     fn visit_str<E: ::serde::de::Error>(&mut self, value: &str) -> ::std::result::Result<$name, E> {
                         match ::std::str::FromStr::from_str(value) {
                             Ok(temp_value) => Ok(temp_value),
-                            _ => Err(::serde::de::Error::syntax("unexpected value")),
+                            _ => Err(::serde::de::Error::invalid_value("unexpected value")),
                         }
                     }
                 }
 
-                d.visit(TempVisitor)
+                d.deserialize(TempVisitor)
             }
         }
     };

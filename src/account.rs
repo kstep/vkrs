@@ -260,7 +260,7 @@ impl de::Deserialize for BirthdateVisibility {
                 0 => Ok(Hide),
                 1 => Ok(ShowYMD),
                 2 => Ok(ShowMD),
-                _ => Err(de::Error::syntax("integer value in range 0...2 expected")),
+                _ => Err(de::Error::invalid_value("integer value in range 0...2 expected")),
             }
         })
     }
