@@ -2,8 +2,8 @@ use std::borrow::Borrow;
 use std::convert::AsRef;
 use std::string::ToString;
 use std::error::Error;
-use std::fmt;
-use api::{AlbumId, Bool, Collection, Duration, FullId, Id, LikesCount, OwnerId, ReportReason, Sort, Timestamp};
+use api::{AlbumId, Attachment, Bool, Collection, Comment, Duration, FullId, Id, LikesCount, OwnerId, ReportReason, Sort, SortOrder,
+          Timestamp};
 use serde::de::Deserialize;
 
 #[cfg(feature = "unstable")]
@@ -325,7 +325,7 @@ request_ref! {
 
 request! {
     #[derive(Eq, Copy)]
-    struct RemoveTag for ["video.RemoveTag"](v => 5.44) -> Bool [Video] {
+    struct RemoveTag for ["video.removeTag"](v => 5.44) -> Bool [Video] {
         tag_id: Id = () => {},
         owner_id: Option<OwnerId> = () => {Option},
         video_id: Id = () => {},
@@ -398,31 +398,6 @@ request! {
         section_id: Id = () => {},
     }
 }
-
-enum_str! { AttachmentKind {
-    Photo = "photo",
-    Video = "video",
-    Audio = "audio",
-    Document = "doc",
-}}
-
-#[derive(Eq, Copy, Clone, PartialEq, Debug)]
-pub struct Attachment {
-    pub kind: AttachmentKind,
-    pub owner_id: OwnerId,
-    pub media_id: Id,
-}
-
-impl fmt::Display for Attachment {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}{}_{}", self.kind.as_ref(), self.owner_id, self.media_id)
-    }
-}
-
-enum_str! { SortOrder {
-    Asc = "asc",
-    Desc = "desc"
-}}
 
 #[derive(Eq, PartialEq, Copy, Clone, Debug)]
 pub enum Privacy {

@@ -178,12 +178,12 @@ impl de::Deserialize for ApiResultField {
                 match value {
                     "response" => Ok(ApiResultField::Response),
                     "error" => Ok(ApiResultField::Error),
-                    _ => Err(de::Error::syntax("expected response or error")),
+                    _ => Err(de::Error::unknown_field("expected response or error")),
                 }
             }
         }
 
-        d.visit(ApiResultFieldVisitor)
+        d.deserialize(ApiResultFieldVisitor)
     }
 }
 
@@ -193,7 +193,7 @@ impl<T: de::Deserialize> de::Deserialize for ApiResult<T> {
 
         impl<T: de::Deserialize> de::Visitor for ApiResultVisitor<T> {
             type Value = ApiResult<T>;
-            #[allow(option_map_unwrap_or_else)]
+            #[allow(unknown_lints, option_map_unwrap_or_else)]
             fn visit_map<V: de::MapVisitor>(&mut self, mut v: V) -> StdResult<ApiResult<T>, V::Error> {
                 v.visit_key()
                  .and_then(|k| {
@@ -210,7 +210,7 @@ impl<T: de::Deserialize> de::Deserialize for ApiResult<T> {
             }
         }
 
-        d.visit_map(ApiResultVisitor(PhantomData::<T>))
+        d.deserialize_map(ApiResultVisitor(PhantomData::<T>))
     }
 }
 
@@ -235,8 +235,12 @@ pub enum ErrorCode {
     GoodsUnvailable, // 21
     UserNotFound, // 22
     RequiredParameterMissing, // 100
+    InvalidAlbumId, // 114
+    InvalidServer, // 118
     InvalidHash, // 121
+    InvalidPhotoId, // 122
     InvalidAudio, // 123
+    InvalidPhoto, // 129
     UserMenuAccessDenied, // 148
     AccessDenied, // 204
     AccessToWallPostDenied, // 210
@@ -271,8 +275,12 @@ impl From<u32> for ErrorCode {
             21 => GoodsUnvailable,
             22 => UserNotFound,
             100 => RequiredParameterMissing,
+            114 => InvalidAlbumId,
+            118 => InvalidServer,
             121 => InvalidHash,
+            122 => InvalidPhotoId,
             123 => InvalidAudio,
+            129 => InvalidPhoto,
             148 => UserMenuAccessDenied,
             204 => AccessDenied,
             210 => AccessToWallPostDenied,
@@ -308,8 +316,12 @@ impl Into<u32> for ErrorCode {
             GoodsUnvailable => 21,
             UserNotFound => 22,
             RequiredParameterMissing => 100,
+            InvalidAlbumId => 114,
+            InvalidServer => 118,
             InvalidHash => 121,
+            InvalidPhotoId => 122,
             InvalidAudio => 123,
+            InvalidPhoto => 129,
             UserMenuAccessDenied => 148,
             AccessDenied => 204,
             AccessToWallPostDenied => 210,
@@ -345,8 +357,12 @@ impl fmt::Display for ErrorCode {
             GoodsUnvailable => f.write_str("goods unavailable"),
             UserNotFound => f.write_str("user not found"),
             RequiredParameterMissing => f.write_str("one of required parameters is missing"),
+            InvalidAlbumId => f.write_str("invalid album id"),
+            InvalidServer => f.write_str("invalid server"),
             InvalidHash => f.write_str("invalid hash"),
+            InvalidPhotoId => f.write_str("invalid photo id"),
             InvalidAudio => f.write_str("invalid audio"),
+            InvalidPhoto => f.write_str("invalid photo"),
             UserMenuAccessDenied => f.write_str("access to the menu of the user denied"),
             AccessDenied => f.write_str("access denied"),
             AccessToWallPostDenied => f.write_str("access to wall's post denied"),
@@ -428,6 +444,12 @@ pub enum ReportReason {
     Offence = 6,
 }
 
+impl Default for ReportReason {
+    fn default() -> ReportReason {
+        ReportReason::Spam
+    }
+}
+
 impl AsRef<str> for ReportReason {
     fn as_ref(&self) -> &str {
         use self::ReportReason::*;
@@ -440,5 +462,37 @@ impl AsRef<str> for ReportReason {
             AdultOnly => "5",
             Offence => "6",
         }
+    }
+}
+
+enum_str! { SortOrder {
+    Asc = "asc",
+    Desc = "desc"
+}}
+
+
+impl Default for SortOrder {
+    fn default() -> SortOrder {
+        SortOrder::Asc
+    }
+}
+
+enum_str! { AttachmentKind {
+    Photo = "photo",
+    Video = "video",
+    Audio = "audio",
+    Document = "doc",
+}}
+
+#[derive(Eq, Copy, Clone, PartialEq, Debug)]
+pub struct Attachment {
+    pub kind: AttachmentKind,
+    pub owner_id: OwnerId,
+    pub media_id: Id,
+}
+
+impl fmt::Display for Attachment {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}{}_{}", self.kind.as_ref(), self.owner_id, self.media_id)
     }
 }

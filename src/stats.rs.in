@@ -58,12 +58,12 @@ impl de::Deserialize for DemoSexAge {
             fn visit_str<E: de::Error>(&mut self, value: &str) -> Result<DemoSexAge, E> {
                 match value.parse() {
                     Ok(temp_value) => Ok(temp_value),
-                    _ => Err(de::Error::syntax("unexpected value")),
+                    _ => Err(de::Error::invalid_value("unexpected value")),
                 }
             }
         }
 
-        d.visit(TempVisitor)
+        d.deserialize(TempVisitor)
     }
 }
 

@@ -88,6 +88,7 @@
 
 #![cfg_attr(feature = "unstable", feature(custom_derive, plugin))]
 #![cfg_attr(feature = "unstable", plugin(serde_macros))]
+#![allow(unknown_lints)]
 #![allow(wrong_self_convention)]
 #![deny(unused_imports)]
 

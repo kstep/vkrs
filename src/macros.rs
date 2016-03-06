@@ -160,8 +160,13 @@ macro_rules! request {
         ($($const_param_name:ident => $const_param_value:expr),*) ->
         $response_type:ty [$($permission:ident),*];
     ) => {
-        #[derive(Debug, PartialEq, Clone, Copy, Eq)]
+        #[doc = "The <a href=\"https://vk.com/dev/"]
+        #[doc = $method_name]
+        #[doc = "\">"]
+        #[doc = $method_name]
+        #[doc = "</a> API request."]
         $(#[$attr])*
+        #[derive(Debug, PartialEq, Clone, Copy, Eq)]
         pub struct $struct_name;
 
         impl ::api::Request for $struct_name {
@@ -250,8 +255,13 @@ macro_rules! request {
             $(,)*
         }
     ) => {
-        #[derive(Debug, PartialEq, Clone)]
+        #[doc = "The <a href=\"https://vk.com/dev/"]
+        #[doc = $method_name]
+        #[doc = "\">"]
+        #[doc = $method_name]
+        #[doc = "</a> API request."]
         $(#[$attr])*
+        #[derive(Debug, PartialEq, Clone)]
         pub struct $struct_name {
             $($param_name: $param_type,)*
         }
@@ -471,8 +481,13 @@ macro_rules! request_ref {
             }
         }
     ) => {
-        #[derive(Debug, PartialEq, Clone)]
+        #[doc = "The <a href=\"https://vk.com/dev/"]
+        #[doc = $method_name]
+        #[doc = "\">"]
+        #[doc = $method_name]
+        #[doc = "</a> API request."]
         $(#[$attr])*
+        #[derive(Debug, PartialEq, Clone)]
         pub struct $struct_name<'a> {
             $($param_name: $param_type,)*
             $($param_name_lt: &'a $param_type_lt,)*
@@ -525,7 +540,7 @@ macro_rules! enum_str {
 
         impl ::std::str::FromStr for $name {
             type Err = ();
-            fn from_str(s: &str) -> Result<$name, ()> {
+            fn from_str(s: &str) -> ::std::result::Result<$name, ()> {
                 match s {
                     $($value => Ok($name::$variant)),+,
                     _ => Err(()),
@@ -534,20 +549,20 @@ macro_rules! enum_str {
         }
 
         impl ::serde::de::Deserialize for $name {
-            fn deserialize<D: ::serde::de::Deserializer>(d: &mut D) -> Result<$name, D::Error> {
+            fn deserialize<D: ::serde::de::Deserializer>(d: &mut D) -> ::std::result::Result<$name, D::Error> {
                 struct TempVisitor;
 
                 impl ::serde::de::Visitor for TempVisitor {
                     type Value = $name;
-                    fn visit_str<E: ::serde::de::Error>(&mut self, value: &str) -> Result<$name, E> {
+                    fn visit_str<E: ::serde::de::Error>(&mut self, value: &str) -> ::std::result::Result<$name, E> {
                         match ::std::str::FromStr::from_str(value) {
                             Ok(temp_value) => Ok(temp_value),
-                            _ => Err(::serde::de::Error::syntax("unexpected value")),
+                            _ => Err(::serde::de::Error::invalid_value("unexpected value")),
                         }
                     }
                 }
 
-                d.visit(TempVisitor)
+                d.deserialize(TempVisitor)
             }
         }
     };

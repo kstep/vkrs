@@ -270,7 +270,7 @@ impl de::Deserialize for Sex {
                 0 => Ok(Any),
                 1 => Ok(Female),
                 2 => Ok(Male),
-                _ => Err(de::Error::syntax("integer value in range 0...2 expected")),
+                _ => Err(de::Error::invalid_value("integer value in range 0...2 expected")),
             }
         })
     }
@@ -318,7 +318,7 @@ impl de::Deserialize for Status {
                 5 => Ok(ItsComplicated),
                 6 => Ok(ActiveSearch),
                 7 => Ok(InLove),
-                _ => Err(de::Error::syntax("integer value in range 0...7 expected")),
+                _ => Err(de::Error::invalid_value("integer value in range 0...7 expected")),
             }
         })
     }
