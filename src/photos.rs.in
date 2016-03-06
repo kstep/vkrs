@@ -11,6 +11,12 @@ pub struct Photo {
     pub date: Timestamp,
     #[serde(default)]
     pub sizes: Vec<Thumb>,
+    #[serde(default)]
+    pub placer_id: Id,
+    #[serde(default)]
+    pub tag_id: Id,
+    #[serde(default)]
+    pub tag_created: Timestamp,
 }
 
 #[derive(Debug, PartialEq, Eq, Deserialize)]
@@ -103,4 +109,18 @@ pub struct SavedPhoto {
     pub src: String,
     pub src_big: Option<String>,
     pub src_small: Option<String>,
+}
+
+#[derive(Debug, PartialEq, Deserialize)]
+pub struct Tag {
+    id: Id,
+    user_id: Id,
+    placer_id: Id,
+    tagged_name: String,
+    date: Timestamp,
+    viewed: Bool,
+    x: f32,
+    y: f32,
+    x1: f32,
+    y1: f32,
 }

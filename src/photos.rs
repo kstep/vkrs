@@ -474,6 +474,49 @@ request_ref! {
     }
 }
 
+request_ref! {
+    #[derive(Eq, Copy)]
+    struct GetTags for ["photos.getTags"](v => 5.44) -> Vec<Tag> [Photos] {
+        sized {
+            owner_id: Option<OwnerId> = () => {Option},
+            photo_id: Id = () => {},
+        }
+        unsized {
+            access_key: str = ("") => {=},
+        }
+    }
+}
+
+request! {
+    #[derive(Copy)]
+    struct PutTag for ["video.putTag"](v => 5.44) -> Id [Photos] {
+        owner_id: Option<OwnerId> = () => {Option},
+        user_id: Id = () => {},
+        photo_id: Id = () => {},
+        x: f32 = () => {},
+        y: f32 = () => {},
+        x2: f32 = () => {},
+        y2: f32 = () => {},
+    }
+}
+
+request! {
+    #[derive(Eq, Copy)]
+    struct RemoveTag for ["photos.removeTag"](v => 5.44) -> Bool [Photos] {
+        tag_id: Id = () => {},
+        owner_id: Option<OwnerId> = () => {Option},
+        photo_id: Id = () => {},
+    }
+}
+
+request! {
+    #[derive(Eq, Copy)]
+    struct GetNewTags for ["photos.getNewTags"](v => 5.44) -> Collection<Photo> [Photos] {
+        offset: usize = (0) => {},
+        count: usize = (20) => {},
+    }
+}
+
 #[cfg(feature = "unstable")]
 include!("photos.rs.in");
 
