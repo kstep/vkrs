@@ -37,7 +37,8 @@ pub struct Contact {
 pub struct PushSettings {
     #[serde(deserialize_with="::api::parse_boolean")]
     pub disabled: bool,
-    pub disabled_until: Timestamp,
+    #[serde(deserialize_with="::api::parse_timestamp")]
+    pub disabled_until: NaiveDateTime,
     pub conversations: u8, // TODO: actual structure unknown from docs
 }
 

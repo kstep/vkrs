@@ -4,7 +4,8 @@ pub struct WallPost {
     pub id: Id,
     pub owner_id: OwnerId,
     pub from_id: OwnerId,
-    pub date: Timestamp,
+    #[serde(deserialize_with="::api::parse_timestamp")]
+    pub date: NaiveDateTime,
     pub text: String,
     pub reply_owner_id: OwnerId,
     pub reply_post_id: Id,

@@ -2,13 +2,13 @@ use std::fmt;
 use std::ops::Deref;
 use std::marker::PhantomData;
 use std::error::Error as StdError;
-use std::result::Result as StdResult;
 use serde::de;
 use serde_json::{self, Error as JsonError};
 use hyper::client::Client as HttpClient;
 use hyper::Error as HttpError;
 use url::{self, ParseError as UrlError, Url};
 use oauth2::token::Token;
+use chrono::NaiveDateTime;
 
 use auth::{AccessToken, OAuth, Permissions};
 
@@ -152,11 +152,11 @@ pub trait Request {
 }
 
 #[derive(Debug)]
-pub struct ApiResult<T>(pub StdResult<T, ApiError>);
+pub struct ApiResult<T>(pub Result<T, ApiError>);
 
 impl<T> Deref for ApiResult<T> {
-    type Target = StdResult<T, ApiError>;
-    fn deref(&self) -> &StdResult<T, ApiError> {
+    type Target = Result<T, ApiError>;
+    fn deref(&self) -> &Result<T, ApiError> {
         &self.0
     }
 }
@@ -167,12 +167,12 @@ enum ApiResultField {
 }
 
 impl de::Deserialize for ApiResultField {
-    fn deserialize<D: de::Deserializer>(d: &mut D) -> StdResult<ApiResultField, D::Error> {
+    fn deserialize<D: de::Deserializer>(d: &mut D) -> Result<ApiResultField, D::Error> {
         struct ApiResultFieldVisitor;
 
         impl de::Visitor for ApiResultFieldVisitor {
             type Value = ApiResultField;
-            fn visit_str<E: de::Error>(&mut self, value: &str) -> StdResult<ApiResultField, E> {
+            fn visit_str<E: de::Error>(&mut self, value: &str) -> Result<ApiResultField, E> {
                 match value {
                     "response" => Ok(ApiResultField::Response),
                     "error" => Ok(ApiResultField::Error),
@@ -186,13 +186,13 @@ impl de::Deserialize for ApiResultField {
 }
 
 impl<T: de::Deserialize> de::Deserialize for ApiResult<T> {
-    fn deserialize<D: de::Deserializer>(d: &mut D) -> StdResult<ApiResult<T>, D::Error> {
+    fn deserialize<D: de::Deserializer>(d: &mut D) -> Result<ApiResult<T>, D::Error> {
         struct ApiResultVisitor<T: de::Deserialize>(PhantomData<T>);
 
         impl<T: de::Deserialize> de::Visitor for ApiResultVisitor<T> {
             type Value = ApiResult<T>;
             #[allow(unknown_lints, option_map_unwrap_or_else)]
-            fn visit_map<V: de::MapVisitor>(&mut self, mut v: V) -> StdResult<ApiResult<T>, V::Error> {
+            fn visit_map<V: de::MapVisitor>(&mut self, mut v: V) -> Result<ApiResult<T>, V::Error> {
                 v.visit_key()
                  .and_then(|k| {
                      k.map(|k| {
@@ -381,7 +381,7 @@ impl fmt::Display for ErrorCode {
 }
 
 impl de::Deserialize for ErrorCode {
-    fn deserialize<D: de::Deserializer>(d: &mut D) -> StdResult<ErrorCode, D::Error> {
+    fn deserialize<D: de::Deserializer>(d: &mut D) -> Result<ErrorCode, D::Error> {
         u32::deserialize(d).map(From::from)
     }
 }
@@ -495,6 +495,10 @@ impl fmt::Display for Attachment {
     }
 }
 
-pub fn parse_boolean<D: de::Deserializer>(d: &mut D) -> StdResult<bool, D::Error> {
+pub fn parse_boolean<D: de::Deserializer>(d: &mut D) -> Result<bool, D::Error> {
     de::Deserialize::deserialize(d).map(|val: u8| val == 1u8)
+}
+
+pub fn parse_timestamp<D: de::Deserializer>(d: &mut D) -> Result<NaiveDateTime, D::Error> {
+    de::Deserialize::deserialize(d).map(|val: i64| NaiveDateTime::from_timestamp(val, 0))
 }

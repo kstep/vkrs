@@ -8,15 +8,16 @@ pub struct Photo {
     pub width: u16,
     pub height: u16,
     pub text: String,
-    pub date: Timestamp,
+    #[serde(deserialize_with="::api::parse_timestamp")]
+    pub date: NaiveDateTime,
     #[serde(default)]
     pub sizes: Vec<Thumb>,
     #[serde(default)]
     pub placer_id: Id,
     #[serde(default)]
     pub tag_id: Id,
-    #[serde(default)]
-    pub tag_created: Timestamp,
+    #[serde(deserialize_with="::api::parse_timestamp")]
+    pub tag_created: NaiveDateTime,
 }
 
 #[derive(Debug, PartialEq, Eq, Deserialize)]
@@ -26,8 +27,10 @@ pub struct Album {
     pub owner_id: OwnerId,
     pub title: String,
     pub description: String,
-    pub created: Timestamp,
-    pub updated: Timestamp,
+    #[serde(deserialize_with="::api::parse_timestamp")]
+    pub created: NaiveDateTime,
+    #[serde(deserialize_with="::api::parse_timestamp")]
+    pub updated: NaiveDateTime,
     pub privacy: u32, // TODO ???
     pub comment_privacy: u32, // TODO ???
     pub size: u32,
@@ -119,7 +122,8 @@ pub struct Tag {
     pub user_id: Id,
     pub placer_id: Id,
     pub tagged_name: String,
-    pub date: Timestamp,
+    #[serde(deserialize_with="::api::parse_timestamp")]
+    pub date: NaiveDateTime,
     #[serde(deserialize_with="::api::parse_boolean")]
     pub viewed: bool,
     pub x: f32,

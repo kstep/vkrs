@@ -1,4 +1,5 @@
 use users::UserOptionField;
+use chrono::NaiveDateTime;
 use api::{Collection, Id, LikesCount, OwnerId, Timestamp};
 
 #[cfg(feature = "unstable")]

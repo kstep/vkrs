@@ -1,6 +1,7 @@
 use auth::Permissions;
 use std::borrow::Borrow;
-use api::{Bool, Collection, Duration, Id, Profile, Timestamp};
+use api::{Bool, Collection, Duration, Id, Profile};
+use chrono::NaiveDateTime;
 use users::{Sex, Status as Relation, User, UserOptionField};
 use serde_json::value::Value;
 use serde_json::ser::to_string as json_to_string;

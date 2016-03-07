@@ -8,14 +8,16 @@ pub struct Video {
     pub title: String,
     pub duration: Duration,
     pub description: String,
-    pub date: Timestamp,
+    #[serde(deserialize_with="::api::parse_timestamp")]
+    pub date: NaiveDateTime,
     pub views: u32,
     pub comments: u32,
     pub photo_130: String, // URL
     pub photo_320: String, // URL
     pub photo_640: Option<String>, // URL
     pub photo_800: Option<String>, // URL
-    pub adding_date: Option<Timestamp>,
+    #[serde(deserialize_with="::api::parse_timestamp")]
+    pub adding_date: NaiveDateTime,
     pub player: String, // URL
     #[serde(deserialize_with="::api::parse_boolean")]
     pub can_add: bool, // bool
@@ -38,7 +40,8 @@ pub struct Video {
     pub likes: Option<LikesCount>,
 
     pub placer_id: Option<Id>,
-    pub tag_created: Option<Timestamp>,
+    #[serde(deserialize_with="::api::parse_timestamp")]
+    pub tag_created: NaiveDateTime,
     pub tag_id: Option<Id>,
 }
 
@@ -67,7 +70,8 @@ pub struct Album {
     pub owner_id: OwnerId,
     pub title: String,
     pub count: usize,
-    pub updated_time: Timestamp,
+    #[serde(deserialize_with="::api::parse_timestamp")]
+    pub updated_time: NaiveDateTime,
 
     pub photo_130: Option<String>, // URL
     pub photo_160: Option<String>, // URL
@@ -92,7 +96,8 @@ pub struct Tag {
     pub tag_id: Id,
     pub placer_id: Id,
     pub tagged_name: String,
-    pub date: Timestamp,
+    #[serde(deserialize_with="::api::parse_timestamp")]
+    pub date: NaiveDateTime,
     #[serde(deserialize_with="::api::parse_boolean")]
     pub viewed: bool,
 }
@@ -128,8 +133,8 @@ pub struct CatalogItem {
     #[serde(default)]
     pub duration: Duration,
     pub description: Option<String>,
-    #[serde(default)]
-    pub date: Timestamp,
+    #[serde(deserialize_with="::api::parse_timestamp")]
+    pub date: NaiveDateTime,
     #[serde(default)]
     pub views: u32,
     #[serde(default)]
@@ -149,8 +154,8 @@ pub struct CatalogItem {
     // kind=Album
     #[serde(default)]
     pub count: u32,
-    #[serde(default)]
-    pub updated_time: Timestamp,
+    #[serde(deserialize_with="::api::parse_timestamp")]
+    pub updated_time: NaiveDateTime,
 }
 
 enum_str! { CatalogBlockKind {

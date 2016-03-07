@@ -2,8 +2,9 @@ use std::borrow::Borrow;
 use std::convert::AsRef;
 use std::string::ToString;
 use serde::de;
-use api::{AlbumId, Bool, Collection, Duration, FullId, Group, Id, OwnerId, Sort, Timestamp};
+use api::{AlbumId, Bool, Collection, Duration, FullId, Group, Id, OwnerId, Sort};
 use users::User;
+use chrono::NaiveDateTime;
 use std::fmt;
 
 #[cfg(feature = "unstable")]
