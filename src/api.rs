@@ -500,5 +500,5 @@ pub fn parse_boolean<D: de::Deserializer>(d: &mut D) -> Result<bool, D::Error> {
 }
 
 pub fn parse_timestamp<D: de::Deserializer>(d: &mut D) -> Result<NaiveDateTime, D::Error> {
-    de::Deserialize::deserialize(d).map(|val: i64| NaiveDateTime::from_timestamp(val, 0))
+    de::Deserialize::deserialize(d).map(|val: i64| NaiveDateTime::from_timestamp(val, 0)).or_else(|_| Ok(NaiveDateTime::from_timestamp(0, 0)))
 }
