@@ -53,20 +53,23 @@ pub struct Profile {
 // TODO: must be much more fields
 #[derive(Debug, PartialEq, Eq, Deserialize, Clone)]
 pub struct Group {
-    id: i64,
-    name: String,
-    screen_name: String,
-    is_closed: Bool,
+    pub id: i64,
+    pub name: String,
+    pub screen_name: String,
+    #[serde(deserialize_with="::api::parse_boolean")]
+    pub is_closed: bool,
     #[serde(default)]
-    is_admin: Bool,
+    #[serde(deserialize_with="::api::parse_boolean")]
+    pub is_admin: bool,
     #[serde(default)]
-    is_member: Bool,
+    #[serde(deserialize_with="::api::parse_boolean")]
+    pub is_member: bool,
     #[serde(rename="type")]
-    kind: String,
-    photo_50: String, // URL
-    photo_100: String, // URL
-    photo_200: String, // URL
-    status_audio: Option<Audio>,
+    pub kind: String,
+    pub photo_50: String, // URL
+    pub photo_100: String, // URL
+    pub photo_200: String, // URL
+    pub status_audio: Option<Audio>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Copy, Deserialize)]

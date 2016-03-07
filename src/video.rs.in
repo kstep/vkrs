@@ -17,17 +17,23 @@ pub struct Video {
     pub photo_800: Option<String>, // URL
     pub adding_date: Option<Timestamp>,
     pub player: String, // URL
-    pub can_add: Bool, // bool
+    #[serde(deserialize_with="::api::parse_boolean")]
+    pub can_add: bool, // bool
     #[serde(default)]
-    pub can_edit: Bool, // bool
+    #[serde(deserialize_with="::api::parse_boolean")]
+    pub can_edit: bool, // bool
     #[serde(default)]
-    pub can_report: Bool, // bool
+    #[serde(deserialize_with="::api::parse_boolean")]
+    pub can_report: bool, // bool
     #[serde(default)]
-    pub can_comment: Bool, // bool
+    #[serde(deserialize_with="::api::parse_boolean")]
+    pub can_comment: bool, // bool
     #[serde(default)]
-    pub converting: Bool, // bool
+    #[serde(deserialize_with="::api::parse_boolean")]
+    pub converting: bool, // bool
     #[serde(default)]
-    pub repeat: Bool, // bool
+    #[serde(deserialize_with="::api::parse_boolean")]
+    pub repeat: bool, // bool
     pub files: Option<VideoFiles>,
     pub likes: Option<LikesCount>,
 
@@ -70,74 +76,81 @@ pub struct Album {
     pub photo_800: Option<String>, // URL
 
     #[serde(default)]
-    pub is_system: Bool,
+    #[serde(deserialize_with="::api::parse_boolean")]
+    pub is_system: bool,
     #[serde(default)]
-    pub can_comment: Bool,
+    #[serde(deserialize_with="::api::parse_boolean")]
+    pub can_comment: bool,
     #[serde(default)]
-    pub can_repost: Bool,
+    #[serde(deserialize_with="::api::parse_boolean")]
+    pub can_repost: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 pub struct Tag {
-    user_id: Id,
-    tag_id: Id,
-    placer_id: Id,
-    tagged_name: String,
-    date: Timestamp,
-    viewed: Bool,
+    pub user_id: Id,
+    pub tag_id: Id,
+    pub placer_id: Id,
+    pub tagged_name: String,
+    pub date: Timestamp,
+    #[serde(deserialize_with="::api::parse_boolean")]
+    pub viewed: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 pub struct Page<T: Deserialize> {
-    items: Vec<T>,
-    next: Option<String>,
+    pub items: Vec<T>,
+    pub next: Option<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 pub struct CatalogBlock {
-    name: String,
-    id: Id,
-    items: Vec<CatalogItem>,
-    next: Option<String>,
-    view: String, // TODO: make enum, known variant: "vertical"
-    can_hide: Bool,
+    pub name: String,
+    pub id: Id,
+    pub items: Vec<CatalogItem>,
+    pub next: Option<String>,
+    pub view: String, // TODO: make enum, known variant: "vertical"
+    #[serde(deserialize_with="::api::parse_boolean")]
+    pub can_hide: bool,
     #[serde(rename="type")]
-    kind: CatalogBlockKind,
+    pub kind: CatalogBlockKind,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 pub struct CatalogItem {
-    id: Id,
-    owner_id: OwnerId,
-    title: String,
+    pub id: Id,
+    pub owner_id: OwnerId,
+    pub title: String,
     #[serde(rename="type")]
-    kind: CatalogItemKind,
+    pub kind: CatalogItemKind,
 
     // kind=Video
     #[serde(default)]
-    duration: Duration,
-    description: Option<String>,
+    pub duration: Duration,
+    pub description: Option<String>,
     #[serde(default)]
-    date: Timestamp,
+    pub date: Timestamp,
     #[serde(default)]
-    views: u32,
+    pub views: u32,
     #[serde(default)]
-    comments: u32,
-    photo_130: Option<String>,
-    photo_160: Option<String>,
-    photo_320: Option<String>,
-    photo_640: Option<String>,
-    photo_800: Option<String>,
+    pub comments: u32,
+    pub photo_130: Option<String>,
+    pub photo_160: Option<String>,
+    pub photo_320: Option<String>,
+    pub photo_640: Option<String>,
+    pub photo_800: Option<String>,
     #[serde(default)]
-    can_add: Bool,
+    #[serde(deserialize_with="::api::parse_boolean")]
+    pub can_add: bool,
     #[serde(default)]
-    can_edit: Bool,
+    #[serde(deserialize_with="::api::parse_boolean")]
+    pub can_edit: bool,
 
     // kind=Album
     #[serde(default)]
-    count: u32,
+    pub count: u32,
     #[serde(default)]
-    updated_time: Timestamp,
+    pub updated_time: Timestamp,
 }
 
 enum_str! { CatalogBlockKind {

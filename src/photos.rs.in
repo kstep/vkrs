@@ -32,9 +32,11 @@ pub struct Album {
     pub comment_privacy: u32, // TODO ???
     pub size: u32,
     #[serde(default)]
-    pub thumb_is_last: Bool,
+    #[serde(deserialize_with="::api::parse_boolean")]
+    pub thumb_is_last: bool,
     #[serde(default)]
-    pub can_upload: Bool,
+    #[serde(deserialize_with="::api::parse_boolean")]
+    pub can_upload: bool,
     #[serde(default)]
     pub sizes: Vec<Thumb>,
     pub thumb_src: Option<String>,
@@ -113,14 +115,15 @@ pub struct SavedPhoto {
 
 #[derive(Debug, PartialEq, Deserialize)]
 pub struct Tag {
-    id: Id,
-    user_id: Id,
-    placer_id: Id,
-    tagged_name: String,
-    date: Timestamp,
-    viewed: Bool,
-    x: f32,
-    y: f32,
-    x1: f32,
-    y1: f32,
+    pub id: Id,
+    pub user_id: Id,
+    pub placer_id: Id,
+    pub tagged_name: String,
+    pub date: Timestamp,
+    #[serde(deserialize_with="::api::parse_boolean")]
+    pub viewed: bool,
+    pub x: f32,
+    pub y: f32,
+    pub x1: f32,
+    pub y1: f32,
 }

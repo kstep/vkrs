@@ -116,3 +116,5 @@ pub mod execute;
 pub mod storage;
 pub mod account;
 pub mod notifications;
+
+pub type Result<T> = ::std::result::Result<T, api::Error>;

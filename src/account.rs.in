@@ -35,7 +35,8 @@ pub struct Contact {
 
 #[derive(Debug, PartialEq, Eq, Deserialize, Clone)]
 pub struct PushSettings {
-    pub disabled: Bool,
+    #[serde(deserialize_with="::api::parse_boolean")]
+    pub disabled: bool,
     pub disabled_until: Timestamp,
     pub conversations: u8, // TODO: actual structure unknown from docs
 }
@@ -57,9 +58,12 @@ pub struct Offer {
 #[derive(Debug, PartialEq, Eq, Deserialize, Clone)]
 pub struct Info {
     pub country: String,
-    pub https_required: Bool,
-    pub own_posts_default: Bool,
-    pub no_wall_replies: Bool,
+    #[serde(deserialize_with="::api::parse_boolean")]
+    pub https_required: bool,
+    #[serde(deserialize_with="::api::parse_boolean")]
+    pub own_posts_default: bool,
+    #[serde(deserialize_with="::api::parse_boolean")]
+    pub no_wall_replies: bool,
     pub intro: u32, // TODO: limits unknown
     pub lang: u16,
 }
@@ -78,7 +82,8 @@ pub struct ProfileInfo {
     pub sex: Sex,
     pub relation: Relation,
     pub relation_partner: User,
-    pub relation_pending: Bool,
+    #[serde(deserialize_with="::api::parse_boolean")]
+    pub relation_pending: bool,
     pub relation_requests: Vec<User>,
     pub bdate: String,
     pub bdate_visibility: BirthdateVisibility,
@@ -90,7 +95,8 @@ pub struct ProfileInfo {
 
 #[derive(Debug, PartialEq, Eq, Deserialize, Clone)]
 pub struct ChangedProfileInfo {
-    pub changed: Bool,
+    #[serde(deserialize_with="::api::parse_boolean")]
+    pub changed: bool,
     pub name_request: Option<NameChangeRequest>,
 }
 

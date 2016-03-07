@@ -12,7 +12,8 @@ pub struct Audio {
     pub genre_id: Option<Genre>,
     pub duration: Duration,
     #[serde(default)]
-    pub no_search: Bool, // FIXME: bool
+    #[serde(deserialize_with="::api::parse_boolean")]
+    pub no_search: bool, // FIXME: bool
 }
 
 #[derive(Debug, PartialEq, Eq, Deserialize, Clone)]

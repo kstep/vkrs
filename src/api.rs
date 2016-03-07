@@ -93,8 +93,6 @@ impl From<UrlError> for Error {
     }
 }
 
-pub type Result<T> = StdResult<T, Error>;
-
 impl Client {
     pub fn auth<K, S>(&self, key: K, secret: S) -> OAuth
         where K: Into<String>,
@@ -107,7 +105,7 @@ impl Client {
         Client { client: HttpClient::new() }
     }
 
-    pub fn get<T: Request>(&self, token: Option<&AccessToken>, req: &T) -> Result<T::Response> {
+    pub fn get<T: Request>(&self, token: Option<&AccessToken>, req: &T) -> Result<T::Response, Error> {
         let url = req.to_url();
         let mut query = req.to_query_string();
         if let Some(ref token) = token {
@@ -495,4 +493,8 @@ impl fmt::Display for Attachment {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}{}_{}", self.kind.as_ref(), self.owner_id, self.media_id)
     }
+}
+
+pub fn parse_boolean<D: de::Deserializer>(d: &mut D) -> StdResult<bool, D::Error> {
+    de::Deserialize::deserialize(d).map(|val: u8| val == 1u8)
 }
