@@ -1,4 +1,5 @@
 use hyper::client::Client as HttpClient;
+use url::Url;
 use oauth2::provider::Provider;
 use oauth2::client::response::{FromResponse, ParseError};
 use oauth2::token::{Lifetime, Token};
@@ -94,11 +95,11 @@ impl<'a> OAuth<'a> {
     pub fn new(client: &'a HttpClient, key: String, secret: String) -> OAuth {
         OAuth(::oauth2::client::Client::<Auth>::new(key, secret, Some(String::from(OAUTH_DEFAULT_REDIRECT_URI))), client)
     }
-    pub fn auth_uri<T: Into<Permissions>>(&self, scope: T) -> Result<String, OAuthError> {
+    pub fn auth_uri<T: Into<Permissions>>(&self, scope: T) -> Result<Url, OAuthError> {
         let scope: String = scope.into().into();
         self.0.auth_uri(Some(&scope), None)
     }
-    pub fn auth_uri_for<T: Request>(&self) -> Result<String, OAuthError> {
+    pub fn auth_uri_for<T: Request>(&self) -> Result<Url, OAuthError> {
         let scope = <T as Request>::permissions();
         self.auth_uri(scope)
     }

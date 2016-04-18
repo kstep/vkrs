@@ -7,7 +7,7 @@ keywords = ["vk", "vkontakte", "api"]
 license = "MIT/Apache-2.0"
 name = "vkrs"
 repository = "https://github.com/kstep/vkrs"
-version = "0.6.1"
+version = "0.6.2"
 readme = "README.md"
 
 [build-dependencies]
@@ -18,18 +18,18 @@ version = "0.7.0"
 
 [build-dependencies.syntex]
 optional = true
-version = "0.29.0"
+version = "0.31.0"
 
 [dev-dependencies]
 clap = "^2.1.1"
 
 [dependencies]
-hyper = "^0.7.2"
-inth-oauth2 = "0.7.0"
+hyper = "^0.8.1"
+inth-oauth2 = "0.9.0"
 rustc-serialize = "0.3.16"
 serde = "^0.7.0"
 serde_json = "^0.7.0"
-url = "^0.5.5"
+url = "^0.5.9"
 
 [dependencies.serde_macros]
 optional = true
