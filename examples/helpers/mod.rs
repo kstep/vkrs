@@ -9,8 +9,8 @@ static TOKEN_FILE: &'static str = "token.json";
 
 pub fn fetch_access_token(api: &Client) -> Result<AccessToken, OAuthError> {
     let oauth = api.auth(
-        env::var("VK_APP_ID").unwrap(),
-        env::var("VK_APP_SECRET").unwrap());
+        env::var("VK_APP_ID").expect("VK_APP_ID env var"),
+        env::var("VK_APP_SECRET").expect("VK_APP_SECRET env var"));
 
     let auth_uri = oauth.auth_uri(&[Permission::Audio, Permission::Video, Permission::Offline]).unwrap();
     println!("Go to {} and enter code below...", auth_uri);
