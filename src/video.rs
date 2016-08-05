@@ -1,7 +1,7 @@
 use std::borrow::Borrow;
 use std::convert::AsRef;
 use std::string::ToString;
-use std::error::Error;
+//use std::error::Error;
 use api::{AlbumId, Attachment, Bool, Collection, Comment, Duration, FullId, Id, LikesCount, OwnerId, ReportReason, Sort, SortOrder,
           Timestamp};
 use serde::de::Deserialize;
