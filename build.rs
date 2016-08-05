@@ -5,7 +5,6 @@ mod inner {
 
 #[cfg(not(feature = "unstable"))]
 mod inner {
-    extern crate syntex;
     extern crate serde_codegen;
 
     use std::env;
@@ -20,9 +19,7 @@ mod inner {
             .map(|s| s.path())
             .filter(|s| s.extension().unwrap() == "in") {
                 let dst = Path::new(&outdir).join(src.file_stem().unwrap());
-                let mut registry = syntex::Registry::new();
-                serde_codegen::register(&mut registry);
-                registry.expand("", &src, &dst).unwrap();
+                serde_codegen::expand(&src, &dst).unwrap();
         }
     }
 }

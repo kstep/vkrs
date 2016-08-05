@@ -14,11 +14,7 @@ readme = "README.md"
 
 [build-dependencies.serde_codegen]
 optional = true
-version = "0.7.0"
-
-[build-dependencies.syntex]
-optional = true
-version = "0.31.0"
+version = "0.8.0"
 
 [dev-dependencies]
 clap = "^2.1.1"
@@ -27,18 +23,18 @@ clap = "^2.1.1"
 hyper = "^0.8.1"
 inth-oauth2 = "0.9.0"
 rustc-serialize = "0.3.16"
-serde = "^0.7.0"
-serde_json = "^0.7.0"
+serde = "^0.8.0"
+serde_json = "^0.8.0"
 url = "^0.5.9"
 
 [dependencies.serde_macros]
 optional = true
-version = "^0.7.0"
+version = "^0.8.0"
 
 [dependencies.chrono]
 version = "0.2.19"
 features = ["serde"]
 
 [features]
-default = ["serde_codegen", "syntex"]
+default = ["serde_codegen"]
 unstable = ["serde_macros"]
