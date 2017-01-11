@@ -229,6 +229,7 @@ pub enum ErrorCode {
     Request, // 11
     ScriptCompileError, // 12
     ScriptRuntimeError, // 13
+    MethodAccessDenied, // 15
     Banned, // 18
     Blocked, // 19
     GoodsNotFound, // 20
@@ -269,6 +270,7 @@ impl From<u32> for ErrorCode {
             11 => Request,
             12 => ScriptCompileError,
             13 => ScriptRuntimeError,
+            15 => MethodAccessDenied,
             18 => Banned,
             19 => Blocked,
             20 => GoodsNotFound,
@@ -310,6 +312,7 @@ impl Into<u32> for ErrorCode {
             Request => 11,
             ScriptCompileError => 12,
             ScriptRuntimeError => 13,
+            MethodAccessDenied => 15,
             Banned => 18,
             Blocked => 19,
             GoodsNotFound => 20,
@@ -350,6 +353,7 @@ impl fmt::Display for ErrorCode {
             Signature => f.write_str("invalid signature"),
             Request => f.write_str("invalid request"),
             ScriptCompileError => f.write_str("compile script error"),
+            MethodAccessDenied => f.write_str("no access to call this method"),
             ScriptRuntimeError => f.write_str("runtime script error"),
             Banned => f.write_str("banned or deleted"),
             Blocked => f.write_str("content blocked"),
