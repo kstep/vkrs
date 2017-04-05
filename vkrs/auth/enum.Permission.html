@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `Permission` enum in crate `vkrs`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, Permission">
+
+    <title>vkrs::auth::Permission - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='../index.html'>vkrs</a>::<wbr><a href='index.html'>auth</a></p><script>window.sidebarCurrent = {name: 'Permission', ty: 'enum', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content enum">
+<h1 class='fqn'><span class='in-band'>Enum <a href='../index.html'>vkrs</a>::<wbr><a href='index.html'>auth</a>::<wbr><a class='enum' href=''>Permission</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a class='srclink' href='../../src/vkrs/auth.rs.html#131-154' title='goto source code'>[src]</a></span></h1>
+<pre class='rust enum'><div class="docblock attributes">#[repr(i32)]
+</div>pub enum Permission {
+    Notify,
+    Friends,
+    Photos,
+    Audio,
+    Video,
+    Docs,
+    Notes,
+    Pages,
+    Menu,
+    Status,
+    Offers,
+    Questions,
+    Wall,
+    Groups,
+    Messages,
+    Email,
+    Notifications,
+    Stats,
+    Ads,
+    Market,
+    Offline,
+    NoHttps,
+}</pre><h2 class='variants'>Variants</h2>
+<span id='variant.Notify' class='variant'><span id='Notify.v' class='invisible'><code>Notify</code></span></span><span id='variant.Friends' class='variant'><span id='Friends.v' class='invisible'><code>Friends</code></span></span><span id='variant.Photos' class='variant'><span id='Photos.v' class='invisible'><code>Photos</code></span></span><span id='variant.Audio' class='variant'><span id='Audio.v' class='invisible'><code>Audio</code></span></span><span id='variant.Video' class='variant'><span id='Video.v' class='invisible'><code>Video</code></span></span><span id='variant.Docs' class='variant'><span id='Docs.v' class='invisible'><code>Docs</code></span></span><span id='variant.Notes' class='variant'><span id='Notes.v' class='invisible'><code>Notes</code></span></span><span id='variant.Pages' class='variant'><span id='Pages.v' class='invisible'><code>Pages</code></span></span><span id='variant.Menu' class='variant'><span id='Menu.v' class='invisible'><code>Menu</code></span></span><span id='variant.Status' class='variant'><span id='Status.v' class='invisible'><code>Status</code></span></span><span id='variant.Offers' class='variant'><span id='Offers.v' class='invisible'><code>Offers</code></span></span><span id='variant.Questions' class='variant'><span id='Questions.v' class='invisible'><code>Questions</code></span></span><span id='variant.Wall' class='variant'><span id='Wall.v' class='invisible'><code>Wall</code></span></span><span id='variant.Groups' class='variant'><span id='Groups.v' class='invisible'><code>Groups</code></span></span><span id='variant.Messages' class='variant'><span id='Messages.v' class='invisible'><code>Messages</code></span></span><span id='variant.Email' class='variant'><span id='Email.v' class='invisible'><code>Email</code></span></span><span id='variant.Notifications' class='variant'><span id='Notifications.v' class='invisible'><code>Notifications</code></span></span><span id='variant.Stats' class='variant'><span id='Stats.v' class='invisible'><code>Stats</code></span></span><span id='variant.Ads' class='variant'><span id='Ads.v' class='invisible'><code>Ads</code></span></span><span id='variant.Market' class='variant'><span id='Market.v' class='invisible'><code>Market</code></span></span><span id='variant.Offline' class='variant'><span id='Offline.v' class='invisible'><code>Offline</code></span></span><span id='variant.NoHttps' class='variant'><span id='NoHttps.v' class='invisible'><code>NoHttps</code></span></span><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl <a class='enum' href='../../vkrs/auth/enum.Permission.html' title='vkrs::auth::Permission'>Permission</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/vkrs/auth.rs.html#179-219' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.variants' class='method'><span id='variants.v' class='invisible'><code>fn <a href='#method.variants' class='fnname'>variants</a>() -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;'static [</a><a class='enum' href='../../vkrs/auth/enum.Permission.html' title='vkrs::auth::Permission'>Permission</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a></code></span></h4>
+<h4 id='method.mask' class='method'><span id='mask.v' class='invisible'><code>fn <a href='#method.mask' class='fnname'>mask</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a></code></span></h4>
+<h4 id='method.mask_all' class='method'><span id='mask_all.v' class='invisible'><code>fn <a href='#method.mask_all' class='fnname'>mask_all</a>() -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a></code></span></h4>
+<h4 id='method.to_str' class='method'><span id='to_str.v' class='invisible'><code>fn <a href='#method.to_str' class='fnname'>to_str</a>(&amp;self) -&gt; &amp;'static <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a></code></span></h4>
+</div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='core::fmt::Debug'>Debug</a> for <a class='enum' href='../../vkrs/auth/enum.Permission.html' title='vkrs::auth::Permission'>Permission</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/vkrs/auth.rs.html#128' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.fmt' class='method'><span id='fmt.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, __arg_0: &amp;mut <a class='struct' href='https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html' title='core::fmt::Formatter'>Formatter</a>) -&gt; <a class='type' href='https://doc.rust-lang.org/nightly/core/fmt/type.Result.html' title='core::fmt::Result'>Result</a></code></span></h4>
+<div class='docblock'><p>Formats the value using the given formatter.</p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html' title='core::cmp::PartialEq'>PartialEq</a> for <a class='enum' href='../../vkrs/auth/enum.Permission.html' title='vkrs::auth::Permission'>Permission</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/vkrs/auth.rs.html#128' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.eq' class='method'><span id='eq.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#tymethod.eq' class='fnname'>eq</a>(&amp;self, __arg_0: &amp;<a class='enum' href='../../vkrs/auth/enum.Permission.html' title='vkrs::auth::Permission'>Permission</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></span></h4>
+<div class='docblock'><p>This method tests for <code>self</code> and <code>other</code> values to be equal, and is used by <code>==</code>. <a href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#tymethod.eq">Read more</a></p>
+</div><h4 id='method.ne' class='method'><span id='ne.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#method.ne' class='fnname'>ne</a>(&amp;self, other: &amp;Rhs) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code><div class='since' title='Stable since Rust version 1.0.0'>1.0.0</div></span></h4>
+<div class='docblock'><p>This method tests for <code>!=</code>.</p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html' title='core::cmp::Eq'>Eq</a> for <a class='enum' href='../../vkrs/auth/enum.Permission.html' title='vkrs::auth::Permission'>Permission</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/vkrs/auth.rs.html#128' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'></div><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html' title='core::marker::Copy'>Copy</a> for <a class='enum' href='../../vkrs/auth/enum.Permission.html' title='vkrs::auth::Permission'>Permission</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/vkrs/auth.rs.html#128' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'></div><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a> for <a class='enum' href='../../vkrs/auth/enum.Permission.html' title='vkrs::auth::Permission'>Permission</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/vkrs/auth.rs.html#128' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.clone' class='method'><span id='clone.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone' class='fnname'>clone</a>(&amp;self) -&gt; <a class='enum' href='../../vkrs/auth/enum.Permission.html' title='vkrs::auth::Permission'>Permission</a></code></span></h4>
+<div class='docblock'><p>Returns a copy of the value. <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#tymethod.clone">Read more</a></p>
+</div><h4 id='method.clone_from' class='method'><span id='clone_from.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from' class='fnname'>clone_from</a>(&amp;mut self, source: &amp;Self)</code><div class='since' title='Stable since Rust version 1.0.0'>1.0.0</div></span></h4>
+<div class='docblock'><p>Performs copy-assignment from <code>source</code>. <a href="https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from">Read more</a></p>
+</div></div><h3 class='impl'><span class='in-band'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/str/trait.FromStr.html' title='core::str::FromStr'>FromStr</a> for <a class='enum' href='../../vkrs/auth/enum.Permission.html' title='vkrs::auth::Permission'>Permission</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/vkrs/auth.rs.html#221-251' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='associatedtype.Err' class='type'><span id='Err.t' class='invisible'><code>type <a href='https://doc.rust-lang.org/nightly/core/str/trait.FromStr.html#associatedtype.Err' class='type'>Err</a> = <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a></code></span></h4>
+<div class='docblock'><p>The associated error which can be returned from parsing.</p>
+</div><h4 id='method.from_str' class='method'><span id='from_str.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/str/trait.FromStr.html#tymethod.from_str' class='fnname'>from_str</a>(s: &amp;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;<a class='enum' href='../../vkrs/auth/enum.Permission.html' title='vkrs::auth::Permission'>Permission</a>, <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>&gt;</code></span></h4>
+<div class='docblock'><p>Parses a string <code>s</code> to return a value of this type. <a href="https://doc.rust-lang.org/nightly/core/str/trait.FromStr.html#tymethod.from_str">Read more</a></p>
+</div></div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "vkrs";
+    </script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
+    <script defer src="../../search-index.js"></script>
+</body>
+</html>

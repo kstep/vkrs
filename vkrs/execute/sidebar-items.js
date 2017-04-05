@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["Value","Represents a JSON value"]],"struct":[["Execute","The <a href=\"https://vk.com/dev/ execute \"> execute </a> API request."]]});

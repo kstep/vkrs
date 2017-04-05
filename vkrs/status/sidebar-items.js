@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Get","The <a href=\"https://vk.com/dev/ status.get \"> status.get </a> API request."],["Set","The <a href=\"https://vk.com/dev/ status.set \"> status.set </a> API request."],["Status",""]]});

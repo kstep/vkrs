@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `photos` mod in crate `vkrs`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, photos">
+
+    <title>vkrs::photos - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='../index.html'>vkrs</a></p><script>window.sidebarCurrent = {name: 'photos', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content mod">
+<h1 class='fqn'><span class='in-band'>Module <a href='../index.html'>vkrs</a>::<wbr><a class='mod' href=''>photos</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a class='srclink' href='../../src/vkrs/photos.rs.html#1-547' title='goto source code'>[src]</a></span></h1>
+<h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.Album.html'
+                                  title='vkrs::photos::Album'>Album</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.ConfirmTag.html'
+                                  title='vkrs::photos::ConfirmTag'>ConfirmTag</a></td>
+                           <td class='docblock-short'>
+                                <p>The <a href="https://vk.com/dev/
+photos.confirmTag
+">
+photos.confirmTag
+</a> API request.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.Copy.html'
+                                  title='vkrs::photos::Copy'>Copy</a></td>
+                           <td class='docblock-short'>
+                                <p>The <a href="https://vk.com/dev/
+photos.copy
+">
+photos.copy
+</a> API request.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.CreateAlbum.html'
+                                  title='vkrs::photos::CreateAlbum'>CreateAlbum</a></td>
+                           <td class='docblock-short'>
+                                <p>The <a href="https://vk.com/dev/
+photos.createAlbum
+">
+photos.createAlbum
+</a> API request.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.CreateComment.html'
+                                  title='vkrs::photos::CreateComment'>CreateComment</a></td>
+                           <td class='docblock-short'>
+                                <p>The <a href="https://vk.com/dev/
+photos.createComment
+">
+photos.createComment
+</a> API request.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.Delete.html'
+                                  title='vkrs::photos::Delete'>Delete</a></td>
+                           <td class='docblock-short'>
+                                <p>The <a href="https://vk.com/dev/
+photos.delete
+">
+photos.delete
+</a> API request.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.DeleteAlbum.html'
+                                  title='vkrs::photos::DeleteAlbum'>DeleteAlbum</a></td>
+                           <td class='docblock-short'>
+                                <p>The <a href="https://vk.com/dev/
+photos.deleteAlbum
+">
+photos.deleteAlbum
+</a> API request.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.DeleteComment.html'
+                                  title='vkrs::photos::DeleteComment'>DeleteComment</a></td>
+                           <td class='docblock-short'>
+                                <p>The <a href="https://vk.com/dev/
+photos.deleteComment
+">
+photos.deleteComment
+</a> API request.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.Edit.html'
+                                  title='vkrs::photos::Edit'>Edit</a></td>
+                           <td class='docblock-short'>
+                                <p>The <a href="https://vk.com/dev/
+photos.edit
+">
+photos.edit
+</a> API request.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.EditAlbum.html'
+                                  title='vkrs::photos::EditAlbum'>EditAlbum</a></td>
+                           <td class='docblock-short'>
+                                <p>The <a href="https://vk.com/dev/
+photos.editAlbum
+">
+photos.editAlbum
+</a> API request.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.EditComment.html'
+                                  title='vkrs::photos::EditComment'>EditComment</a></td>
+                           <td class='docblock-short'>
+                                <p>The <a href="https://vk.com/dev/
+photos.editComment
+">
+photos.editComment
+</a> API request.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.Get.html'
+                                  title='vkrs::photos::Get'>Get</a></td>
+                           <td class='docblock-short'>
+                                <p>The <a href="https://vk.com/dev/
+photos.get
+">
+photos.get
+</a> API request.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.GetAlbums.html'
+                                  title='vkrs::photos::GetAlbums'>GetAlbums</a></td>
+                           <td class='docblock-short'>
+                                <p>The <a href="https://vk.com/dev/
+photos.getAlbums
+">
+photos.getAlbums
+</a> API request.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.GetAlbumsCount.html'
+                                  title='vkrs::photos::GetAlbumsCount'>GetAlbumsCount</a></td>
+                           <td class='docblock-short'>
+                                <p>The <a href="https://vk.com/dev/
+photos.getAlbumsCount
+">
+photos.getAlbumsCount
+</a> API request.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.GetAll.html'
+                                  title='vkrs::photos::GetAll'>GetAll</a></td>
+                           <td class='docblock-short'>
+                                <p>The <a href="https://vk.com/dev/
+photos.getAll
+">
+photos.getAll
+</a> API request.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.GetAllComments.html'
+                                  title='vkrs::photos::GetAllComments'>GetAllComments</a></td>
+                           <td class='docblock-short'>
+                                <p>The <a href="https://vk.com/dev/
+photos.getAllComments
+">
+photos.getAllComments
+</a> API request.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.GetById.html'
+                                  title='vkrs::photos::GetById'>GetById</a></td>
+                           <td class='docblock-short'>
+                                <p>The <a href="https://vk.com/dev/
+photos.getById
+">
+photos.getById
+</a> API request.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.GetChatUploadServer.html'
+                                  title='vkrs::photos::GetChatUploadServer'>GetChatUploadServer</a></td>
+                           <td class='docblock-short'>
+                                <p>The <a href="https://vk.com/dev/
+photos.getChatUploadServer
+">
+photos.getChatUploadServer
+</a> API request.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.GetComments.html'
+                                  title='vkrs::photos::GetComments'>GetComments</a></td>
+                           <td class='docblock-short'>
+                                <p>The <a href="https://vk.com/dev/
+photos.getComments
+">
+photos.getComments
+</a> API request.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.GetMarketAlbumUploadServer.html'
+                                  title='vkrs::photos::GetMarketAlbumUploadServer'>GetMarketAlbumUploadServer</a></td>
+                           <td class='docblock-short'>
+                                <p>The <a href="https://vk.com/dev/
+photos.getMarketAlbumUploadServer
+">
+photos.getMarketAlbumUploadServer
+</a> API request.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.GetMarketUploadServer.html'
+                                  title='vkrs::photos::GetMarketUploadServer'>GetMarketUploadServer</a></td>
+                           <td class='docblock-short'>
+                                <p>The <a href="https://vk.com/dev/
+photos.getMarketUploadServer
+">
+photos.getMarketUploadServer
+</a> API request.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.GetMessagesUploadServer.html'
+                                  title='vkrs::photos::GetMessagesUploadServer'>GetMessagesUploadServer</a></td>
+                           <td class='docblock-short'>
+                                <p>The <a href="https://vk.com/dev/
+photos.getMessagesUploadServer
+">
+photos.getMessagesUploadServer
+</a> API request.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.GetNewTags.html'
+                                  title='vkrs::photos::GetNewTags'>GetNewTags</a></td>
+                           <td class='docblock-short'>
+                                <p>The <a href="https://vk.com/dev/
+photos.getNewTags
+">
+photos.getNewTags
+</a> API request.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.GetOwnerPhotoUploadServer.html'
+                                  title='vkrs::photos::GetOwnerPhotoUploadServer'>GetOwnerPhotoUploadServer</a></td>
+                           <td class='docblock-short'>
+                                <p>The <a href="https://vk.com/dev/
+photos.getOwnerPhotoUploadServer
+">
+photos.getOwnerPhotoUploadServer
+</a> API request.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.GetTags.html'
+                                  title='vkrs::photos::GetTags'>GetTags</a></td>
+                           <td class='docblock-short'>
+                                <p>The <a href="https://vk.com/dev/
+photos.getTags
+">
+photos.getTags
+</a> API request.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.GetUploadServer.html'
+                                  title='vkrs::photos::GetUploadServer'>GetUploadServer</a></td>
+                           <td class='docblock-short'>
+                                <p>The <a href="https://vk.com/dev/
+photos.getUploadServer
+">
+photos.getUploadServer
+</a> API request.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.GetUserPhotos.html'
+                                  title='vkrs::photos::GetUserPhotos'>GetUserPhotos</a></td>
+                           <td class='docblock-short'>
+                                <p>The <a href="https://vk.com/dev/
+photos.getUserPhotos
+">
+photos.getUserPhotos
+</a> API request.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.GetWallUploadServer.html'
+                                  title='vkrs::photos::GetWallUploadServer'>GetWallUploadServer</a></td>
+                           <td class='docblock-short'>
+                                <p>The <a href="https://vk.com/dev/
+photos.getWallUploadServer
+">
+photos.getWallUploadServer
+</a> API request.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.MakeCover.html'
+                                  title='vkrs::photos::MakeCover'>MakeCover</a></td>
+                           <td class='docblock-short'>
+                                <p>The <a href="https://vk.com/dev/
+photos.makeCover
+">
+photos.makeCover
+</a> API request.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.Move.html'
+                                  title='vkrs::photos::Move'>Move</a></td>
+                           <td class='docblock-short'>
+                                <p>The <a href="https://vk.com/dev/
+photos.move
+">
+photos.move
+</a> API request.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.Photo.html'
+                                  title='vkrs::photos::Photo'>Photo</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.PutTag.html'
+                                  title='vkrs::photos::PutTag'>PutTag</a></td>
+                           <td class='docblock-short'>
+                                <p>The <a href="https://vk.com/dev/
+video.putTag
+">
+video.putTag
+</a> API request.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.RemoveTag.html'
+                                  title='vkrs::photos::RemoveTag'>RemoveTag</a></td>
+                           <td class='docblock-short'>
+                                <p>The <a href="https://vk.com/dev/
+photos.removeTag
+">
+photos.removeTag
+</a> API request.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.ReorderAlbums.html'
+                                  title='vkrs::photos::ReorderAlbums'>ReorderAlbums</a></td>
+                           <td class='docblock-short'>
+                                <p>The <a href="https://vk.com/dev/
+photos.reorderAlbums
+">
+photos.reorderAlbums
+</a> API request.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.ReorderPhotos.html'
+                                  title='vkrs::photos::ReorderPhotos'>ReorderPhotos</a></td>
+                           <td class='docblock-short'>
+                                <p>The <a href="https://vk.com/dev/
+photos.reorderPhotos
+">
+photos.reorderPhotos
+</a> API request.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.Report.html'
+                                  title='vkrs::photos::Report'>Report</a></td>
+                           <td class='docblock-short'>
+                                <p>The <a href="https://vk.com/dev/
+photos.report
+">
+photos.report
+</a> API request.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.ReportComment.html'
+                                  title='vkrs::photos::ReportComment'>ReportComment</a></td>
+                           <td class='docblock-short'>
+                                <p>The <a href="https://vk.com/dev/
+photos.reportComment
+">
+photos.reportComment
+</a> API request.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.Restore.html'
+                                  title='vkrs::photos::Restore'>Restore</a></td>
+                           <td class='docblock-short'>
+                                <p>The <a href="https://vk.com/dev/
+photos.restore
+">
+photos.restore
+</a> API request.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.RestoreComment.html'
+                                  title='vkrs::photos::RestoreComment'>RestoreComment</a></td>
+                           <td class='docblock-short'>
+                                <p>The <a href="https://vk.com/dev/
+photos.restoreComment
+">
+photos.restoreComment
+</a> API request.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.Save.html'
+                                  title='vkrs::photos::Save'>Save</a></td>
+                           <td class='docblock-short'>
+                                <p>The <a href="https://vk.com/dev/
+photos.save
+">
+photos.save
+</a> API request.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.SaveMarketAlbumPhoto.html'
+                                  title='vkrs::photos::SaveMarketAlbumPhoto'>SaveMarketAlbumPhoto</a></td>
+                           <td class='docblock-short'>
+                                <p>The <a href="https://vk.com/dev/
+photos.saveMarketAlbumPhoto
+">
+photos.saveMarketAlbumPhoto
+</a> API request.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.SaveMarketPhoto.html'
+                                  title='vkrs::photos::SaveMarketPhoto'>SaveMarketPhoto</a></td>
+                           <td class='docblock-short'>
+                                <p>The <a href="https://vk.com/dev/
+photos.saveMarketPhoto
+">
+photos.saveMarketPhoto
+</a> API request.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.SaveMessagesPhoto.html'
+                                  title='vkrs::photos::SaveMessagesPhoto'>SaveMessagesPhoto</a></td>
+                           <td class='docblock-short'>
+                                <p>The <a href="https://vk.com/dev/
+photos.saveMessagesPhoto
+">
+photos.saveMessagesPhoto
+</a> API request.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.SaveOwnerPhoto.html'
+                                  title='vkrs::photos::SaveOwnerPhoto'>SaveOwnerPhoto</a></td>
+                           <td class='docblock-short'>
+                                <p>The <a href="https://vk.com/dev/
+photos.saveOwnerPhoto
+">
+photos.saveOwnerPhoto
+</a> API request.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.SaveWallPhoto.html'
+                                  title='vkrs::photos::SaveWallPhoto'>SaveWallPhoto</a></td>
+                           <td class='docblock-short'>
+                                <p>The <a href="https://vk.com/dev/
+photos.saveWallPhoto
+">
+photos.saveWallPhoto
+</a> API request.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.SavedPhoto.html'
+                                  title='vkrs::photos::SavedPhoto'>SavedPhoto</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.Search.html'
+                                  title='vkrs::photos::Search'>Search</a></td>
+                           <td class='docblock-short'>
+                                <p>The <a href="https://vk.com/dev/
+photos.search
+">
+photos.search
+</a> API request.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.Tag.html'
+                                  title='vkrs::photos::Tag'>Tag</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.Thumb.html'
+                                  title='vkrs::photos::Thumb'>Thumb</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.UploadServer.html'
+                                  title='vkrs::photos::UploadServer'>UploadServer</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.UploadUrl.html'
+                                  title='vkrs::photos::UploadUrl'>UploadUrl</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr></table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class='enum' href='enum.Sort.html'
+                                  title='vkrs::photos::Sort'>Sort</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='enum' href='enum.ThumbKind.html'
+                                  title='vkrs::photos::ThumbKind'>ThumbKind</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr></table></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "vkrs";
+    </script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
+    <script defer src="../../search-index.js"></script>
+</body>
+</html>

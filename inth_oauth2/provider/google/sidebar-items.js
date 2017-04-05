@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Installed","Google OAuth 2.0 provider for installed applications."],["Web","Google OAuth 2.0 provider for web applications."]]});

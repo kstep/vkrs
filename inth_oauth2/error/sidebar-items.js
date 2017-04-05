@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["OAuth2ErrorCode","OAuth 2.0 error codes."]],"struct":[["OAuth2Error","OAuth 2.0 error."]]});

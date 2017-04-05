@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["GiftPrivacy",""]],"struct":[["Get","The <a href=\"https://vk.com/dev/ gifts.get \"> gifts.get </a> API request."],["Gift",""],["GiftItem",""]]});

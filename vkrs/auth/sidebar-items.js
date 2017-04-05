@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["OAuthError","Errors that can occur during authorization."],["Permission",""]],"static":[["OAUTH_DEFAULT_REDIRECT_URI",""]],"struct":[["AccessToken",""],["AccessTokenLifetime",""],["Auth",""],["OAuth",""],["Permissions",""]]});

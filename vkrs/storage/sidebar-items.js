@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Get","The <a href=\"https://vk.com/dev/ storage.get \"> storage.get </a> API request."],["GetKeys","The <a href=\"https://vk.com/dev/ storage.getKeys \"> storage.getKeys </a> API request."],["Set","The <a href=\"https://vk.com/dev/ storage.set \"> storage.set </a> API request."]]});

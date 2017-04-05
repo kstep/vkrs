@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `Request` trait in crate `vkrs`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, Request">
+
+    <title>vkrs::api::Request - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='../index.html'>vkrs</a>::<wbr><a href='index.html'>api</a></p><script>window.sidebarCurrent = {name: 'Request', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content trait">
+<h1 class='fqn'><span class='in-band'>Trait <a href='../index.html'>vkrs</a>::<wbr><a href='index.html'>api</a>::<wbr><a class='trait' href=''>Request</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a class='srclink' href='../../src/vkrs/api.rs.html#129-154' title='goto source code'>[src]</a></span></h1>
+<pre class='rust trait'>pub trait Request {
+    type <a href='#associatedtype.Response' class='type'>Response</a>: <a class='trait' href='../../serde/de/trait.Deserialize.html' title='serde::de::Deserialize'>Deserialize</a>;
+    fn <a href='#tymethod.method_name' class='fnname'>method_name</a>() -&gt; &amp;'static <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>;
+    fn <a href='#tymethod.to_query_string' class='fnname'>to_query_string</a>(&amp;self) -&gt; <a class='struct' href='https://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a>;
+
+    fn <a href='#method.permissions' class='fnname'>permissions</a>() -&gt; <a class='struct' href='../../vkrs/auth/struct.Permissions.html' title='vkrs::auth::Permissions'>Permissions</a> { ... }
+    fn <a href='#method.to_url' class='fnname'>to_url</a>(&amp;self) -&gt; <a class='struct' href='../../url/struct.Url.html' title='url::Url'>Url</a> { ... }
+}</pre><div class='docblock'><p>Trait for things that can be posted to VK API directly</p>
+</div>
+            <h2 id='associated-types'>Associated Types</h2>
+            <div class='methods'>
+        <h3 id='associatedtype.Response' class='method'><span id='Response.t' class='invisible'><code>type <a href='#associatedtype.Response' class='type'>Response</a>: <a class='trait' href='../../serde/de/trait.Deserialize.html' title='serde::de::Deserialize'>Deserialize</a></code></span></h3></div>
+            <h2 id='required-methods'>Required Methods</h2>
+            <div class='methods'>
+        <h3 id='tymethod.method_name' class='method'><span id='method_name.v' class='invisible'><code>fn <a href='#tymethod.method_name' class='fnname'>method_name</a>() -&gt; &amp;'static <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a></code></span></h3><h3 id='tymethod.to_query_string' class='method'><span id='to_query_string.v' class='invisible'><code>fn <a href='#tymethod.to_query_string' class='fnname'>to_query_string</a>(&amp;self) -&gt; <a class='struct' href='https://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a></code></span></h3></div>
+            <h2 id='provided-methods'>Provided Methods</h2>
+            <div class='methods'>
+        <h3 id='method.permissions' class='method'><span id='permissions.v' class='invisible'><code>fn <a href='#method.permissions' class='fnname'>permissions</a>() -&gt; <a class='struct' href='../../vkrs/auth/struct.Permissions.html' title='vkrs::auth::Permissions'>Permissions</a></code></span></h3><h3 id='method.to_url' class='method'><span id='to_url.v' class='invisible'><code>fn <a href='#method.to_url' class='fnname'>to_url</a>(&amp;self) -&gt; <a class='struct' href='../../url/struct.Url.html' title='url::Url'>Url</a></code></span></h3></div>
+        <h2 id='implementors'>Implementors</h2>
+        <ul class='item-list' id='implementors-list'>
+    <li><code>impl Request for vkrs::audio::<a class='struct' href='../../vkrs/audio/struct.Get.html' title='vkrs::audio::Get'>Get</a></code></li>
+<li><code>impl&lt;'a&gt; Request for vkrs::audio::<a class='struct' href='../../vkrs/audio/struct.Search.html' title='vkrs::audio::Search'>Search</a>&lt;'a&gt;</code></li>
+<li><code>impl Request for vkrs::audio::<a class='struct' href='../../vkrs/audio/struct.GetUploadServer.html' title='vkrs::audio::GetUploadServer'>GetUploadServer</a></code></li>
+<li><code>impl&lt;'a&gt; Request for vkrs::audio::<a class='struct' href='../../vkrs/audio/struct.Save.html' title='vkrs::audio::Save'>Save</a>&lt;'a&gt;</code></li>
+<li><code>impl Request for vkrs::audio::<a class='struct' href='../../vkrs/audio/struct.Add.html' title='vkrs::audio::Add'>Add</a></code></li>
+<li><code>impl Request for vkrs::audio::<a class='struct' href='../../vkrs/audio/struct.Delete.html' title='vkrs::audio::Delete'>Delete</a></code></li>
+<li><code>impl&lt;'a&gt; Request for vkrs::audio::<a class='struct' href='../../vkrs/audio/struct.Edit.html' title='vkrs::audio::Edit'>Edit</a>&lt;'a&gt;</code></li>
+<li><code>impl Request for <a class='struct' href='../../vkrs/audio/struct.Reorder.html' title='vkrs::audio::Reorder'>Reorder</a></code></li>
+<li><code>impl Request for vkrs::audio::<a class='struct' href='../../vkrs/audio/struct.Restore.html' title='vkrs::audio::Restore'>Restore</a></code></li>
+<li><code>impl&lt;'a&gt; Request for vkrs::audio::<a class='struct' href='../../vkrs/audio/struct.GetById.html' title='vkrs::audio::GetById'>GetById</a>&lt;'a&gt;</code></li>
+<li><code>impl Request for <a class='struct' href='../../vkrs/audio/struct.GetLyrics.html' title='vkrs::audio::GetLyrics'>GetLyrics</a></code></li>
+<li><code>impl Request for <a class='struct' href='../../vkrs/audio/struct.GetCount.html' title='vkrs::audio::GetCount'>GetCount</a></code></li>
+<li><code>impl Request for vkrs::audio::<a class='struct' href='../../vkrs/audio/struct.GetAlbums.html' title='vkrs::audio::GetAlbums'>GetAlbums</a></code></li>
+<li><code>impl&lt;'a&gt; Request for vkrs::audio::<a class='struct' href='../../vkrs/audio/struct.AddAlbum.html' title='vkrs::audio::AddAlbum'>AddAlbum</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Request for vkrs::audio::<a class='struct' href='../../vkrs/audio/struct.EditAlbum.html' title='vkrs::audio::EditAlbum'>EditAlbum</a>&lt;'a&gt;</code></li>
+<li><code>impl Request for vkrs::audio::<a class='struct' href='../../vkrs/audio/struct.DeleteAlbum.html' title='vkrs::audio::DeleteAlbum'>DeleteAlbum</a></code></li>
+<li><code>impl&lt;'a&gt; Request for <a class='struct' href='../../vkrs/audio/struct.MoveToAlbum.html' title='vkrs::audio::MoveToAlbum'>MoveToAlbum</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Request for <a class='struct' href='../../vkrs/audio/struct.SetBroadcast.html' title='vkrs::audio::SetBroadcast'>SetBroadcast</a>&lt;'a&gt;</code></li>
+<li><code>impl Request for <a class='struct' href='../../vkrs/audio/struct.GetFriendsBroadcastList.html' title='vkrs::audio::GetFriendsBroadcastList'>GetFriendsBroadcastList</a></code></li>
+<li><code>impl Request for <a class='struct' href='../../vkrs/audio/struct.GetGroupsBroadcastList.html' title='vkrs::audio::GetGroupsBroadcastList'>GetGroupsBroadcastList</a></code></li>
+<li><code>impl Request for <a class='struct' href='../../vkrs/audio/struct.GetPopular.html' title='vkrs::audio::GetPopular'>GetPopular</a></code></li>
+<li><code>impl Request for <a class='struct' href='../../vkrs/audio/struct.GetRecommendations.html' title='vkrs::audio::GetRecommendations'>GetRecommendations</a></code></li>
+<li><code>impl Request for vkrs::gifts::<a class='struct' href='../../vkrs/gifts/struct.Get.html' title='vkrs::gifts::Get'>Get</a></code></li>
+<li><code>impl&lt;'a&gt; Request for <a class='struct' href='../../vkrs/photos/struct.CreateAlbum.html' title='vkrs::photos::CreateAlbum'>CreateAlbum</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Request for vkrs::photos::<a class='struct' href='../../vkrs/photos/struct.EditAlbum.html' title='vkrs::photos::EditAlbum'>EditAlbum</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Request for vkrs::photos::<a class='struct' href='../../vkrs/photos/struct.GetAlbums.html' title='vkrs::photos::GetAlbums'>GetAlbums</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Request for vkrs::photos::<a class='struct' href='../../vkrs/photos/struct.Get.html' title='vkrs::photos::Get'>Get</a>&lt;'a&gt;</code></li>
+<li><code>impl Request for <a class='struct' href='../../vkrs/photos/struct.GetAlbumsCount.html' title='vkrs::photos::GetAlbumsCount'>GetAlbumsCount</a></code></li>
+<li><code>impl&lt;'a&gt; Request for vkrs::photos::<a class='struct' href='../../vkrs/photos/struct.GetById.html' title='vkrs::photos::GetById'>GetById</a>&lt;'a&gt;</code></li>
+<li><code>impl Request for vkrs::photos::<a class='struct' href='../../vkrs/photos/struct.GetUploadServer.html' title='vkrs::photos::GetUploadServer'>GetUploadServer</a></code></li>
+<li><code>impl Request for <a class='struct' href='../../vkrs/photos/struct.GetOwnerPhotoUploadServer.html' title='vkrs::photos::GetOwnerPhotoUploadServer'>GetOwnerPhotoUploadServer</a></code></li>
+<li><code>impl Request for <a class='struct' href='../../vkrs/photos/struct.GetChatUploadServer.html' title='vkrs::photos::GetChatUploadServer'>GetChatUploadServer</a></code></li>
+<li><code>impl Request for <a class='struct' href='../../vkrs/photos/struct.GetMarketUploadServer.html' title='vkrs::photos::GetMarketUploadServer'>GetMarketUploadServer</a></code></li>
+<li><code>impl Request for <a class='struct' href='../../vkrs/photos/struct.GetMarketAlbumUploadServer.html' title='vkrs::photos::GetMarketAlbumUploadServer'>GetMarketAlbumUploadServer</a></code></li>
+<li><code>impl Request for <a class='struct' href='../../vkrs/photos/struct.GetWallUploadServer.html' title='vkrs::photos::GetWallUploadServer'>GetWallUploadServer</a></code></li>
+<li><code>impl Request for <a class='struct' href='../../vkrs/photos/struct.GetMessagesUploadServer.html' title='vkrs::photos::GetMessagesUploadServer'>GetMessagesUploadServer</a></code></li>
+<li><code>impl&lt;'a&gt; Request for <a class='struct' href='../../vkrs/photos/struct.SaveMarketPhoto.html' title='vkrs::photos::SaveMarketPhoto'>SaveMarketPhoto</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Request for <a class='struct' href='../../vkrs/photos/struct.SaveMarketAlbumPhoto.html' title='vkrs::photos::SaveMarketAlbumPhoto'>SaveMarketAlbumPhoto</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Request for <a class='struct' href='../../vkrs/photos/struct.SaveOwnerPhoto.html' title='vkrs::photos::SaveOwnerPhoto'>SaveOwnerPhoto</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Request for <a class='struct' href='../../vkrs/photos/struct.SaveWallPhoto.html' title='vkrs::photos::SaveWallPhoto'>SaveWallPhoto</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Request for <a class='struct' href='../../vkrs/photos/struct.SaveMessagesPhoto.html' title='vkrs::photos::SaveMessagesPhoto'>SaveMessagesPhoto</a>&lt;'a&gt;</code></li>
+<li><code>impl Request for vkrs::photos::<a class='struct' href='../../vkrs/photos/struct.Report.html' title='vkrs::photos::Report'>Report</a></code></li>
+<li><code>impl Request for vkrs::photos::<a class='struct' href='../../vkrs/photos/struct.ReportComment.html' title='vkrs::photos::ReportComment'>ReportComment</a></code></li>
+<li><code>impl&lt;'a&gt; Request for vkrs::photos::<a class='struct' href='../../vkrs/photos/struct.Search.html' title='vkrs::photos::Search'>Search</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Request for vkrs::photos::<a class='struct' href='../../vkrs/photos/struct.Save.html' title='vkrs::photos::Save'>Save</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Request for <a class='struct' href='../../vkrs/photos/struct.Copy.html' title='vkrs::photos::Copy'>Copy</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Request for vkrs::photos::<a class='struct' href='../../vkrs/photos/struct.Edit.html' title='vkrs::photos::Edit'>Edit</a>&lt;'a&gt;</code></li>
+<li><code>impl Request for <a class='struct' href='../../vkrs/photos/struct.Move.html' title='vkrs::photos::Move'>Move</a></code></li>
+<li><code>impl Request for <a class='struct' href='../../vkrs/photos/struct.MakeCover.html' title='vkrs::photos::MakeCover'>MakeCover</a></code></li>
+<li><code>impl Request for vkrs::photos::<a class='struct' href='../../vkrs/photos/struct.ReorderAlbums.html' title='vkrs::photos::ReorderAlbums'>ReorderAlbums</a></code></li>
+<li><code>impl Request for <a class='struct' href='../../vkrs/photos/struct.ReorderPhotos.html' title='vkrs::photos::ReorderPhotos'>ReorderPhotos</a></code></li>
+<li><code>impl Request for <a class='struct' href='../../vkrs/photos/struct.GetAll.html' title='vkrs::photos::GetAll'>GetAll</a></code></li>
+<li><code>impl Request for <a class='struct' href='../../vkrs/photos/struct.GetUserPhotos.html' title='vkrs::photos::GetUserPhotos'>GetUserPhotos</a></code></li>
+<li><code>impl Request for vkrs::photos::<a class='struct' href='../../vkrs/photos/struct.DeleteAlbum.html' title='vkrs::photos::DeleteAlbum'>DeleteAlbum</a></code></li>
+<li><code>impl Request for vkrs::photos::<a class='struct' href='../../vkrs/photos/struct.Delete.html' title='vkrs::photos::Delete'>Delete</a></code></li>
+<li><code>impl Request for <a class='struct' href='../../vkrs/photos/struct.ConfirmTag.html' title='vkrs::photos::ConfirmTag'>ConfirmTag</a></code></li>
+<li><code>impl&lt;'a&gt; Request for vkrs::photos::<a class='struct' href='../../vkrs/photos/struct.GetComments.html' title='vkrs::photos::GetComments'>GetComments</a>&lt;'a&gt;</code></li>
+<li><code>impl Request for <a class='struct' href='../../vkrs/photos/struct.GetAllComments.html' title='vkrs::photos::GetAllComments'>GetAllComments</a></code></li>
+<li><code>impl&lt;'a&gt; Request for vkrs::photos::<a class='struct' href='../../vkrs/photos/struct.CreateComment.html' title='vkrs::photos::CreateComment'>CreateComment</a>&lt;'a&gt;</code></li>
+<li><code>impl Request for vkrs::photos::<a class='struct' href='../../vkrs/photos/struct.DeleteComment.html' title='vkrs::photos::DeleteComment'>DeleteComment</a></code></li>
+<li><code>impl Request for vkrs::photos::<a class='struct' href='../../vkrs/photos/struct.Restore.html' title='vkrs::photos::Restore'>Restore</a></code></li>
+<li><code>impl Request for vkrs::photos::<a class='struct' href='../../vkrs/photos/struct.RestoreComment.html' title='vkrs::photos::RestoreComment'>RestoreComment</a></code></li>
+<li><code>impl&lt;'a&gt; Request for vkrs::photos::<a class='struct' href='../../vkrs/photos/struct.EditComment.html' title='vkrs::photos::EditComment'>EditComment</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Request for vkrs::photos::<a class='struct' href='../../vkrs/photos/struct.GetTags.html' title='vkrs::photos::GetTags'>GetTags</a>&lt;'a&gt;</code></li>
+<li><code>impl Request for vkrs::photos::<a class='struct' href='../../vkrs/photos/struct.PutTag.html' title='vkrs::photos::PutTag'>PutTag</a></code></li>
+<li><code>impl Request for vkrs::photos::<a class='struct' href='../../vkrs/photos/struct.RemoveTag.html' title='vkrs::photos::RemoveTag'>RemoveTag</a></code></li>
+<li><code>impl Request for vkrs::photos::<a class='struct' href='../../vkrs/photos/struct.GetNewTags.html' title='vkrs::photos::GetNewTags'>GetNewTags</a></code></li>
+<li><code>impl&lt;'a&gt; Request for vkrs::video::<a class='struct' href='../../vkrs/video/struct.Get.html' title='vkrs::video::Get'>Get</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Request for vkrs::video::<a class='struct' href='../../vkrs/video/struct.Search.html' title='vkrs::video::Search'>Search</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Request for vkrs::video::<a class='struct' href='../../vkrs/video/struct.Edit.html' title='vkrs::video::Edit'>Edit</a>&lt;'a&gt;</code></li>
+<li><code>impl Request for vkrs::video::<a class='struct' href='../../vkrs/video/struct.Add.html' title='vkrs::video::Add'>Add</a></code></li>
+<li><code>impl&lt;'a&gt; Request for vkrs::video::<a class='struct' href='../../vkrs/video/struct.Save.html' title='vkrs::video::Save'>Save</a>&lt;'a&gt;</code></li>
+<li><code>impl Request for vkrs::video::<a class='struct' href='../../vkrs/video/struct.Delete.html' title='vkrs::video::Delete'>Delete</a></code></li>
+<li><code>impl Request for vkrs::video::<a class='struct' href='../../vkrs/video/struct.Restore.html' title='vkrs::video::Restore'>Restore</a></code></li>
+<li><code>impl Request for <a class='struct' href='../../vkrs/video/struct.GetUserVideos.html' title='vkrs::video::GetUserVideos'>GetUserVideos</a></code></li>
+<li><code>impl Request for vkrs::video::<a class='struct' href='../../vkrs/video/struct.GetAlbums.html' title='vkrs::video::GetAlbums'>GetAlbums</a></code></li>
+<li><code>impl Request for <a class='struct' href='../../vkrs/video/struct.GetAlbumById.html' title='vkrs::video::GetAlbumById'>GetAlbumById</a></code></li>
+<li><code>impl&lt;'a&gt; Request for vkrs::video::<a class='struct' href='../../vkrs/video/struct.AddAlbum.html' title='vkrs::video::AddAlbum'>AddAlbum</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Request for vkrs::video::<a class='struct' href='../../vkrs/video/struct.EditAlbum.html' title='vkrs::video::EditAlbum'>EditAlbum</a>&lt;'a&gt;</code></li>
+<li><code>impl Request for vkrs::video::<a class='struct' href='../../vkrs/video/struct.DeleteAlbum.html' title='vkrs::video::DeleteAlbum'>DeleteAlbum</a></code></li>
+<li><code>impl Request for vkrs::video::<a class='struct' href='../../vkrs/video/struct.ReorderAlbums.html' title='vkrs::video::ReorderAlbums'>ReorderAlbums</a></code></li>
+<li><code>impl Request for <a class='struct' href='../../vkrs/video/struct.ReorderVideos.html' title='vkrs::video::ReorderVideos'>ReorderVideos</a></code></li>
+<li><code>impl&lt;'a&gt; Request for <a class='struct' href='../../vkrs/video/struct.AddToAlbum.html' title='vkrs::video::AddToAlbum'>AddToAlbum</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Request for <a class='struct' href='../../vkrs/video/struct.RemoveFromAlbum.html' title='vkrs::video::RemoveFromAlbum'>RemoveFromAlbum</a>&lt;'a&gt;</code></li>
+<li><code>impl Request for <a class='struct' href='../../vkrs/video/struct.GetAlbumsByVideo.html' title='vkrs::video::GetAlbumsByVideo'>GetAlbumsByVideo</a></code></li>
+<li><code>impl Request for vkrs::video::<a class='struct' href='../../vkrs/video/struct.GetComments.html' title='vkrs::video::GetComments'>GetComments</a></code></li>
+<li><code>impl&lt;'a&gt; Request for vkrs::video::<a class='struct' href='../../vkrs/video/struct.CreateComment.html' title='vkrs::video::CreateComment'>CreateComment</a>&lt;'a&gt;</code></li>
+<li><code>impl Request for vkrs::video::<a class='struct' href='../../vkrs/video/struct.DeleteComment.html' title='vkrs::video::DeleteComment'>DeleteComment</a></code></li>
+<li><code>impl Request for vkrs::video::<a class='struct' href='../../vkrs/video/struct.RestoreComment.html' title='vkrs::video::RestoreComment'>RestoreComment</a></code></li>
+<li><code>impl&lt;'a&gt; Request for vkrs::video::<a class='struct' href='../../vkrs/video/struct.EditComment.html' title='vkrs::video::EditComment'>EditComment</a>&lt;'a&gt;</code></li>
+<li><code>impl Request for vkrs::video::<a class='struct' href='../../vkrs/video/struct.GetTags.html' title='vkrs::video::GetTags'>GetTags</a></code></li>
+<li><code>impl&lt;'a&gt; Request for vkrs::video::<a class='struct' href='../../vkrs/video/struct.PutTag.html' title='vkrs::video::PutTag'>PutTag</a>&lt;'a&gt;</code></li>
+<li><code>impl Request for vkrs::video::<a class='struct' href='../../vkrs/video/struct.RemoveTag.html' title='vkrs::video::RemoveTag'>RemoveTag</a></code></li>
+<li><code>impl Request for vkrs::video::<a class='struct' href='../../vkrs/video/struct.GetNewTags.html' title='vkrs::video::GetNewTags'>GetNewTags</a></code></li>
+<li><code>impl&lt;'a&gt; Request for vkrs::video::<a class='struct' href='../../vkrs/video/struct.Report.html' title='vkrs::video::Report'>Report</a>&lt;'a&gt;</code></li>
+<li><code>impl Request for vkrs::video::<a class='struct' href='../../vkrs/video/struct.ReportComment.html' title='vkrs::video::ReportComment'>ReportComment</a></code></li>
+<li><code>impl&lt;'a&gt; Request for <a class='struct' href='../../vkrs/video/struct.GetCatalog.html' title='vkrs::video::GetCatalog'>GetCatalog</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Request for <a class='struct' href='../../vkrs/video/struct.GetCatalogSection.html' title='vkrs::video::GetCatalogSection'>GetCatalogSection</a>&lt;'a&gt;</code></li>
+<li><code>impl Request for <a class='struct' href='../../vkrs/video/struct.HideCatalogSection.html' title='vkrs::video::HideCatalogSection'>HideCatalogSection</a></code></li>
+<li><code>impl&lt;'a&gt; Request for vkrs::users::<a class='struct' href='../../vkrs/users/struct.Get.html' title='vkrs::users::Get'>Get</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Request for vkrs::users::<a class='struct' href='../../vkrs/users/struct.Search.html' title='vkrs::users::Search'>Search</a>&lt;'a&gt;</code></li>
+<li><code>impl Request for <a class='struct' href='../../vkrs/users/struct.IsAppUser.html' title='vkrs::users::IsAppUser'>IsAppUser</a></code></li>
+<li><code>impl&lt;'a&gt; Request for <a class='struct' href='../../vkrs/users/struct.GetSubscriptions.html' title='vkrs::users::GetSubscriptions'>GetSubscriptions</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Request for <a class='struct' href='../../vkrs/users/struct.GetFollowers.html' title='vkrs::users::GetFollowers'>GetFollowers</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Request for vkrs::users::<a class='struct' href='../../vkrs/users/struct.Report.html' title='vkrs::users::Report'>Report</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Request for <a class='struct' href='../../vkrs/users/struct.GetNearby.html' title='vkrs::users::GetNearby'>GetNearby</a>&lt;'a&gt;</code></li>
+<li><code>impl Request for vkrs::stats::<a class='struct' href='../../vkrs/stats/struct.Get.html' title='vkrs::stats::Get'>Get</a></code></li>
+<li><code>impl Request for <a class='struct' href='../../vkrs/stats/struct.TrackVisitor.html' title='vkrs::stats::TrackVisitor'>TrackVisitor</a></code></li>
+<li><code>impl Request for <a class='struct' href='../../vkrs/stats/struct.GetPostReach.html' title='vkrs::stats::GetPostReach'>GetPostReach</a></code></li>
+<li><code>impl Request for vkrs::status::<a class='struct' href='../../vkrs/status/struct.Get.html' title='vkrs::status::Get'>Get</a></code></li>
+<li><code>impl&lt;'a&gt; Request for vkrs::status::<a class='struct' href='../../vkrs/status/struct.Set.html' title='vkrs::status::Set'>Set</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Request for vkrs::wall::<a class='struct' href='../../vkrs/wall/struct.Get.html' title='vkrs::wall::Get'>Get</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Request for <a class='struct' href='../../vkrs/wall/struct.Post.html' title='vkrs::wall::Post'>Post</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Request for <a class='struct' href='../../vkrs/utils/struct.CheckLink.html' title='vkrs::utils::CheckLink'>CheckLink</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Request for <a class='struct' href='../../vkrs/utils/struct.ResolveScreenName.html' title='vkrs::utils::ResolveScreenName'>ResolveScreenName</a>&lt;'a&gt;</code></li>
+<li><code>impl Request for <a class='struct' href='../../vkrs/utils/struct.GetServerTime.html' title='vkrs::utils::GetServerTime'>GetServerTime</a></code></li>
+<li><code>impl&lt;'a&gt; Request for <a class='struct' href='../../vkrs/execute/struct.Execute.html' title='vkrs::execute::Execute'>Execute</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Request for vkrs::storage::<a class='struct' href='../../vkrs/storage/struct.Get.html' title='vkrs::storage::Get'>Get</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Request for vkrs::storage::<a class='struct' href='../../vkrs/storage/struct.Set.html' title='vkrs::storage::Set'>Set</a>&lt;'a&gt;</code></li>
+<li><code>impl Request for <a class='struct' href='../../vkrs/storage/struct.GetKeys.html' title='vkrs::storage::GetKeys'>GetKeys</a></code></li>
+<li><code>impl Request for <a class='struct' href='../../vkrs/account/struct.GetAppPermissions.html' title='vkrs::account::GetAppPermissions'>GetAppPermissions</a></code></li>
+<li><code>impl&lt;'a&gt; Request for <a class='struct' href='../../vkrs/account/struct.GetCounters.html' title='vkrs::account::GetCounters'>GetCounters</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Request for <a class='struct' href='../../vkrs/account/struct.SetNameInMenu.html' title='vkrs::account::SetNameInMenu'>SetNameInMenu</a>&lt;'a&gt;</code></li>
+<li><code>impl Request for <a class='struct' href='../../vkrs/account/struct.SetOnline.html' title='vkrs::account::SetOnline'>SetOnline</a></code></li>
+<li><code>impl Request for <a class='struct' href='../../vkrs/account/struct.SetOffline.html' title='vkrs::account::SetOffline'>SetOffline</a></code></li>
+<li><code>impl&lt;'a&gt; Request for <a class='struct' href='../../vkrs/account/struct.LookupContacts.html' title='vkrs::account::LookupContacts'>LookupContacts</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Request for <a class='struct' href='../../vkrs/account/struct.RegisterDevice.html' title='vkrs::account::RegisterDevice'>RegisterDevice</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Request for <a class='struct' href='../../vkrs/account/struct.UnregisterDevice.html' title='vkrs::account::UnregisterDevice'>UnregisterDevice</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Request for <a class='struct' href='../../vkrs/account/struct.SetSilenceMode.html' title='vkrs::account::SetSilenceMode'>SetSilenceMode</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Request for <a class='struct' href='../../vkrs/account/struct.GetPushSettings.html' title='vkrs::account::GetPushSettings'>GetPushSettings</a>&lt;'a&gt;</code></li>
+<li><code>impl&lt;'a&gt; Request for <a class='struct' href='../../vkrs/account/struct.SetPushSettings.html' title='vkrs::account::SetPushSettings'>SetPushSettings</a>&lt;'a&gt;</code></li>
+<li><code>impl Request for <a class='struct' href='../../vkrs/account/struct.GetActiveOffers.html' title='vkrs::account::GetActiveOffers'>GetActiveOffers</a></code></li>
+<li><code>impl Request for <a class='struct' href='../../vkrs/account/struct.BanUser.html' title='vkrs::account::BanUser'>BanUser</a></code></li>
+<li><code>impl Request for <a class='struct' href='../../vkrs/account/struct.UnbanUser.html' title='vkrs::account::UnbanUser'>UnbanUser</a></code></li>
+<li><code>impl Request for <a class='struct' href='../../vkrs/account/struct.GetBanned.html' title='vkrs::account::GetBanned'>GetBanned</a></code></li>
+<li><code>impl Request for <a class='struct' href='../../vkrs/account/struct.GetInfo.html' title='vkrs::account::GetInfo'>GetInfo</a></code></li>
+<li><code>impl Request for <a class='struct' href='../../vkrs/account/struct.SetInfo.html' title='vkrs::account::SetInfo'>SetInfo</a></code></li>
+<li><code>impl&lt;'a&gt; Request for <a class='struct' href='../../vkrs/account/struct.ChangePassword.html' title='vkrs::account::ChangePassword'>ChangePassword</a>&lt;'a&gt;</code></li>
+<li><code>impl Request for <a class='struct' href='../../vkrs/account/struct.GetProfileInfo.html' title='vkrs::account::GetProfileInfo'>GetProfileInfo</a></code></li>
+<li><code>impl&lt;'a&gt; Request for <a class='struct' href='../../vkrs/account/struct.SetProfileInfo.html' title='vkrs::account::SetProfileInfo'>SetProfileInfo</a>&lt;'a&gt;</code></li>
+<li><code>impl Request for <a class='struct' href='../../vkrs/notifications/struct.MarkAsViewed.html' title='vkrs::notifications::MarkAsViewed'>MarkAsViewed</a></code></li>
+</ul><script type="text/javascript" async
+                         src="../../implementors/vkrs/api/trait.Request.js">
+                 </script></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "vkrs";
+    </script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
+    <script defer src="../../search-index.js"></script>
+</body>
+</html>

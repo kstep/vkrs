@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["MarkAsViewed","The <a href=\"https://vk.com/dev/ notifications.markAsViewed \"> notifications.markAsViewed </a> API request."]]});

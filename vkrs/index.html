@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `vkrs` crate.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, vkrs">
+
+    <title>vkrs - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../normalize.css">
+    <link rel="stylesheet" type="text/css" href="../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'></p><script>window.sidebarCurrent = {name: 'vkrs', ty: 'mod', relpath: '../'};</script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content mod">
+<h1 class='fqn'><span class='in-band'>Crate <a class='mod' href=''>vkrs</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a class='srclink' href='../src/vkrs/lib.rs.html#1-118' title='goto source code'>[src]</a></span></h1>
+<div class='docblock'><p>Vkontakte API Rust client library</p>
+
+<p><a href="https://gitter.im/kstep/vkrs"><img src="https://badges.gitter.im/kstep/vkrs.svg" alt="Join the chat at https://gitter.im/kstep/vkrs"></a>
+<a href="https://travis-ci.org/kstep/vkrs"><img src="https://img.shields.io/travis/kstep/vkrs.png" alt="Travis CI build status"></a>
+<a href="https://crates.io/crates/vkrs"><img src="https://img.shields.io/crates/d/vkrs.png" alt="Downloads"></a>
+<a href="https://crates.io/crates/vkrs"><img src="https://img.shields.io/crates/v/vkrs.png" alt="Version"></a>
+<a href="https://crates.io/crates/vkrs"><img src="https://img.shields.io/crates/l/vkrs.png" alt="License MIT/Apache-2.0"></a>
+<a href="https://coveralls.io/github/kstep/vkrs"><img src="https://img.shields.io/coveralls/kstep/vkrs.png" alt="Code coverage at Coveralls"></a>
+<a href="http://issuestats.com/github/kstep/vkrs"><img src="http://issuestats.com/github/kstep/vkrs/badge/pr" alt="Issue Stats"></a>
+<a href="http://issuestats.com/github/kstep/vkrs"><img src="http://issuestats.com/github/kstep/vkrs/badge/issue" alt="Issue Stats"></a></p>
+
+<p><a href="http://kstep.me/vkrs/vkrs/index.html">Documentation</a></p>
+
+<h1 id='usage' class='section-header'><a href='#usage'>Usage</a></h1>
+<p>Add to your Cargo.toml:</p>
+
+<pre><code class="language-toml">[dependencies]
+vkrs = &quot;0.5.0&quot;
+</code></pre>
+
+<p>Then <a href="https://vk.com/apps?act=manage">add your app</a> at <a href="https://vk.com/">vk.com</a>.</p>
+
+<p>Then authorize and use:</p>
+
+<pre class='rust rust-example-rendered'>
+<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>vkrs</span>;
+
+<span class='kw'>use</span> <span class='ident'>std</span>::{<span class='ident'>env</span>, <span class='ident'>io</span>};
+<span class='kw'>use</span> <span class='ident'>vkrs</span>::<span class='kw-2'>*</span>;
+
+<span class='kw'>fn</span> <span class='ident'>main</span>() {
+    <span class='kw'>let</span> <span class='ident'>api</span> <span class='op'>=</span> <span class='ident'>api</span>::<span class='ident'>Client</span>::<span class='ident'>new</span>();
+    <span class='kw'>let</span> <span class='ident'>oauth</span> <span class='op'>=</span> <span class='ident'>api</span>.<span class='ident'>auth</span>(
+        <span class='ident'>env</span>::<span class='ident'>var</span>(<span class='string'>&quot;VK_APP_ID&quot;</span>).<span class='ident'>unwrap</span>(),
+        <span class='ident'>env</span>::<span class='ident'>var</span>(<span class='string'>&quot;VK_APP_SECRET&quot;</span>).<span class='ident'>unwrap</span>());
+
+    <span class='kw'>let</span> <span class='ident'>auth_uri</span> <span class='op'>=</span> <span class='ident'>oauth</span>.<span class='ident'>auth_uri</span>(<span class='ident'>auth</span>::<span class='ident'>Permission</span>::<span class='ident'>Audio</span>).<span class='ident'>unwrap</span>();
+    <span class='comment'>// Or if you want to get permissions for specific request:</span>
+    <span class='comment'>// let auth_uri = oauth.auth_uri_for::&lt;audio::Search&gt;();</span>
+    <span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;Go to {} and enter code below...&quot;</span>, <span class='ident'>auth_uri</span>);
+
+    <span class='kw'>let</span> <span class='ident'>inp</span> <span class='op'>=</span> <span class='ident'>io</span>::<span class='ident'>stdin</span>();
+    <span class='kw'>let</span> <span class='ident'>code</span> <span class='op'>=</span> {
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>buf</span> <span class='op'>=</span> <span class='ident'>String</span>::<span class='ident'>new</span>();
+        <span class='ident'>inp</span>.<span class='ident'>read_line</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>buf</span>).<span class='ident'>unwrap</span>();
+        <span class='ident'>buf</span>
+    };
+
+    <span class='comment'>// You may want to save this token for future use to avoid asking user</span>
+    <span class='comment'>// to authorize the app on each run.</span>
+    <span class='kw'>let</span> <span class='ident'>token</span> <span class='op'>=</span> <span class='ident'>oauth</span>.<span class='ident'>request_token</span>(<span class='ident'>code</span>.<span class='ident'>trim</span>()).<span class='ident'>unwrap</span>();
+
+    <span class='comment'>// The access token is JSON serializable with serde, so you can do it this way:</span>
+    <span class='comment'>// File::create(TOKEN_FILE).ok().map(|mut f| serde_json::to_writer(&amp;mut f, &amp;token).ok()).unwrap();</span>
+    <span class='comment'>//</span>
+    <span class='comment'>// And then you can load it again:</span>
+    <span class='comment'>// let token: auth::AccessToken = File::open(TOKEN_FILE).ok().and_then(|mut f| serde_json::from_reader(&amp;mut f).ok()).unwrap();</span>
+
+    <span class='kw'>let</span> <span class='ident'>songs</span> <span class='op'>=</span> <span class='ident'>api</span>.<span class='ident'>get</span>(<span class='prelude-val'>Some</span>(<span class='kw-2'>&amp;</span><span class='ident'>token</span>),
+        <span class='ident'>audio</span>::<span class='ident'>Search</span>::<span class='ident'>new</span>()
+            .<span class='ident'>q</span>(<span class='string'>&quot;Poets Of The Fall&quot;</span>)
+            .<span class='ident'>performer_only</span>(<span class='bool-val'>true</span>)
+            .<span class='ident'>count</span>(<span class='number'>200</span>))
+        .<span class='ident'>unwrap</span>();
+
+    <span class='kw'>for</span> <span class='ident'>song</span> <span class='kw'>in</span> <span class='kw-2'>&amp;</span><span class='ident'>songs</span>.<span class='ident'>items</span> {
+        <span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;{:?}&quot;</span>, <span class='ident'>song</span>);
+    }
+}</pre>
+
+<h1 id='license' class='section-header'><a href='#license'>License</a></h1>
+<p>Licensed under either of</p>
+
+<ul>
+<li>Apache License, Version 2.0 (<a href="LICENSE-APACHE">LICENSE-APACHE</a> or <a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a>)</li>
+<li>MIT license (<a href="LICENSE-MIT">LICENSE-MIT</a> or <a href="http://opensource.org/licenses/MIT">http://opensource.org/licenses/MIT</a>)</li>
+</ul>
+
+<p>at your option.</p>
+
+<h2 id='contribution' class='section-header'><a href='#contribution'>Contribution</a></h2>
+<p>Unless you explicitly state otherwise, any contribution intentionally submitted
+for inclusion in the work by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without any
+additional terms or conditions.</p>
+</div><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class='mod' href='account/index.html'
+                                  title='vkrs::account'>account</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='mod' href='api/index.html'
+                                  title='vkrs::api'>api</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='mod' href='audio/index.html'
+                                  title='vkrs::audio'>audio</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='mod' href='auth/index.html'
+                                  title='vkrs::auth'>auth</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='mod' href='execute/index.html'
+                                  title='vkrs::execute'>execute</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='mod' href='gifts/index.html'
+                                  title='vkrs::gifts'>gifts</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='mod' href='notifications/index.html'
+                                  title='vkrs::notifications'>notifications</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='mod' href='photos/index.html'
+                                  title='vkrs::photos'>photos</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='mod' href='stats/index.html'
+                                  title='vkrs::stats'>stats</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='mod' href='status/index.html'
+                                  title='vkrs::status'>status</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='mod' href='storage/index.html'
+                                  title='vkrs::storage'>storage</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='mod' href='users/index.html'
+                                  title='vkrs::users'>users</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='mod' href='utils/index.html'
+                                  title='vkrs::utils'>utils</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='mod' href='video/index.html'
+                                  title='vkrs::video'>video</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class='mod' href='wall/index.html'
+                                  title='vkrs::wall'>wall</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr></table></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../";
+        window.currentCrate = "vkrs";
+    </script>
+    <script src="../jquery.js"></script>
+    <script src="../main.js"></script>
+    <script defer src="../search-index.js"></script>
+</body>
+</html>
