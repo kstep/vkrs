@@ -1,10 +1,24 @@
 use api::{Id, Timestamp};
 
-#[cfg(feature = "unstable")]
-include!("utils.rs.in");
+#[derive(Debug, PartialEq, Eq, Deserialize, Clone)]
+pub struct LinkInfo {
+    pub status: LinkStatus,
+    pub link: String, // URL
+}
 
-#[cfg(not(feature = "unstable"))]
-include!(concat!(env!("OUT_DIR"), "/utils.rs"));
+#[derive(Debug, PartialEq, Eq, Deserialize, Clone)]
+pub struct ScreenNameInfo {
+    #[serde(rename="type")]
+    pub kind: String,
+    pub object_id: Id,
+}
+
+
+enum_str! { LinkStatus {
+    NotBanned = "not_banned",
+    Banned = "banned",
+    Processing = "processing"
+}}
 
 request_ref! {
     #[derive(Copy, Eq)]

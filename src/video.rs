@@ -6,11 +6,156 @@ use api::{AlbumId, Attachment, Bool, Collection, Comment, Duration, FullId, Id, 
           Timestamp};
 use serde::de::Deserialize;
 
-#[cfg(feature = "unstable")]
-include!("video.rs.in");
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+pub struct Video {
+    pub id: Id,
+    pub owner_id: OwnerId,
+    pub album_id: Option<Id>,
+    pub user_id: Option<Id>,
+    pub title: String,
+    pub duration: Duration,
+    pub description: String,
+    pub date: Timestamp,
+    pub views: u32,
+    pub comments: u32,
+    pub photo_130: String, // URL
+    pub photo_320: String, // URL
+    pub photo_640: Option<String>, // URL
+    pub photo_800: Option<String>, // URL
+    pub adding_date: Option<Timestamp>,
+    pub player: String, // URL
+    pub can_add: Bool, // bool
+    #[serde(default)]
+    pub can_edit: Bool, // bool
+    #[serde(default)]
+    pub can_report: Bool, // bool
+    #[serde(default)]
+    pub can_comment: Bool, // bool
+    #[serde(default)]
+    pub converting: Bool, // bool
+    #[serde(default)]
+    pub repeat: Bool, // bool
+    pub files: Option<VideoFiles>,
+    pub likes: Option<LikesCount>,
 
-#[cfg(not(feature = "unstable"))]
-include!(concat!(env!("OUT_DIR"), "/video.rs"));
+    pub placer_id: Option<Id>,
+    pub tag_created: Option<Timestamp>,
+    pub tag_id: Option<Id>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+pub struct VideoFiles {
+    pub mp4_240: Option<String>,
+    pub mp4_360: Option<String>,
+    pub mp4_480: Option<String>,
+    pub mp4_720: Option<String>,
+    pub external: Option<String>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+pub struct SavedVideo {
+    pub upload_url: String,
+    pub vid: Id,
+    pub owner_id: OwnerId,
+    pub name: String,
+    pub description: String,
+    pub access_key: Option<String>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+pub struct Album {
+    pub id: Id,
+    pub owner_id: OwnerId,
+    pub title: String,
+    pub count: usize,
+    pub updated_time: Timestamp,
+
+    pub photo_130: Option<String>, // URL
+    pub photo_160: Option<String>, // URL
+    pub photo_320: Option<String>, // URL
+    pub photo_640: Option<String>, // URL
+    pub photo_800: Option<String>, // URL
+
+    #[serde(default)]
+    pub is_system: Bool,
+    #[serde(default)]
+    pub can_comment: Bool,
+    #[serde(default)]
+    pub can_repost: Bool,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+pub struct Tag {
+    user_id: Id,
+    tag_id: Id,
+    placer_id: Id,
+    tagged_name: String,
+    date: Timestamp,
+    viewed: Bool,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+pub struct Page<T: Deserialize> {
+    items: Vec<T>,
+    next: Option<String>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+pub struct CatalogBlock {
+    name: String,
+    id: Id,
+    items: Vec<CatalogItem>,
+    next: Option<String>,
+    view: String, // TODO: make enum, known variant: "vertical"
+    can_hide: Bool,
+    #[serde(rename="type")]
+    kind: CatalogBlockKind,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+pub struct CatalogItem {
+    id: Id,
+    owner_id: OwnerId,
+    title: String,
+    #[serde(rename="type")]
+    kind: CatalogItemKind,
+
+    // kind=Video
+    #[serde(default)]
+    duration: Duration,
+    description: Option<String>,
+    #[serde(default)]
+    date: Timestamp,
+    #[serde(default)]
+    views: u32,
+    #[serde(default)]
+    comments: u32,
+    photo_130: Option<String>,
+    photo_160: Option<String>,
+    photo_320: Option<String>,
+    photo_640: Option<String>,
+    photo_800: Option<String>,
+    #[serde(default)]
+    can_add: Bool,
+    #[serde(default)]
+    can_edit: Bool,
+
+    // kind=Album
+    #[serde(default)]
+    count: u32,
+    #[serde(default)]
+    updated_time: Timestamp,
+}
+
+enum_str! { CatalogBlockKind {
+    Channel = "channel",
+    Category = "category",
+}}
+
+enum_str! { CatalogItemKind {
+    Video = "video",
+    Album = "album",
+}}
 
 request_ref! {
     #[derive(Eq, Copy)]

@@ -6,11 +6,39 @@ use api::{AlbumId, Bool, Collection, Duration, FullId, Group, Id, OwnerId, Sort,
 use users::User;
 use std::fmt;
 
-#[cfg(feature = "unstable")]
-include!("audio.rs.in");
+#[derive(Debug, PartialEq, Eq, Deserialize, Clone)]
+pub struct Audio {
+    pub id: Id,
+    pub owner_id: OwnerId,
+    pub artist: String,
+    pub title: String,
+    pub date: Timestamp,
+    pub url: String, // Url !!!
+    pub lyrics_id: Option<Id>,
+    pub album_id: Option<Id>,
+    pub genre_id: Option<Genre>,
+    pub duration: Duration,
+    #[serde(default)]
+    pub no_search: Bool, // FIXME: bool
+}
 
-#[cfg(not(feature = "unstable"))]
-include!(concat!(env!("OUT_DIR"), "/audio.rs"));
+#[derive(Debug, PartialEq, Eq, Deserialize, Clone)]
+pub struct Lyrics {
+    pub lyrics_id: Id,
+    pub text: String,
+}
+
+#[derive(Debug, PartialEq, Eq, Deserialize, Clone)]
+pub struct Album {
+    pub id: Id,
+    pub owner_id: OwnerId,
+    pub title: String,
+}
+
+#[derive(Debug, PartialEq, Eq, Deserialize, Clone)]
+pub struct UploadUrl {
+    pub upload_url: String,
+}
 
 request! {
     #[derive(Eq)]

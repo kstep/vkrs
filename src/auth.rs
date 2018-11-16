@@ -32,11 +32,14 @@ impl ser::Serialize for AccessTokenLifetime {
     }
 }
 
-#[cfg(feature = "unstable")]
-include!("auth.rs.in");
+#[derive(Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub struct AccessToken {
+    access_token: String,
+    pub user_id: Id,
+    pub email: Option<String>,
+    lifetime: AccessTokenLifetime,
+}
 
-#[cfg(not(feature = "unstable"))]
-include!(concat!(env!("OUT_DIR"), "/auth.rs"));
 
 impl FromResponse for AccessTokenLifetime {
     fn from_response(json: &Json) -> Result<AccessTokenLifetime, ParseError> {

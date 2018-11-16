@@ -2,11 +2,23 @@ use std::borrow::Borrow;
 use api::Collection;
 use serde::de;
 
-#[cfg(feature = "unstable")]
-include!("gifts.rs.in");
+#[derive(Debug, PartialEq, Eq, Deserialize, Clone)]
+pub struct GiftItem {
+    pub id: u64,
+    pub from_id: i64,
+    pub message: String,
+    pub date: u64,
+    pub gift: Gift,
+    pub privacy: GiftPrivacy,
+}
 
-#[cfg(not(feature = "unstable"))]
-include!(concat!(env!("OUT_DIR"), "/gifts.rs"));
+#[derive(Debug, PartialEq, Eq, Deserialize, Clone)]
+pub struct Gift {
+    pub id: u64,
+    pub thumb_256: String, // Url
+    pub thumb_96: String, // Url
+    pub thumb_48: String, // Url
+}
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum GiftPrivacy {

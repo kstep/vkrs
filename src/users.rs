@@ -3,11 +3,19 @@ use std::convert::AsRef;
 use serde::de;
 use api::{Bool, Collection, Id};
 
-#[cfg(feature = "unstable")]
-include!("users.rs.in");
+use audio::Audio;
 
-#[cfg(not(feature = "unstable"))]
-include!(concat!(env!("OUT_DIR"), "/users.rs"));
+// TODO: maybe move to api?
+// TODO: must be much more fields
+#[derive(Debug, PartialEq, Eq, Deserialize, Clone)]
+pub struct User {
+    pub id: i64, // String
+    pub photo: Option<String>,
+    pub name: Option<String>,
+    pub name_gen: Option<String>,
+    pub status_audio: Option<Audio>,
+}
+
 
 enum_str! { NameCase {
     Nominative = "nom",

@@ -15,11 +15,91 @@ use auth::{AccessToken, OAuth, Permissions};
 pub const VK_DOMAIN: &'static str = "api.vk.com";
 pub const VK_PATH: &'static str = "method";
 
-#[cfg(feature = "unstable")]
-include!("api.rs.in");
+use audio::Audio;
 
-#[cfg(not(feature = "unstable"))]
-include!(concat!(env!("OUT_DIR"), "/api.rs"));
+#[derive(Debug, PartialEq, Eq, Deserialize)]
+pub struct Collection<T: de::Deserialize> {
+    pub count: u32,
+    pub items: Vec<T>
+}
+
+#[derive(Debug, PartialEq, Eq, Deserialize)]
+pub struct RichCollection<T: de::Deserialize> {
+    pub count: u32,
+    pub items: Vec<T>,
+    pub profiles: Vec<Profile>,
+    pub groups: Vec<Group>,
+}
+
+impl<T: de::Deserialize + Clone> Clone for Collection<T> {
+    fn clone(&self) -> Collection<T> {
+        Collection {
+            count: self.count,
+            items: self.items.clone(),
+        }
+    }
+}
+
+#[derive(Debug, PartialEq, Eq, Deserialize, Clone)]
+pub struct ApiError {
+    pub error_code: ErrorCode,
+    pub error_msg: String,
+    pub request_params: Vec<KeyVal>
+}
+
+#[derive(Debug, PartialEq, Eq, Deserialize, Clone)]
+pub struct KeyVal {
+    pub key: String,
+    pub value: String,
+}
+
+#[derive(Debug, PartialEq, Eq, Deserialize, Copy, Clone)]
+pub struct LikesCount {
+    pub user_likes: u32,
+    pub count: u32,
+}
+
+#[derive(Debug, PartialEq, Eq, Deserialize, Clone)]
+pub struct Profile {
+    id: i64,
+    first_name: String,
+    last_name: String,
+}
+
+// TODO: maybe move to groups?
+// TODO: must be much more fields
+#[derive(Debug, PartialEq, Eq, Deserialize, Clone)]
+pub struct Group {
+    id: i64,
+    name: String,
+    screen_name: String,
+    is_closed: Bool,
+    #[serde(default)]
+    is_admin: Bool,
+    #[serde(default)]
+    is_member: Bool,
+    #[serde(rename="type")]
+    kind: String,
+    photo_50: String, // URL
+    photo_100: String, // URL
+    photo_200: String, // URL
+    status_audio: Option<Audio>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Copy, Deserialize)]
+pub struct AlbumId {
+    pub album_id: Id,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+pub struct Comment {
+    pub id: Id,
+    pub from_id: Id,
+    pub date: Timestamp,
+    pub text: String,
+    pub likes: Option<LikesCount>,
+}
+
 
 pub type OwnerId = i64;
 pub type Id = u64;
