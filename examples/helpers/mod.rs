@@ -2,7 +2,7 @@ use super::json;
 use vkrs::auth::{AccessToken, OAuthError, Permission};
 use vkrs::api::Client;
 use std::fs::File;
-use std::io::{stdin, BufRead};
+use std::io::stdin;
 use std::env;
 
 static TOKEN_FILE: &'static str = "token.json";
@@ -12,7 +12,7 @@ pub fn fetch_access_token(api: &Client) -> Result<AccessToken, OAuthError> {
         env::var("VK_APP_ID").expect("VK_APP_ID env var"),
         env::var("VK_APP_SECRET").expect("VK_APP_SECRET env var"));
 
-    let auth_uri = oauth.auth_uri(&[Permission::Audio, Permission::Video, Permission::Offline, Permission::Status]).unwrap();
+    let auth_uri = oauth.auth_uri(&[Permission::Audio, Permission::Video, Permission::Offline, Permission::Status]);
     println!("Go to {} and enter code below...", auth_uri);
 
     let inp = stdin();

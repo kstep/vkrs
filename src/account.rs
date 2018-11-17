@@ -356,15 +356,15 @@ pub enum BirthdateVisibility {
     ShowMD = 2,
 }
 
-impl de::Deserialize for BirthdateVisibility {
-    fn deserialize<D: de::Deserializer>(d: &mut D) -> Result<BirthdateVisibility, D::Error> {
+impl<'de> de::Deserialize<'de> for BirthdateVisibility {
+    fn deserialize<D: de::Deserializer<'de>>(d: D) -> Result<BirthdateVisibility, D::Error> {
         use self::BirthdateVisibility::*;
         de::Deserialize::deserialize(d).and_then(|value: u8| {
             match value {
                 0 => Ok(Hide),
                 1 => Ok(ShowYMD),
                 2 => Ok(ShowMD),
-                _ => Err(de::Error::invalid_value("integer value in range 0...2 expected")),
+                _ => Err(de::Error::custom("integer value in range 0...2 expected")),
             }
         })
     }

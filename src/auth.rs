@@ -1,33 +1,33 @@
-use hyper::client::Client as HttpClient;
 use url::Url;
 use oauth2::provider::Provider;
 use oauth2::client::response::{FromResponse, ParseError};
 use oauth2::token::{Lifetime, Token};
-use chrono::{DateTime, Duration, NaiveDateTime, UTC};
-use rustc_serialize::json::Json;
+use chrono::{DateTime, Duration, NaiveDateTime, Utc};
 use serde::{de, ser};
 use api::{Id, Request};
 use std::ops::BitOr;
 use std::iter::FromIterator;
 use std::str::FromStr;
+use serde_json::Value as Json;
 
 pub use oauth2::ClientError as OAuthError;
+use api::HttpClient;
 
 #[derive(Debug, PartialEq, Eq)]
 pub struct AccessTokenLifetime {
-    expires: Option<DateTime<UTC>>,
+    expires: Option<DateTime<Utc>>,
 }
 
-impl de::Deserialize for AccessTokenLifetime {
-    fn deserialize<D: de::Deserializer>(d: &mut D) -> Result<AccessTokenLifetime, D::Error> {
+impl<'de> de::Deserialize<'de> for AccessTokenLifetime {
+    fn deserialize<D: de::Deserializer<'de>>(d: D) -> Result<AccessTokenLifetime, D::Error> {
         de::Deserialize::deserialize(d).map(|ts: Option<u64>| {
-            AccessTokenLifetime { expires: ts.map(|ts| DateTime::from_utc(NaiveDateTime::from_timestamp(ts as i64, 0), UTC)) }
+            AccessTokenLifetime { expires: ts.map(|ts| DateTime::from_utc(NaiveDateTime::from_timestamp(ts as i64, 0), Utc)) }
         })
     }
 }
 
 impl ser::Serialize for AccessTokenLifetime {
-    fn serialize<S: ser::Serializer>(&self, s: &mut S) -> Result<(), S::Error> {
+    fn serialize<S: ser::Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         ser::Serialize::serialize(&self.expires.map(|ts| ts.timestamp()), s)
     }
 }
@@ -43,10 +43,10 @@ pub struct AccessToken {
 
 impl FromResponse for AccessTokenLifetime {
     fn from_response(json: &Json) -> Result<AccessTokenLifetime, ParseError> {
-        json.find("expires_in")
+        json.pointer("expires_in")
             .and_then(Json::as_i64)
             .map(|expires_in| {
-                AccessTokenLifetime { expires: if expires_in > 0 { Some(UTC::now() + Duration::seconds(expires_in)) } else { None } }
+                AccessTokenLifetime { expires: if expires_in > 0 { Some(Utc::now() + Duration::seconds(expires_in)) } else { None } }
             })
             .ok_or_else(|| ParseError::ExpectedFieldType("expires_in", "i64"))
     }
@@ -55,22 +55,22 @@ impl FromResponse for AccessTokenLifetime {
 impl FromResponse for AccessToken {
     fn from_response(json: &Json) -> Result<AccessToken, ParseError> {
         Ok(AccessToken {
-            email: json.find("email").and_then(Json::as_string).map(ToOwned::to_owned),
-            user_id: try!(json.find("user_id")
-                              .and_then(Json::as_u64)
-                              .ok_or(ParseError::ExpectedFieldType("user_id", "u64"))),
-            access_token: try!(json.find("access_token")
-                                   .and_then(Json::as_string)
-                                   .map(ToOwned::to_owned)
-                                   .ok_or(ParseError::ExpectedFieldType("access_token", "string"))),
-            lifetime: try!(AccessTokenLifetime::from_response(json)),
+            email: json.pointer("email").and_then(Json::as_str).map(ToOwned::to_owned),
+            user_id: json.pointer("user_id")
+                .and_then(Json::as_u64)
+                .ok_or(ParseError::ExpectedFieldType("user_id", "u64"))?,
+            access_token: json.pointer("access_token")
+                .and_then(Json::as_str)
+                .map(ToOwned::to_owned)
+                .ok_or(ParseError::ExpectedFieldType("access_token", "string"))?,
+            lifetime: AccessTokenLifetime::from_response(json)?,
         })
     }
 }
 
 impl Lifetime for AccessTokenLifetime {
     fn expired(&self) -> bool {
-        self.expires.map_or(false, |e| e <= UTC::now())
+        self.expires.map_or(false, |e| e <= Utc::now())
     }
 }
 
@@ -96,13 +96,13 @@ pub struct OAuth<'a>(::oauth2::client::Client<Auth>, &'a HttpClient);
 
 impl<'a> OAuth<'a> {
     pub fn new(client: &'a HttpClient, key: String, secret: String) -> OAuth {
-        OAuth(::oauth2::client::Client::<Auth>::new(key, secret, Some(String::from(OAUTH_DEFAULT_REDIRECT_URI))), client)
+        OAuth(::oauth2::client::Client::new(Auth, key, secret, Some(String::from(OAUTH_DEFAULT_REDIRECT_URI))), client)
     }
-    pub fn auth_uri<T: Into<Permissions>>(&self, scope: T) -> Result<Url, OAuthError> {
+    pub fn auth_uri<T: Into<Permissions>>(&self, scope: T) -> Url {
         let scope: String = scope.into().into();
         self.0.auth_uri(Some(&scope), None)
     }
-    pub fn auth_uri_for<T: Request>(&self) -> Result<Url, OAuthError> {
+    pub fn auth_uri_for<T: Request>(&self) -> Url {
         let scope = <T as Request>::permissions();
         self.auth_uri(scope)
     }
@@ -112,16 +112,20 @@ impl<'a> OAuth<'a> {
 }
 
 pub struct Auth;
+lazy_static! {
+    static ref VK_OAUTH_AUTH_URL: Url = Url::parse("https://oauth.vk.com/authorize").unwrap();
+    static ref VK_OAUTH_TOKEN_URL: Url = Url::parse("https://oauth.vk.com/access_token").unwrap();
+}
 impl Provider for Auth {
     type Lifetime = AccessTokenLifetime;
     type Token = AccessToken;
-    fn auth_uri() -> &'static str {
-        "https://oauth.vk.com/authorize"
+    fn auth_uri(&self) -> &Url {
+        &VK_OAUTH_AUTH_URL
     }
-    fn token_uri() -> &'static str {
-        "https://oauth.vk.com/access_token"
+    fn token_uri(&self) -> &Url {
+        &VK_OAUTH_TOKEN_URL
     }
-    fn credentials_in_body() -> bool {
+    fn credentials_in_body(&self) -> bool {
         true
     }
 }
@@ -262,8 +266,8 @@ impl Permissions {
     }
 }
 
-impl de::Deserialize for Permissions {
-    fn deserialize<D: de::Deserializer>(d: &mut D) -> Result<Permissions, D::Error> {
+impl<'de> de::Deserialize<'de> for Permissions {
+    fn deserialize<D: de::Deserializer<'de>>(d: D) -> Result<Permissions, D::Error> {
         de::Deserialize::deserialize(d).map(Permissions::new)
     }
 }

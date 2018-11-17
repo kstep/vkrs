@@ -3,8 +3,8 @@ use api::{Bool, Collection, Id, OwnerId};
 use serde::de;
 use std::fmt::Debug;
 use std::str::FromStr;
-use chrono::offset::local::Local;
-pub use chrono::naive::date::NaiveDate;
+use chrono::{Local, NaiveDate};
+use std::fmt;
 
 #[derive(Debug, PartialEq, Eq, Deserialize, Clone)]
 pub struct Period {
@@ -57,21 +57,26 @@ impl FromStr for DemoSexAge {
     }
 }
 
-impl de::Deserialize for DemoSexAge {
-    fn deserialize<D: de::Deserializer>(d: &mut D) -> Result<DemoSexAge, D::Error> {
+impl<'de> de::Deserialize<'de> for DemoSexAge {
+    fn deserialize<D: de::Deserializer<'de>>(d: D) -> Result<DemoSexAge, D::Error> {
         struct TempVisitor;
 
-        impl de::Visitor for TempVisitor {
+        impl<'v> de::Visitor<'v> for TempVisitor {
             type Value = DemoSexAge;
-            fn visit_str<E: de::Error>(&mut self, value: &str) -> Result<DemoSexAge, E> {
+
+            fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+                write!(formatter, "valid sex and age")
+            }
+
+            fn visit_str<E: de::Error>(self, value: &str) -> Result<DemoSexAge, E> {
                 match value.parse() {
                     Ok(temp_value) => Ok(temp_value),
-                    _ => Err(de::Error::invalid_value("unexpected value")),
+                    _ => Err(de::Error::custom("unexpected value")),
                 }
             }
         }
 
-        d.deserialize(TempVisitor)
+        d.deserialize_str(TempVisitor)
     }
 }
 
@@ -82,7 +87,7 @@ pub enum DemoCity {
 }
 
 #[derive(Debug, PartialEq, Eq, Deserialize, Clone)]
-pub struct Demography<T: de::Deserialize + Copy + Debug + Eq> {
+pub struct Demography<T: Copy + Debug + Eq> {
     pub visitors: u32,
     pub value: T,
     pub name: Option<String>,

@@ -1,5 +1,6 @@
 use std::borrow::Borrow;
 use api::{Attachment, Bool, Collection, Comment, FullId, Id, OwnerId, ReportReason, SortOrder, Timestamp};
+use std::fmt;
 
 request_ref! {
     #[derive(Eq, Copy)]
@@ -583,12 +584,17 @@ pub enum ThumbKind {
     Prop2560x2048 = 'w' as u8,
 }
 
-impl ::serde::de::Deserialize for ThumbKind {
-    fn deserialize<D: ::serde::de::Deserializer>(d: &mut D) -> Result<ThumbKind, D::Error> {
+impl<'de> ::serde::de::Deserialize<'de> for ThumbKind {
+    fn deserialize<D: ::serde::de::Deserializer<'de>>(d: D) -> Result<ThumbKind, D::Error> {
         struct Visitor;
-        impl ::serde::de::Visitor for Visitor {
+        impl<'v> ::serde::de::Visitor<'v> for Visitor {
             type Value = ThumbKind;
-            fn visit_str<E: ::serde::de::Error>(&mut self, v: &str) -> Result<ThumbKind, E> {
+
+            fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+                write!(formatter, "valid thumb kind")
+            }
+
+            fn visit_str<E: ::serde::de::Error>(self, v: &str) -> Result<ThumbKind, E> {
                 use self::ThumbKind::*;
                 Ok(match v {
                     "s" => Prop75,
@@ -600,11 +606,11 @@ impl ::serde::de::Deserialize for ThumbKind {
                     "y" => Prop807,
                     "z" => Prop1280x1024,
                     "w" => Prop2560x2048,
-                    _ => return Err(::serde::de::Error::invalid_value("album size type"))
+                    _ => return Err(::serde::de::Error::custom("album size type"))
                 })
             }
         }
-        d.deserialize(Visitor)
+        d.deserialize_str(Visitor)
     }
 }
 

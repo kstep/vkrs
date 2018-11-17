@@ -323,8 +323,8 @@ impl fmt::Display for Genre {
     }
 }
 
-impl de::Deserialize for Genre {
-    fn deserialize<D: de::Deserializer>(d: &mut D) -> Result<Genre, D::Error> {
+impl<'de> de::Deserialize<'de> for Genre {
+    fn deserialize<D: de::Deserializer<'de>>(d: D) -> Result<Genre, D::Error> {
         use self::Genre::*;
         de::Deserialize::deserialize(d).and_then(|v: u32| {
             match v {

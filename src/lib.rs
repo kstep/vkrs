@@ -86,18 +86,21 @@
 //! for inclusion in the work by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without any
 //! additional terms or conditions.
 
-#![cfg_attr(feature = "unstable", feature(custom_derive, plugin))]
-#![cfg_attr(feature = "unstable", plugin(serde_macros))]
 #![allow(unknown_lints)]
 #![allow(wrong_self_convention)]
 #![deny(unused_imports)]
 
+#[macro_use]
+extern crate serde_derive;
+
+#[macro_use]
+extern crate lazy_static;
+
 extern crate serde;
 extern crate serde_json;
-extern crate hyper;
+extern crate reqwest;
 extern crate url;
 extern crate inth_oauth2 as oauth2;
-extern crate rustc_serialize;
 extern crate chrono;
 
 mod macros;

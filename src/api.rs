@@ -1,14 +1,12 @@
 use std::fmt;
 use std::ops::Deref;
-use std::marker::PhantomData;
 use std::error::Error as StdError;
 use std::result::Result as StdResult;
 use serde::de;
 use serde_json::{self, Error as JsonError};
-use hyper::client::Client as HttpClient;
-use hyper::Error as HttpError;
-use url::{self, ParseError as UrlError, Url};
+use url::{ParseError as UrlError, Url};
 use oauth2::token::Token;
+pub use reqwest::{Client as HttpClient, Error as HttpError};
 
 use auth::{AccessToken, OAuth, Permissions};
 
@@ -18,20 +16,20 @@ pub const VK_PATH: &'static str = "method";
 use audio::Audio;
 
 #[derive(Debug, PartialEq, Eq, Deserialize)]
-pub struct Collection<T: de::Deserialize> {
+pub struct Collection<T> {
     pub count: u32,
     pub items: Vec<T>
 }
 
 #[derive(Debug, PartialEq, Eq, Deserialize)]
-pub struct RichCollection<T: de::Deserialize> {
+pub struct RichCollection<T> where {
     pub count: u32,
     pub items: Vec<T>,
     pub profiles: Vec<Profile>,
     pub groups: Vec<Group>,
 }
 
-impl<T: de::Deserialize + Clone> Clone for Collection<T> {
+impl<T: Clone + de::DeserializeOwned> Clone for Collection<T> {
     fn clone(&self) -> Collection<T> {
         Collection {
             count: self.count,
@@ -135,6 +133,7 @@ pub struct Client {
 #[derive(Debug)]
 pub enum Error {
     Api(ApiError),
+    Url(UrlError),
     Http(HttpError),
     Json(JsonError),
 }
@@ -145,6 +144,7 @@ impl ::std::fmt::Display for Error {
             Error::Api(ref err) => err.fmt(f),
             Error::Http(ref err) => err.fmt(f),
             Error::Json(ref err) => err.fmt(f),
+            Error::Url(ref err) => err.fmt(f),
         }
     }
 }
@@ -169,7 +169,7 @@ impl From<JsonError> for Error {
 
 impl From<UrlError> for Error {
     fn from(err: UrlError) -> Error {
-        Error::Http(HttpError::Uri(err))
+        Error::Url(err)
     }
 }
 
@@ -197,7 +197,7 @@ impl Client {
 
         self.client
             .post(url)
-            .body(&query)
+            .body(query)
             .send()
             .map_err(Error::Http)
             .and_then(|resp| serde_json::from_reader::<_, ApiResult<T::Response>>(resp).map_err(Error::Json))
@@ -207,7 +207,7 @@ impl Client {
 
 /// Trait for things that can be posted to VK API directly
 pub trait Request {
-    type Response: de::Deserialize;
+    type Response: de::DeserializeOwned;
     fn method_name() -> &'static str;
     fn to_query_string(&self) -> String;
 
@@ -216,24 +216,12 @@ pub trait Request {
     }
 
     fn to_url(&self) -> Url {
-        Url {
-            scheme: String::from("https"),
-            scheme_data: url::SchemeData::Relative(url::RelativeSchemeData {
-                username: String::new(),
-                password: None,
-                host: url::Host::Domain(String::from(VK_DOMAIN)),
-                port: Some(443),
-                default_port: None,
-                path: vec![String::from(VK_PATH), String::from(Self::method_name())],
-            }),
-            query: None,
-            fragment: None,
-        }
+        Url::parse(&format!("https://{}/{}/{}", VK_DOMAIN, VK_PATH, Self::method_name())).unwrap()
     }
 
 }
 
-#[derive(Debug)]
+#[derive(Debug, Deserialize)]
 pub struct ApiResult<T>(pub StdResult<T, ApiError>);
 
 impl<T> Deref for ApiResult<T> {
@@ -243,55 +231,11 @@ impl<T> Deref for ApiResult<T> {
     }
 }
 
+#[derive(Deserialize)]
+#[serde(untagged)]
 enum ApiResultField {
     Response,
     Error,
-}
-
-impl de::Deserialize for ApiResultField {
-    fn deserialize<D: de::Deserializer>(d: &mut D) -> StdResult<ApiResultField, D::Error> {
-        struct ApiResultFieldVisitor;
-
-        impl de::Visitor for ApiResultFieldVisitor {
-            type Value = ApiResultField;
-            fn visit_str<E: de::Error>(&mut self, value: &str) -> StdResult<ApiResultField, E> {
-                match value {
-                    "response" => Ok(ApiResultField::Response),
-                    "error" => Ok(ApiResultField::Error),
-                    _ => Err(de::Error::unknown_field("expected response or error")),
-                }
-            }
-        }
-
-        d.deserialize(ApiResultFieldVisitor)
-    }
-}
-
-impl<T: de::Deserialize> de::Deserialize for ApiResult<T> {
-    fn deserialize<D: de::Deserializer>(d: &mut D) -> StdResult<ApiResult<T>, D::Error> {
-        struct ApiResultVisitor<T: de::Deserialize>(PhantomData<T>);
-
-        impl<T: de::Deserialize> de::Visitor for ApiResultVisitor<T> {
-            type Value = ApiResult<T>;
-            #[allow(unknown_lints, option_map_unwrap_or_else)]
-            fn visit_map<V: de::MapVisitor>(&mut self, mut v: V) -> StdResult<ApiResult<T>, V::Error> {
-                v.visit_key()
-                 .and_then(|k| {
-                     k.map(|k| {
-                          match k {
-                              ApiResultField::Response => v.visit_value::<T>().map(Ok),
-                              ApiResultField::Error => v.visit_value::<ApiError>().map(Err),
-                          }
-                      })
-                      .unwrap_or_else(|| v.missing_field("response or error"))
-                 })
-                 .and_then(|res| v.end().map(|_| res))
-                 .map(ApiResult)
-            }
-        }
-
-        d.deserialize_map(ApiResultVisitor(PhantomData::<T>))
-    }
 }
 
 impl Into<(String, String)> for KeyVal {
@@ -466,8 +410,8 @@ impl fmt::Display for ErrorCode {
     }
 }
 
-impl de::Deserialize for ErrorCode {
-    fn deserialize<D: de::Deserializer>(d: &mut D) -> StdResult<ErrorCode, D::Error> {
+impl<'de> de::Deserialize<'de> for ErrorCode {
+    fn deserialize<D: de::Deserializer<'de>>(d: D) -> StdResult<ErrorCode, D::Error> {
         u32::deserialize(d).map(From::from)
     }
 }

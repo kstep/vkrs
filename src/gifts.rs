@@ -27,8 +27,8 @@ pub enum GiftPrivacy {
     Private, // 2
 }
 
-impl de::Deserialize for GiftPrivacy {
-    fn deserialize<D: de::Deserializer>(d: &mut D) -> Result<GiftPrivacy, D::Error> {
+impl<'de> de::Deserialize<'de> for GiftPrivacy {
+    fn deserialize<D: de::Deserializer<'de>>(d: D) -> Result<GiftPrivacy, D::Error> {
         use self::GiftPrivacy::*;
         de::Deserialize::deserialize(d).and_then(|v: u32| {
             match v {

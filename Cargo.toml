@@ -1,40 +1,24 @@
 [package]
 authors = ["Konstantin Stepanov <me@kstep.me>", "Alexander Kuvaev <alexander@kuvaev.me>"]
-build = "build.rs"
 description = "Vkontakte API Rust client library"
 documentation = "http://kstep.me/vkrs/vkrs/index.html"
 keywords = ["vk", "vkontakte", "api"]
 license = "MIT/Apache-2.0"
 name = "vkrs"
 repository = "https://github.com/kstep/vkrs"
-version = "0.6.3"
+version = "0.7.0"
 readme = "README.md"
-
-[build-dependencies]
-
-[build-dependencies.serde_codegen]
-optional = true
-version = "0.8.0"
 
 [dev-dependencies]
 clap = "^2.1.1"
 
 [dependencies]
-hyper = "^0.8.1"
-inth-oauth2 = "0.9.0"
-rustc-serialize = "0.3.16"
-serde = "^0.8.0"
-serde_json = "^0.8.0"
-url = "^0.5.9"
+inth-oauth2 = "0.16.0"
+serde = "^1.0.0"
+serde_json = "^1.0.0"
+serde_derive = "1.0.0"
+url = "^1.7.0"
+chrono = "0.4.6"
+reqwest = "0.9.5"
+lazy_static = "1.2.0"
 
-[dependencies.serde_macros]
-optional = true
-version = "^0.8.0"
-
-[dependencies.chrono]
-version = "0.2.19"
-features = ["serde"]
-
-[features]
-default = ["serde_codegen"]
-unstable = ["serde_macros"]

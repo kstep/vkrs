@@ -2,9 +2,9 @@
 
 macro_rules! qs {
     ($($name:expr => $value:expr),+ $(,)*) => {
-        ::url::form_urlencoded::serialize([
+        ::url::form_urlencoded::Serializer::new(String::new()).extend_pairs([
             $(($name, $value)),*
-        ].into_iter().filter(|&&(_, v)| !v.is_empty()))
+        ].into_iter().filter(|&&(_, v)| !v.is_empty())).finish()
     }
 }
 
@@ -548,21 +548,27 @@ macro_rules! enum_str {
             }
         }
 
-        impl ::serde::de::Deserialize for $name {
-            fn deserialize<D: ::serde::de::Deserializer>(d: &mut D) -> ::std::result::Result<$name, D::Error> {
+        impl<'de> ::serde::de::Deserialize<'de> for $name {
+            fn deserialize<D: ::serde::de::Deserializer<'de>>(d: D) -> ::std::result::Result<$name, D::Error> {
                 struct TempVisitor;
 
-                impl ::serde::de::Visitor for TempVisitor {
+                impl<'de> ::serde::de::Visitor<'de> for TempVisitor {
                     type Value = $name;
-                    fn visit_str<E: ::serde::de::Error>(&mut self, value: &str) -> ::std::result::Result<$name, E> {
+                    fn visit_str<E: ::serde::de::Error>(self, value: &str) -> ::std::result::Result<$name, E> {
                         match ::std::str::FromStr::from_str(value) {
                             Ok(temp_value) => Ok(temp_value),
-                            _ => Err(::serde::de::Error::invalid_value("unexpected value")),
+                            _ => Err(::serde::de::Error::unknown_variant(value, &[
+                                $($value),+
+                            ])),
                         }
+                    }
+
+                    fn expecting(&self, formatter: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+                        write!(formatter, "a string")
                     }
                 }
 
-                d.deserialize(TempVisitor)
+                d.deserialize_str(TempVisitor)
             }
         }
     };
