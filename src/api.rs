@@ -1,5 +1,4 @@
 use std::fmt;
-use std::ops::Deref;
 use std::error::Error as StdError;
 use std::result::Result as StdResult;
 use serde::de;
@@ -204,8 +203,8 @@ impl Client {
             .body(query)
             .send()
             .map_err(Error::Http)
-            .and_then(|resp| serde_json::from_reader::<_, ApiResult<T::Response>>(resp).map_err(Error::Json))
-            .and_then(|vkres| vkres.0.map_err(Error::Api))
+            .and_then(|resp| serde_json::from_reader::<_, ApiResponse<T::Response>>(resp).map_err(Error::Json))
+            .and_then(|resp| Into::<ApiResult<T::Response>>::into(resp).map_err(Error::Api))
     }
 }
 
@@ -225,21 +224,22 @@ pub trait Request {
 
 }
 
-#[derive(Debug, Deserialize)]
-pub struct ApiResult<T>(pub StdResult<T, ApiError>);
+type ApiResult<T> = StdResult<T, ApiError>;
 
-impl<T> Deref for ApiResult<T> {
-    type Target = StdResult<T, ApiError>;
-    fn deref(&self) -> &StdResult<T, ApiError> {
-        &self.0
-    }
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum ApiResponse<T> {
+    Response(T),
+    Error(ApiError)
 }
 
-#[derive(Deserialize)]
-#[serde(untagged)]
-enum ApiResultField {
-    Response,
-    Error,
+impl<T> Into<ApiResult<T>> for ApiResponse<T> {
+    fn into(self) -> ApiResult<T> {
+        match self {
+            ApiResponse::Response(value) => Ok(value),
+            ApiResponse::Error(error) => Err(error)
+        }
+    }
 }
 
 impl Into<(String, String)> for KeyVal {
