@@ -122,9 +122,7 @@ impl Provider for Auth {
     fn auth_uri(&self) -> &Url {
         &VK_OAUTH_AUTH_URL
     }
-    fn token_uri(&self) -> &Url {
-        &VK_OAUTH_TOKEN_URL
-    }
+    fn token_uri(&self) -> &Url { &VK_OAUTH_TOKEN_URL }
     fn credentials_in_body(&self) -> bool {
         true
     }

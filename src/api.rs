@@ -13,6 +13,10 @@ use auth::{AccessToken, OAuth, Permissions};
 pub const VK_DOMAIN: &'static str = "api.vk.com";
 pub const VK_PATH: &'static str = "method";
 
+lazy_static! {
+    static ref VK_BASE_API_URL: Url = Url::parse(&format!("https://{}/{}/", VK_DOMAIN, VK_PATH)).unwrap();
+}
+
 use audio::Audio;
 
 #[derive(Debug, PartialEq, Eq, Deserialize)]
@@ -216,7 +220,7 @@ pub trait Request {
     }
 
     fn to_url(&self) -> Url {
-        Url::parse(&format!("https://{}/{}/{}", VK_DOMAIN, VK_PATH, Self::method_name())).unwrap()
+        VK_BASE_API_URL.join(Self::method_name()).unwrap()
     }
 
 }
