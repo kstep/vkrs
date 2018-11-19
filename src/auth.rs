@@ -43,7 +43,7 @@ pub struct AccessToken {
 
 impl FromResponse for AccessTokenLifetime {
     fn from_response(json: &Json) -> Result<AccessTokenLifetime, ParseError> {
-        json.pointer("expires_in")
+        json.get("expires_in")
             .and_then(Json::as_i64)
             .map(|expires_in| {
                 AccessTokenLifetime { expires: if expires_in > 0 { Some(Utc::now() + Duration::seconds(expires_in)) } else { None } }
@@ -55,11 +55,11 @@ impl FromResponse for AccessTokenLifetime {
 impl FromResponse for AccessToken {
     fn from_response(json: &Json) -> Result<AccessToken, ParseError> {
         Ok(AccessToken {
-            email: json.pointer("email").and_then(Json::as_str).map(ToOwned::to_owned),
-            user_id: json.pointer("user_id")
+            email: json.get("email").and_then(Json::as_str).map(ToOwned::to_owned),
+            user_id: json.get("user_id")
                 .and_then(Json::as_u64)
                 .ok_or(ParseError::ExpectedFieldType("user_id", "u64"))?,
-            access_token: json.pointer("access_token")
+            access_token: json.get("access_token")
                 .and_then(Json::as_str)
                 .map(ToOwned::to_owned)
                 .ok_or(ParseError::ExpectedFieldType("access_token", "string"))?,
