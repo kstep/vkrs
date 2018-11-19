@@ -22,7 +22,7 @@ pub fn fetch_access_token(api: &Client) -> Result<AccessToken, OAuthError> {
         buf
     };
 
-    let token = try!(oauth.request_token(code.trim()));
+    let token = oauth.request_token(code.trim())?;
     let _ = File::create(TOKEN_FILE).ok().map(|mut f| json::to_writer(&mut f, &token).ok());
     Ok(token)
 }
