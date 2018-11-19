@@ -33,7 +33,7 @@ pub struct RichCollection<T> where {
     pub groups: Vec<Group>,
 }
 
-impl<T: Clone + de::DeserializeOwned> Clone for Collection<T> {
+impl<T: Clone> Clone for Collection<T> {
     fn clone(&self) -> Collection<T> {
         Collection {
             count: self.count,
