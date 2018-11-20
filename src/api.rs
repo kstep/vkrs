@@ -190,7 +190,7 @@ impl Client {
         Client { client: HttpClient::new() }
     }
 
-    pub fn get<T: Request>(&self, token: Option<&AccessToken>, req: &T) -> Result<T::Response> {
+    pub fn call<T: Request>(&self, token: Option<&AccessToken>, req: &T) -> Result<T::Response> {
         let url = req.to_url();
         let mut query = req.to_query_string();
         if let Some(ref token) = token {

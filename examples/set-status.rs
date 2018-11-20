@@ -26,5 +26,5 @@ fn main() {
     let status = args.value_of("status").unwrap();
     let mut token = get_access_token(&api).unwrap();
 
-    api.get(Some(&token), status::Set::new().text(status)).unwrap();
+    api.call(Some(&token), status::Set::new().text(status)).unwrap();
 }

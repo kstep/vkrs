@@ -22,7 +22,7 @@ fn print_videos(videos: &[Video]) {
 }
 
 fn find_videos(api: &Client, token: &AccessToken, query: &str) -> api::Result<Collection<Video>> {
-    api.get(Some(token),
+    api.call(Some(token),
         video::Search::new()
             .q(query)
             .adult(false)

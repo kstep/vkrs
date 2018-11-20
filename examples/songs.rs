@@ -20,13 +20,13 @@ fn print_m3u(songs: &[Audio]) {
 }
 
 fn find_songs(api: &Client, token: &AccessToken, query: &str, performer_only: bool) -> api::Result<Collection<Audio>> {
-    api.get(Some(token),
+    api.call(Some(token),
         audio::Search::new()
             .q(query)
             .performer_only(performer_only)
             .count(200))
 
-    //api.get(Some(token),
+    //api.call(Some(token),
     //  AudioGetRecommendations::new()
     //      .count(200))
 }
