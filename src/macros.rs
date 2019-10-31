@@ -4,7 +4,7 @@ macro_rules! qs {
     ($($name:expr => $value:expr),+ $(,)*) => {
         ::url::form_urlencoded::Serializer::new(String::new()).extend_pairs([
             $(($name, $value)),*
-        ].into_iter().filter(|&&(_, v)| !v.is_empty())).finish()
+        ].iter().filter(|&&(_, v)| !v.is_empty())).finish()
     }
 }
 
