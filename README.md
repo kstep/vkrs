@@ -19,7 +19,7 @@ Add to your Cargo.toml:
 
 ```toml
 [dependencies]
-vkrs = "0.6.3"
+vkrs = "0.7"
 ```
 
 Then [add your app](https://vk.com/apps?act=manage) at [vk.com](https://vk.com/).
